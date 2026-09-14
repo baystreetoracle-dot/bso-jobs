@@ -4,9 +4,6 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "BSO Jobs — The Canadian Capital Markets Job Board",
   description: "Curated jobs, firms and career intelligence for Canada's capital-markets community.",
-  other: {
-    "codex-preview": "development",
-  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

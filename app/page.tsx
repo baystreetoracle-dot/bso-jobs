@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, BriefcaseBusiness, Building2, ChevronDown, Clock3, Mail, MapPin, Search, Sparkles, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BriefcaseBusiness, ChevronDown, Clock3, Mail, MapPin, Search, Sparkles, X } from "lucide-react";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 type Job = { company:string; title:string; location:string; category:string; seniority:string; program:string; deadline:string|null; url:string; summary:string };
