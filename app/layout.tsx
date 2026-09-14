@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BSO Jobs — Canadian Finance Careers",
-  description: "Curated opportunities in Canadian investment banking, markets, private capital and corporate finance.",
+  title: "BSO Jobs — The Canadian Capital Markets Job Board",
+  description: "Curated jobs, firms and career intelligence for Canada's capital-markets community.",
   other: {
     "codex-preview": "development",
   },
