@@ -10,12 +10,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "jobs:dry": "node scripts/job-collector/index.mjs --source=all --dry-run",
+    "jobs:rbc:dry": "node scripts/job-collector/index.mjs --source=rbc --dry-run",
+    "jobs:td:dry": "node scripts/job-collector/index.mjs --source=td --dry-run",
+    "jobs:goldman:dry": "node scripts/job-collector/index.mjs --source=goldman --dry-run",
+    "jobs:canadian-independent:dry": "node scripts/job-collector/index.mjs --source=canadian-independent --dry-run",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
     "@hookform/resolvers": "^5.7.1",
     "@shadcn/react": "^0.3.0",
+    "@supabase/supabase-js": "^2.116.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "^1.1.1",
