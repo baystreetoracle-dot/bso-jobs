@@ -8,11 +8,70 @@ type Job = { company:string; title:string; location:string; category:string; sen
 type JobRow = { id:string; company_name:string; title:string; location_display:string; category:string; seniority:string; program_type:string|null; employment_type:string|null; application_deadline:string|null; application_url:string; summary:string|null; featured:boolean };
 type LoadedJob = { id:string; featured:boolean; job:Job };
 
-const domains: Record<string,string> = {
-  "BDO Canada":"bdo.ca", "RBC Capital Markets":"rbccm.com", "CIBC":"cibc.com", "BMO Capital Markets":"bmo.com", "Questrade Financial Group":"questrade.com", "ATB Capital Markets":"atb.com", "Scotiabank":"scotiabank.com", "Alvarez & Marsal":"alvarezandmarsal.com", "Morgan Stanley":"morganstanley.com", "Rothschild & Co":"rothschildandco.com", "Ventum Financial":"ventumfinancial.com", "Agentis Capital Advisors":"agentis.ca"
+const companyLogos: Record<string,string> = {
+  "Agentis Capital Advisors":"/company-logos/agentis-capital-logo.webp",
+  "Alvarez & Marsal":"/company-logos/alvarez-marsal-logo.webp",
+  "ATB Capital Markets":"/company-logos/atb-capital-markets-logo.webp",
+  "Baker Tilly Canada Capital":"/company-logos/baker-tilly-canada-logo.webp",
+  "Bank of America":"/company-logos/bank-of-america-logo.webp",
+  "Barclays":"/company-logos/barclays-bank-logo.webp",
+  "BDO Canada":"/company-logos/bdo-logo.webp",
+  "Bloom Burton":"/company-logos/bloom-burton-co-logo.webp",
+  "BMO Capital Markets":"/company-logos/bmo-capital-markets-logo.webp",
+  "BNP Paribas":"/company-logos/bnp-paribas-logo.webp",
+  "Canaccord Genuity":"/company-logos/canaccord-financial-logo.webp",
+  "Cantor Fitzgerald":"/company-logos/cantor-fitzgerald.webp",
+  "CIBC":"/company-logos/cibc-capital-markets-logo.webp",
+  "Citi":"/company-logos/citi-logo.webp",
+  "Crédit Agricole":"/company-logos/credit-agricole-cib-logo.webp",
+  "Crédit Agricole CIB":"/company-logos/credit-agricole-cib-logo.webp",
+  "Deloitte Corporate Finance":"/company-logos/deloitte-logo.webp",
+  "Desjardins Capital Markets":"/company-logos/desjardins.webp",
+  "Evercore":"/company-logos/evercore-inc-logo.webp",
+  "EY Corporate Finance":"/company-logos/ey-parthenon-logo.webp",
+  "EY-Parthenon Corporate Finance":"/company-logos/ey-parthenon-logo.webp",
+  "Fort Capital":"/company-logos/fort-capital-logo.webp",
+  "Goldman Sachs":"/company-logos/goldman-sachs-logo.webp",
+  "Haywood Securities":"/company-logos/haywood-securities-logo.webp",
+  "iA Capital Markets":"/company-logos/ia-capital-markets-logo.webp",
+  "INFOR Financial":"/company-logos/infor-financial.webp",
+  "Jefferies":"/company-logos/jefferies-logo.webp",
+  "J.P. Morgan":"/company-logos/jpmorgan-logo.webp",
+  "JPMorgan":"/company-logos/jpmorgan-logo.webp",
+  "KPMG Corporate Finance":"/company-logos/kpmg-logo.webp",
+  "Macquarie":"/company-logos/macquariegroup-logo.webp",
+  "Macquarie Capital":"/company-logos/macquariegroup-logo.webp",
+  "Maxit Capital":"/company-logos/maxit-capital.webp",
+  "Mizuho / Greenhill":"/company-logos/greenhill-co-logo.webp",
+  "MNP Corporate Finance":"/company-logos/mnp-logo.webp",
+  "Morgan Stanley":"/company-logos/morgan-stanley-logo.webp",
+  "MUFG":"/company-logos/mufg-logo.webp",
+  "National Bank Financial Markets":"/company-logos/national-bank-logo.webp",
+  "Natixis":"/company-logos/natixis-corporate-investment-banking-logo.webp",
+  "Origin Merchant Partners":"/company-logos/origin-merchant-partners-logo.webp",
+  "Peters & Co.":"/company-logos/peters-and-co.webp",
+  "PwC":"/company-logos/pwc-logo.webp",
+  "PwC Corporate Finance / Deals":"/company-logos/pwc-logo.webp",
+  "Raymond Chabot Grant Thornton":"/company-logos/grant-thornton-us-logo.webp",
+  "Raymond James Ltd.":"/company-logos/raymond-james-financial-inc-logo.webp",
+  "RBC Capital Markets":"/company-logos/rbc-capital-markets-logo.webp",
+  "Red Cloud Securities":"/company-logos/red-cloud-securities.webp",
+  "Richter":"/company-logos/richter-logo.webp",
+  "Rothschild & Co.":"/company-logos/rothschildandco-logo.webp",
+  "RSM Canada":"/company-logos/rsm-logo.webp",
+  "Scotiabank":"/company-logos/scotiabank-gbm-logo.webp",
+  "Scotiabank Global Banking & Markets":"/company-logos/scotiabank-gbm-logo.webp",
+  "SCP Resource Finance":"/company-logos/scp-resource-finance-logo.webp",
+  "Société Générale":"/company-logos/societe-generale-logo.webp",
+  "Stifel Canada":"/company-logos/stifel-financial-corp-logo.webp",
+  "TD Securities":"/company-logos/td-logo.webp",
+  "TPH":"/company-logos/tudor-pickering-holt-logo.webp",
+  "UBS":"/company-logos/ubs-logo.webp",
+  "Ventum Financial":"/company-logos/ventum-financial-logo.webp",
+  "Wells Fargo":"/company-logos/wellsfargo-logo.webp"
 };
 const companyType: Record<string,string> = {"BDO Canada":"Advisory","RBC Capital Markets":"Canadian bank","CIBC":"Canadian bank","BMO Capital Markets":"Canadian bank","Questrade Financial Group":"Financial services","ATB Capital Markets":"Independent dealer","Scotiabank":"Canadian bank","Alvarez & Marsal":"Advisory","Morgan Stanley":"Global bank","Rothschild & Co":"Global advisory","Ventum Financial":"Independent dealer","Agentis Capital Advisors":"Independent advisory"};
-const logo = (company:string) => domains[company] ? `https://www.google.com/s2/favicons?domain=${domains[company]}&sz=128` : null;
+const logo = (company:string) => companyLogos[company] ?? null;
 const fmt = (date:string|null) => date ? new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric"}).format(new Date(`${date}T12:00:00`)) : "Open";
 const todayToronto = () => { const parts=Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:"America/Toronto",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date()).map(({type,value})=>[type,value])); return `${parts.year}-${parts.month}-${parts.day}`; };
 const fmtToday = (date:string) => new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric",year:"numeric"}).format(new Date(`${date}T12:00:00`));
@@ -36,7 +95,7 @@ export default function Home() {
   useEffect(()=>{let cancelled=false;async function loadJobs(){try{const supabase=getSupabaseBrowserClient();const {data,error}=await supabase.from("jobs").select("id,company_name,title,location_display,category,seniority,program_type,employment_type,application_deadline,application_url,summary,featured").eq("status","active").or(`application_deadline.is.null,application_deadline.gte.${today}`).order("application_deadline",{ascending:true,nullsFirst:false});if(error)throw error;if(cancelled)return;setLoadedJobs(((data??[]) as JobRow[]).map(row=>({id:row.id,featured:row.featured,job:{company:row.company_name,title:row.title,location:row.location_display,category:row.category,seniority:row.seniority,program:row.program_type??row.employment_type??"Not specified",deadline:row.application_deadline,url:row.application_url,summary:row.summary??""}})));}catch(error){if(!cancelled)setLoadError(error instanceof Error?error.message:"Unable to load jobs.");}finally{if(!cancelled)setLoading(false);}}loadJobs();return()=>{cancelled=true};},[today]);
   const jobs=useMemo(()=>loadedJobs.map(({job})=>job),[loadedJobs]);
   const featuredJobs=useMemo(()=>loadedJobs.filter(({featured})=>featured).map(({job})=>job),[loadedJobs]);
-  const companies=useMemo(()=>Array.from(new Set(jobs.map(job=>job.company))).map(name=>({name,domain:domains[name],type:companyType[name]??"Financial institution",count:jobs.filter(job=>job.company===name).length})),[jobs]);
+  const companies=useMemo(()=>Array.from(new Set(jobs.map(job=>job.company))).map(name=>({name,type:companyType[name]??"Financial institution",count:jobs.filter(job=>job.company===name).length})),[jobs]);
   const categories=["All fields",...Array.from(new Set(jobs.map(j=>j.category)))]; const programs=["All roles",...Array.from(new Set(jobs.map(j=>j.program)))];
   const filtered=useMemo(()=>jobs.filter(j=>`${j.company} ${j.title} ${j.category} ${j.location}`.toLowerCase().includes(query.toLowerCase())&&(category==="All fields"||j.category===category)&&(program==="All roles"||j.program===program)&&(!companyFilter||j.company===companyFilter)),[jobs,query,category,program,companyFilter]);
   const reset=()=>{setQuery("");setCategory("All fields");setProgram("All roles");setCompanyFilter(null)};
