@@ -99,7 +99,7 @@ const marqueeLogos = [
   {name:"Jefferies",src:"/banner-logos/jefferies.webp",scale:"jefferies"},
   {name:"National Bank Capital Markets",src:"/banner-logos/national-bank-capital-markets.webp"},
   {name:"RBC Capital Markets",src:"/banner-logos/rbc-capital-markets.webp"},
-  {name:"Scotiabank Global Banking and Markets",src:"/banner-logos/scotiabank.webp"},
+  {name:"Scotiabank Global Banking & Markets",src:"/banner-logos/scotiabank.webp"},
   {name:"Stifel",src:"/banner-logos/stifel.webp",scale:"stifel"},
   {name:"TD Securities",src:"/banner-logos/td-securities.webp"},
   {name:"UBS",src:"/banner-logos/ubs.webp"},
