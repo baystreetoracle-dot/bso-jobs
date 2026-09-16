@@ -70,7 +70,31 @@ const companyLogos: Record<string,string> = {
   "Ventum Financial":"/company-logos/ventum-financial-logo.webp",
   "Wells Fargo":"/company-logos/wellsfargo-logo.webp"
 };
-const companyType: Record<string,string> = {"BDO Canada":"Advisory","RBC Capital Markets":"Canadian bank","CIBC":"Canadian bank","BMO Capital Markets":"Canadian bank","Questrade Financial Group":"Financial services","ATB Capital Markets":"Independent dealer","Scotiabank":"Canadian bank","Alvarez & Marsal":"Advisory","Morgan Stanley":"Global bank","Rothschild & Co":"Global advisory","Ventum Financial":"Independent dealer","Agentis Capital Advisors":"Independent advisory"};
+const firmGroups = [
+  {label:"Big 6 Canadian bank",weight:60,companies:new Set<string>(["RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank","Scotiabank Global Banking & Markets","CIBC","CIBC Capital Markets","National Bank Financial Markets","National Bank Capital Markets"])},
+  {label:"Global bulge bracket",weight:58,companies:new Set<string>(["Goldman Sachs","J.P. Morgan","JPMorgan","Morgan Stanley","Bank of America","Citi","Barclays","UBS","BNP Paribas","Société Générale"])},
+  {label:"Independent advisory",weight:48,companies:new Set<string>(["Evercore","Rothschild & Co.","Rothschild & Co","Perella Weinberg Partners","PWP","TPH","Mizuho / Greenhill"])},
+  {label:"Global bank",weight:44,companies:new Set<string>(["Jefferies","Macquarie","Macquarie Capital","Wells Fargo","Cantor Fitzgerald","MUFG","Crédit Agricole","Crédit Agricole CIB","Natixis"])},
+  {label:"Independent dealer",weight:34,companies:new Set<string>(["Canaccord Genuity","Stifel Canada","Raymond James Ltd.","Desjardins Capital Markets","ATB Capital Markets","ATB Cormark Capital Markets","INFOR Financial","Origin Merchant Partners","Peters & Co.","Agentis Capital","Agentis Capital Advisors","Bloom Burton","Bloom Burton & Co."])},
+  {label:"Corporate finance advisory",weight:28,companies:new Set<string>(["iA Capital Markets","Deloitte Corporate Finance","KPMG Corporate Finance","PwC","PwC Corporate Finance / Deals","EY Corporate Finance","EY-Parthenon Corporate Finance","MNP Corporate Finance","Baker Tilly Canada Capital","Baker Tilly Canada Capital Corporation","BDO Canada","BDO M&A & Capital Markets","Alvarez & Marsal","RSM Canada","Richter","Doane Grant Thornton","Raymond Chabot Grant Thornton"])},
+  {label:"Small-cap boutique",weight:20,companies:new Set<string>(["Ventum Financial","Maxit Capital","SCP Resource Finance","Red Cloud Securities","Haywood Securities","Paradigm Capital","Crosbie & Company","Fort Capital","Morrison Park Advisors","Osprey Capital Partners","Sampford Advisors","Research Capital Corporation","Leede Financial","Beacon Securities","Clarus Securities","Blair Franklin Capital Partners","IJW & Co.","FirePower Capital","Valitas Capital Partners","Clariti Strategic Advisors","NewPoint / Clairfield Canada"])},
+  {label:"Micro-cap boutique",weight:12,companies:new Set<string>(["Yorkdale Partners","Capital Canada","Kluane Partners","Maison Placements","IBK Capital","Sequeira Partners","Mills Dunlop","Karst Peak Capital","Herculean Capital","Left Lane Associates","Oaklins Canada","Broadstone Capital","Alchemy Capital","Fairing Capital","Tequity Advisors","Distinct Capital Partners","Coldwater Corporate Finance","Westonview Capital","Broderick Capital","Penrose Partners","AIM Group Canada","4Front Capital Partners","RWT Growth"])},
+] as const;
+const corporateFinanceFirms = firmGroups[5].companies;
+const firmGroup = (company:string) => firmGroups.find(group=>group.companies.has(company));
+const displayCategory = (company:string) => corporateFinanceFirms.has(company) ? "Corporate Finance" : "Investment Banking";
+const deadlineScore = (deadline:string|null,today:string) => {
+  if(!deadline)return 0;
+  const days=Math.ceil((new Date(`${deadline}T12:00:00Z`).getTime()-new Date(`${today}T12:00:00Z`).getTime())/86_400_000);
+  if(days<=3)return 42; if(days<=7)return 34; if(days<=14)return 26; if(days<=30)return 16; if(days<=60)return 8; return 0;
+};
+const dailyShuffle = (job:Job,today:string) => {
+  const seed=`${today}|${job.company}|${job.title}|${job.deadline??"open"}`;
+  let hash=2166136261;
+  for(let i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619);}
+  return ((hash>>>0)%1500)/100;
+};
+const rankingScore = (job:Job,today:string) => (firmGroup(job.company)?.weight??8)+deadlineScore(job.deadline,today)+dailyShuffle(job,today);
 const logo = (company:string) => companyLogos[company] ?? null;
 const fmt = (date:string|null) => date ? new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric"}).format(new Date(`${date}T12:00:00`)) : "Open";
 const todayToronto = () => { const parts=Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:"America/Toronto",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date()).map(({type,value})=>[type,value])); return `${parts.year}-${parts.month}-${parts.day}`; };
@@ -92,10 +116,10 @@ export default function Home() {
   const [loadedJobs,setLoadedJobs]=useState<LoadedJob[]>([]); const [loading,setLoading]=useState(true); const [loadError,setLoadError]=useState<string|null>(null);
   const [query,setQuery]=useState(""); const [category,setCategory]=useState("All fields"); const [program,setProgram]=useState("All roles"); const [selected,setSelected]=useState<Job|null>(null); const [companyFilter,setCompanyFilter]=useState<string|null>(null); const [menuOpen,setMenuOpen]=useState(false); const [subscribed,setSubscribed]=useState(false);
   const today=useMemo(()=>todayToronto(),[]);
-  useEffect(()=>{let cancelled=false;async function loadJobs(){try{const supabase=getSupabaseBrowserClient();const {data,error}=await supabase.from("jobs").select("id,company_name,title,location_display,category,seniority,program_type,employment_type,application_deadline,application_url,summary,featured").eq("status","active").or(`application_deadline.is.null,application_deadline.gte.${today}`).order("application_deadline",{ascending:true,nullsFirst:false});if(error)throw error;if(cancelled)return;setLoadedJobs(((data??[]) as JobRow[]).map(row=>({id:row.id,featured:row.featured,job:{company:row.company_name,title:row.title,location:row.location_display,category:row.category,seniority:row.seniority,program:row.program_type??row.employment_type??"Not specified",deadline:row.application_deadline,url:row.application_url,summary:row.summary??""}})));}catch(error){if(!cancelled)setLoadError(error instanceof Error?error.message:"Unable to load jobs.");}finally{if(!cancelled)setLoading(false);}}loadJobs();return()=>{cancelled=true};},[today]);
-  const jobs=useMemo(()=>loadedJobs.map(({job})=>job),[loadedJobs]);
-  const featuredJobs=useMemo(()=>loadedJobs.filter(({featured})=>featured).map(({job})=>job),[loadedJobs]);
-  const companies=useMemo(()=>Array.from(new Set(jobs.map(job=>job.company))).map(name=>({name,type:companyType[name]??"Financial institution",count:jobs.filter(job=>job.company===name).length})),[jobs]);
+  useEffect(()=>{let cancelled=false;async function loadJobs(){try{const supabase=getSupabaseBrowserClient();const {data,error}=await supabase.from("jobs").select("id,company_name,title,location_display,category,seniority,program_type,employment_type,application_deadline,application_url,summary,featured").eq("status","active").or(`application_deadline.is.null,application_deadline.gte.${today}`).order("application_deadline",{ascending:true,nullsFirst:false});if(error)throw error;if(cancelled)return;setLoadedJobs(((data??[]) as JobRow[]).map(row=>({id:row.id,featured:row.featured,job:{company:row.company_name,title:row.title,location:row.location_display,category:displayCategory(row.company_name),seniority:row.seniority,program:row.program_type??row.employment_type??"Not specified",deadline:row.application_deadline,url:row.application_url,summary:row.summary??""}})));}catch(error){if(!cancelled)setLoadError(error instanceof Error?error.message:"Unable to load jobs.");}finally{if(!cancelled)setLoading(false);}}loadJobs();return()=>{cancelled=true};},[today]);
+  const jobs=useMemo(()=>loadedJobs.map(({job})=>job).sort((a,b)=>rankingScore(b,today)-rankingScore(a,today)||a.company.localeCompare(b.company)||a.title.localeCompare(b.title)),[loadedJobs,today]);
+  const featuredJobs=useMemo(()=>loadedJobs.filter(({featured})=>featured).map(({job})=>job).sort((a,b)=>rankingScore(b,today)-rankingScore(a,today)),[loadedJobs,today]);
+  const companies=useMemo(()=>Array.from(new Set(jobs.map(job=>job.company))).map(name=>({name,type:firmGroup(name)?.label??"Financial institution",count:jobs.filter(job=>job.company===name).length})),[jobs]);
   const categories=["All fields",...Array.from(new Set(jobs.map(j=>j.category)))]; const programs=["All roles",...Array.from(new Set(jobs.map(j=>j.program)))];
   const filtered=useMemo(()=>jobs.filter(j=>`${j.company} ${j.title} ${j.category} ${j.location}`.toLowerCase().includes(query.toLowerCase())&&(category==="All fields"||j.category===category)&&(program==="All roles"||j.program===program)&&(!companyFilter||j.company===companyFilter)),[jobs,query,category,program,companyFilter]);
   const reset=()=>{setQuery("");setCategory("All fields");setProgram("All roles");setCompanyFilter(null)};
