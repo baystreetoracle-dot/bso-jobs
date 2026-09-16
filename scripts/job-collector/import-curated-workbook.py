@@ -91,7 +91,7 @@ ROLES = {
     21: role("Canada Investment Banking Associate", "549799748436", "Toronto, ON", "Associate", specialization="Investment Banking", city="Toronto", province="ON"),
     22: role("VP, Global Investment Banking, Mining & Metals", "R-0000178260", "Vancouver, BC", "Vice President", specialization="Mining & Metals", city="Vancouver", province="BC"),
     23: role("2027 Full-Time Analyst - Investment Banking, Global Energy", "R_1509729", "Calgary, AB", "Analyst", "New Graduate Program", "Global Energy", city="Calgary", province="AB"),
-    24: role("Investment Banking Associate, Global Energy", "R_1508614", "Calgary, AB", "Associate", specialization="Global Energy", city="Calgary", province="AB", application_deadline="2026-09-16"),
+    24: role("Investment Banking Associate, Global Energy", "R_1508614", "Calgary, AB", "Associate", specialization="Global Energy", city="Calgary", province="AB", application_deadline="2026-09-16", status="closed", quality="Confirmed filled on 2026-09-16."),
     25: role("Investment Banking, Associate", "JR-0000124562", "Calgary, AB", "Associate", specialization="Investment Banking", city="Calgary", province="AB", salary_min=220000, salary_max=270000, salary_currency="CAD", salary_period="year"),
     26: role("Associate, Corporate Finance", "33097", "Toronto / Hamilton / Kitchener / Ottawa, ON", "Associate", specialization="Corporate Finance"),
     27: role("Associate Vice President, Corporate Finance", "33224", "Toronto / Hamilton / Kitchener / Ottawa, ON", "Vice President", specialization="Corporate Finance"),
