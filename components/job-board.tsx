@@ -90,17 +90,17 @@ const featuredCompanyOrder = ["BMO Capital Markets","Macquarie Capital","Morgan 
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC","Barclays","Jefferies"];
 const homepageTrendingOrder = ["R_1508614","2618460","R260021697","210762506","R7181","JR015548"];
 const marqueeLogos = [
-  {name:"Atlas Partners",src:"/banner-logos/atlas-partners.webp",compact:true},
+  {name:"Atlas Partners",src:"/banner-logos/atlas-partners.webp",scale:"atlas"},
   {name:"Bank of America",src:"/banner-logos/bank-of-america.webp"},
   {name:"BMO Capital Markets",src:"/banner-logos/bmo-capital-markets.webp"},
   {name:"CIBC Capital Markets",src:"/banner-logos/cibc-capital-markets.webp"},
   {name:"CPP Investments",src:"/banner-logos/cpp-investments.webp"},
-  {name:"INFOR Financial",src:"/banner-logos/infor-financial.webp",compact:true},
-  {name:"Jefferies",src:"/banner-logos/jefferies.webp",compact:true},
+  {name:"INFOR Financial",src:"/banner-logos/infor-financial.webp",scale:"compact"},
+  {name:"Jefferies",src:"/banner-logos/jefferies.webp",scale:"jefferies"},
   {name:"National Bank Capital Markets",src:"/banner-logos/national-bank-capital-markets.webp"},
   {name:"RBC Capital Markets",src:"/banner-logos/rbc-capital-markets.webp"},
   {name:"Scotiabank Global Banking and Markets",src:"/banner-logos/scotiabank.webp"},
-  {name:"Stifel",src:"/banner-logos/stifel.webp",compact:true},
+  {name:"Stifel",src:"/banner-logos/stifel.webp",scale:"stifel"},
   {name:"TD Securities",src:"/banner-logos/td-securities.webp"},
   {name:"UBS",src:"/banner-logos/ubs.webp"},
 ];
@@ -167,7 +167,7 @@ export default function JobBoard({mode="home",initialCompany=null}:{mode?:"home"
 
     {mode==="home"?<section className="hero" id="top"><div className="hero-copy"><p className="eyebrow light">The Canadian capital-markets job board</p><h1>Find your next seat<br/>on Bay Street.</h1><p>Curated roles and firms for people building careers in Canadian finance.</p></div><div className="hero-stat"><strong>{loading?"—":jobs.length}</strong><span>active opportunities<br/>as of {fmtToday(today)}</span></div><div className="hero-orbit orbit-one"/><div className="hero-orbit orbit-two"/></section>:<section className="directory-hero" id="top"><p className="eyebrow light">{mode==="jobs"?"The complete job board":"The firm directory"}</p><h1>{mode==="jobs"?"All opportunities.":"Explore every firm."}</h1><p>{mode==="jobs"?`${jobs.length} active Canadian finance roles, ranked and filterable.`:"See every firm with an active opportunity and jump directly to its roles."}</p></section>}
 
-    {mode==="home"&&<section className="logo-marquee" aria-label="Firms across the Bay Street community"><p>Trusted by leaders across Bay Street</p><div className="logo-marquee-window"><div className="logo-marquee-track">{[0,1].map(copy=><div className="logo-marquee-group" key={copy} aria-hidden={copy===1}>{marqueeLogos.map(logo=><div className="logo-marquee-item" key={`${copy}-${logo.name}`}><Image className={logo.compact?"compact":""} src={logo.src} alt={`${logo.name} logo`} width={240} height={96}/></div>)}</div>)}</div></div></section>}
+    {mode==="home"&&<section className="logo-marquee" aria-label="Firms across the Bay Street community"><p>Trusted by leaders across Bay Street</p><div className="logo-marquee-window"><div className="logo-marquee-track">{[0,1].map(copy=><div className="logo-marquee-group" key={copy} aria-hidden={copy===1}>{marqueeLogos.map(logo=><div className="logo-marquee-item" key={`${copy}-${logo.name}`}><Image className={logo.scale??""} src={logo.src} alt={`${logo.name} logo`} width={240} height={96}/></div>)}</div>)}</div></div></section>}
 
     {mode==="jobs"&&<section className="filter-wrap directory-filter" aria-label="Search jobs"><div className="search-band"><Search size={22}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search role, firm, division or city" aria-label="Search jobs"/><span>{filtered.length} roles</span></div><div className="select-row"><label><span>Field</span><select value={category} onChange={e=>setCategory(e.target.value)}>{categories.map(v=><option key={v}>{v}</option>)}</select><ChevronDown size={15}/></label><label><span>Level</span><select value={level} onChange={e=>setLevel(e.target.value)}>{levels.map(v=><option key={v}>{v}</option>)}</select><ChevronDown size={15}/></label>{companyFilter&&<span className="active-filter">{companyFilter}</span>}{(query||category!=="All fields"||level!=="All levels"||companyFilter)&&<button onClick={reset}><X size={14}/> Clear</button>}</div></section>}
 
