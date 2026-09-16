@@ -48,7 +48,7 @@ const companyLogos: Record<string,string> = {
   "MNP Corporate Finance":"/company-logos/mnp-logo.webp",
   "Morgan Stanley":"/company-logos/morgan-stanley-logo.webp",
   "MUFG":"/company-logos/mufg-logo.webp",
-  "National Bank Financial Markets":"/company-logos/national-bank-logo.webp",
+  "National Bank Capital Markets":"/company-logos/national-bank-logo.webp",
   "Natixis":"/company-logos/natixis-corporate-investment-banking-logo.webp",
   "Origin Merchant Partners":"/company-logos/origin-merchant-partners-logo.webp",
   "Peters & Co.":"/company-logos/peters-and-co.webp",
@@ -72,7 +72,7 @@ const companyLogos: Record<string,string> = {
   "Wells Fargo":"/company-logos/wellsfargo-logo.webp"
 };
 const firmGroups = [
-  {label:"Big 6 Canadian bank",weight:60,companies:new Set<string>(["RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank Global Banking and Markets","CIBC Capital Markets","National Bank Financial Markets","National Bank Capital Markets"])},
+  {label:"Big 6 Canadian bank",weight:60,companies:new Set<string>(["RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank Global Banking and Markets","CIBC Capital Markets","National Bank Capital Markets"])},
   {label:"Global bulge bracket",weight:58,companies:new Set<string>(["Goldman Sachs","J.P. Morgan","JPMorgan","Morgan Stanley","Bank of America","Citi","Barclays","UBS","BNP Paribas","Société Générale"])},
   {label:"Independent advisory",weight:48,companies:new Set<string>(["Evercore","Rothschild & Co.","Rothschild & Co","Perella Weinberg Partners","PWP","TPH","Mizuho / Greenhill"])},
   {label:"Global bank",weight:44,companies:new Set<string>(["Jefferies","Macquarie","Macquarie Capital","Wells Fargo","Cantor Fitzgerald","MUFG","Crédit Agricole","Crédit Agricole CIB","Natixis"])},

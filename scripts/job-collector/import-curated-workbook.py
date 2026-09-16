@@ -50,7 +50,7 @@ COMPANIES = {
     "MNP": ("mnp-corporate-finance", "MNP Corporate Finance"),
     "Grant Thorton": ("raymond-chabot-grant-thornton", "Raymond Chabot Grant Thornton"),
     "Baker Tilly": ("baker-tilly-canada-capital", "Baker Tilly Canada Capital"),
-    "National Bank Capital Markets": ("national-bank-financial-markets", "National Bank Financial Markets"),
+    "National Bank Capital Markets": ("national-bank-financial-markets", "National Bank Capital Markets"),
     "Jefferies": ("jefferies", "Jefferies"),
 }
 

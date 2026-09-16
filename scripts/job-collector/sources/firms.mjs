@@ -21,7 +21,7 @@ const CORE_FIRMS = [
     { host: "https://cibc.wd3.myworkdayjobs.com", tenant: "cibc", site: "search" },
     { host: "https://cibc.wd3.myworkdayjobs.com", tenant: "cibc", site: "campus" },
   ]),
-  html("nbf", "National Bank Financial Markets", "Public custom careers platform", "https://www.nbc.ca/en/capitalmarkets/opportunities.html", ["https://emplois.bnc.ca/en_CA/careers/searchjobs/?jobRecordsPerPage=100"], /emplois\.bnc\.ca\/en_CA\/careers\/JobDetail\//i),
+  html("nbf", "National Bank Capital Markets", "Public custom careers platform", "https://www.nbc.ca/en/capitalmarkets/opportunities.html", ["https://emplois.bnc.ca/en_CA/careers/searchjobs/?jobRecordsPerPage=100"], /emplois\.bnc\.ca\/en_CA\/careers\/JobDetail\//i),
 
   { key: "goldman", name: "Goldman Sachs", provider: "Higher.gs GraphQL", careersUrl: "https://www.goldmansachs.com/careers", adapter: "goldman", config: {} },
   html("jpmorgan", "J.P. Morgan", "JPMorganChase public careers platform", "https://www.jpmorganchase.com/careers", ["https://www.jpmorganchase.com/careers/search-results?location=Canada"], /jpmorganchase\.com\/careers\/job-detail\//i),
