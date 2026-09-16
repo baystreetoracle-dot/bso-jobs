@@ -90,7 +90,7 @@ const featuredCompanyOrder = ["BMO Capital Markets","Macquarie Capital","Morgan 
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
 const homepageTrendingOrder = ["2618460","R260021697","210762506","R7181","JR015548","R260021761"];
 const recruitingUpdates:Record<string,RecruitingUpdate> = {
-  "24194": { label:"First rounds underway", note:"First-round invitations have begun." },
+  "24194": { label:"First rounds underway", note:"Confirmed by a verified anonymous source: First-round invitations have begun." },
 };
 const marqueeLogos = [
   {name:"Atlas Partners",src:"/banner-logos/atlas-partners.webp",scale:"atlas"},
