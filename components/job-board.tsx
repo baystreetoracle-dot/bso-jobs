@@ -23,7 +23,7 @@ const companyLogos: Record<string,string> = {
   "BNP Paribas":"/company-logos/bnp-paribas-logo.webp",
   "Canaccord Genuity":"/company-logos/canaccord-financial-logo.webp",
   "Cantor Fitzgerald":"/company-logos/cantor-fitzgerald.webp",
-  "CIBC":"/company-logos/cibc-capital-markets-logo.webp",
+  "CIBC Capital Markets":"/company-logos/cibc-capital-markets-logo.webp",
   "Citi":"/company-logos/citi-logo.webp",
   "Crédit Agricole":"/company-logos/credit-agricole-cib-logo.webp",
   "Crédit Agricole CIB":"/company-logos/credit-agricole-cib-logo.webp",
@@ -61,8 +61,7 @@ const companyLogos: Record<string,string> = {
   "Richter":"/company-logos/richter-logo.webp",
   "Rothschild & Co.":"/company-logos/rothschildandco-logo.webp",
   "RSM Canada":"/company-logos/rsm-logo.webp",
-  "Scotiabank":"/company-logos/scotiabank-gbm-logo.webp",
-  "Scotiabank Global Banking & Markets":"/company-logos/scotiabank-gbm-logo.webp",
+  "Scotiabank Global Banking and Markets":"/company-logos/scotiabank-gbm-logo.webp",
   "SCP Resource Finance":"/company-logos/scp-resource-finance-logo.webp",
   "Société Générale":"/company-logos/societe-generale-logo.webp",
   "Stifel Canada":"/company-logos/stifel-financial-corp-logo.webp",
@@ -73,7 +72,7 @@ const companyLogos: Record<string,string> = {
   "Wells Fargo":"/company-logos/wellsfargo-logo.webp"
 };
 const firmGroups = [
-  {label:"Big 6 Canadian bank",weight:60,companies:new Set<string>(["RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank","Scotiabank Global Banking & Markets","CIBC","CIBC Capital Markets","National Bank Financial Markets","National Bank Capital Markets"])},
+  {label:"Big 6 Canadian bank",weight:60,companies:new Set<string>(["RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank Global Banking and Markets","CIBC Capital Markets","National Bank Financial Markets","National Bank Capital Markets"])},
   {label:"Global bulge bracket",weight:58,companies:new Set<string>(["Goldman Sachs","J.P. Morgan","JPMorgan","Morgan Stanley","Bank of America","Citi","Barclays","UBS","BNP Paribas","Société Générale"])},
   {label:"Independent advisory",weight:48,companies:new Set<string>(["Evercore","Rothschild & Co.","Rothschild & Co","Perella Weinberg Partners","PWP","TPH","Mizuho / Greenhill"])},
   {label:"Global bank",weight:44,companies:new Set<string>(["Jefferies","Macquarie","Macquarie Capital","Wells Fargo","Cantor Fitzgerald","MUFG","Crédit Agricole","Crédit Agricole CIB","Natixis"])},
@@ -87,7 +86,7 @@ const firmGroup = (company:string) => firmGroups.find(group=>group.companies.has
 const displayCategory = (company:string) => corporateFinanceFirms.has(company) ? "Corporate Finance" : "Investment Banking";
 const rankOrder = ["Intern / Co-op","Analyst","Associate","Vice President","Director","Managing Director"] as const;
 const featuredCompanyOrder = ["BMO Capital Markets","Macquarie Capital","Morgan Stanley"];
-const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC","Barclays","Jefferies"];
+const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
 const homepageTrendingOrder = ["R_1508614","2618460","R260021697","210762506","R7181","JR015548"];
 const marqueeLogos = [
   {name:"Atlas Partners",src:"/banner-logos/atlas-partners.webp",scale:"atlas"},
@@ -99,7 +98,7 @@ const marqueeLogos = [
   {name:"Jefferies",src:"/banner-logos/jefferies.webp",scale:"jefferies"},
   {name:"National Bank Capital Markets",src:"/banner-logos/national-bank-capital-markets.webp"},
   {name:"RBC Capital Markets",src:"/banner-logos/rbc-capital-markets.webp"},
-  {name:"Scotiabank Global Banking & Markets",src:"/banner-logos/scotiabank.webp"},
+  {name:"Scotiabank Global Banking and Markets",src:"/banner-logos/scotiabank.webp"},
   {name:"Stifel",src:"/banner-logos/stifel.webp",scale:"stifel"},
   {name:"TD Securities",src:"/banner-logos/td-securities.webp"},
   {name:"UBS",src:"/banner-logos/ubs.webp"},

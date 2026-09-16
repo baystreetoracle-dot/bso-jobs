@@ -16,7 +16,7 @@ const CORE_FIRMS = [
     { host: "https://td.wd3.myworkdayjobs.com", tenant: "td", site: "TD_Bank_Careers" },
   ]),
   { key: "bmo", name: "BMO Capital Markets", provider: "Phenom / Workday apply", careersUrl: "https://capitalmarkets.bmo.com/en/careers/", adapter: "phenom", config: { baseUrl: "https://jobs.bmo.com", searchUrl: "https://jobs.bmo.com/ca/en/search-results", refNum: "BOMOGLOBAL", pageId: "page406-migration" } },
-  html("scotia", "Scotiabank Global Banking & Markets", "SAP SuccessFactors", "https://www.scotiabank.com/careers/", ["https://jobs.scotiabank.com/search/?q=&locationsearch=Canada"], /jobs\.scotiabank\.com\/job\//i),
+  html("scotia", "Scotiabank Global Banking and Markets", "SAP SuccessFactors", "https://www.scotiabank.com/careers/", ["https://jobs.scotiabank.com/search/?q=&locationsearch=Canada"], /jobs\.scotiabank\.com\/job\//i),
   workday("cibc", "CIBC Capital Markets", "https://www.cibc.com/en/about-cibc/careers.html", [
     { host: "https://cibc.wd3.myworkdayjobs.com", tenant: "cibc", site: "search" },
     { host: "https://cibc.wd3.myworkdayjobs.com", tenant: "cibc", site: "campus" },
