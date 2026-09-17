@@ -109,9 +109,14 @@ export function JobAlertModal({controller}:{controller:JobAlertController}) {
   </div>;
 }
 
-export function JobAlertInline({onSubmit,pending,error}:{onSubmit:(email:string)=>void;pending:boolean;error:string|null}) {
+export function JobAlertInline({onSubmit,submitted}:{onSubmit:(email:string)=>Promise<void>;submitted:boolean}) {
   const [email,setEmail]=useState("");
-  return <aside className="job-alert-inline" aria-labelledby="inline-alert-title"><div><p className="eyebrow">Job alerts</p><h3 id="inline-alert-title">Looking for something specific?</h3><p>Get notified when new opportunities match what you&apos;re looking for.</p></div><form onSubmit={event=>{event.preventDefault();onSubmit(email);}}><label htmlFor="inline-alert-email">Email address</label><div><input id="inline-alert-email" type="email" value={email} onChange={event=>setEmail(event.target.value)} placeholder="Your email address" autoComplete="email" required/><button type="submit" disabled={pending}>Create alert <ArrowRight size={15}/></button></div>{error&&<p role="alert">{error}</p>}</form></aside>;
+  const [pending,setPending]=useState(false);
+  const [error,setError]=useState<string|null>(null);
+
+  if(submitted)return <aside className="job-alert-inline job-alert-inline-success" role="status" aria-live="polite"><span className="job-alert-success-icon"><Check size={20}/></span><div><p className="eyebrow">Alert created</p><h3>You&apos;re all set — welcome to BSO.</h3><p>Your job alert is saved. We&apos;ll send relevant opportunities to your inbox.</p></div></aside>;
+
+  return <aside className="job-alert-inline" aria-labelledby="inline-alert-title"><div><p className="eyebrow">Job alerts</p><h3 id="inline-alert-title">Looking for something specific?</h3><p>Get notified when new opportunities match what you&apos;re looking for.</p></div><form onSubmit={async event=>{event.preventDefault();setPending(true);setError(null);try{await onSubmit(email);setEmail("");}catch(error){setError(error instanceof Error?error.message:"Unable to save your alert right now. Please try again.");}finally{setPending(false);}}}><label htmlFor="inline-alert-email">Email address</label><div><input id="inline-alert-email" type="email" value={email} onChange={event=>setEmail(event.target.value)} placeholder="Your email address" autoComplete="email" required/><button type="submit" disabled={pending}>{pending?"Saving…":<>Create alert <ArrowRight size={15}/></>}</button></div>{error&&<p role="alert">{error}</p>}</form></aside>;
 }
 
 export function JobAlertJobPageCta({careerPath,onClick}:{careerPath:string;onClick:()=>void}) {

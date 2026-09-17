@@ -197,6 +197,19 @@
   cursor: pointer;
 }
 .job-alert-inline form > p { margin: 8px 0 0; color: #ffd1cc; font-size: 0.78rem; }
+.job-alert-inline-success {
+  grid-template-columns: auto 1fr;
+  min-height: 150px;
+}
+.job-alert-success-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  color: var(--deep);
+  background: #b9e5b7;
+  border-radius: 50%;
+}
 
 .job-alert-job-cta {
   margin: 24px 0 0;
@@ -251,6 +264,7 @@
   .alert-preference-group > div { gap: 6px; }
   .alert-preference-group span { min-height: 44px; padding: 10px; font-size: 0.78rem; }
   .job-alert-inline { margin: 16px 0; padding: 25px 20px; grid-template-columns: 1fr; gap: 20px; }
+  .job-alert-inline-success { grid-template-columns: auto 1fr; min-height: 132px; }
   .job-alert-inline form > div { grid-template-columns: 1fr; }
   .job-alert-inline form button { justify-content: center; }
   .job-alert-job-cta { padding: 20px; align-items: flex-start; flex-direction: column; gap: 18px; }
