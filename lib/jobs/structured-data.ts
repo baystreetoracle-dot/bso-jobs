@@ -1,0 +1,67 @@
+import type { JobRow } from "./types";
+import { SITE_URL, companyPath, jobPath } from "./urls";
+
+function employmentType(value: string | null): string | undefined {
+  if (!value) return undefined;
+  const normalized = value.toLowerCase();
+  if (normalized.includes("full")) return "FULL_TIME";
+  if (normalized.includes("part")) return "PART_TIME";
+  if (normalized.includes("contract")) return "CONTRACTOR";
+  if (normalized.includes("intern")) return "INTERN";
+  return undefined;
+}
+
+/**
+ * Google requires an original posting date and a complete job description.
+ * BSO's concise editorial summaries are intentionally not treated as complete
+ * descriptions. The length gate keeps markup off records that would otherwise
+ * be incomplete or misleading.
+ */
+export function jobPostingJsonLd(job: JobRow): Record<string, unknown> | null {
+  if (!job.date_posted || !job.summary || job.summary.length < 500) return null;
+
+  const salary = job.salary_min !== null && job.salary_currency
+    ? {
+        "@type": "MonetaryAmount",
+        currency: job.salary_currency,
+        value: {
+          "@type": "QuantitativeValue",
+          minValue: job.salary_min,
+          ...(job.salary_max !== null ? { maxValue: job.salary_max } : {}),
+          ...(job.salary_period ? { unitText: job.salary_period.toUpperCase() } : {}),
+        },
+      }
+    : undefined;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: `<p>${job.summary}</p>`,
+    datePosted: job.date_posted,
+    ...(job.application_deadline ? { validThrough: `${job.application_deadline}T23:59:59-04:00` } : {}),
+    ...(employmentType(job.employment_type) ? { employmentType: employmentType(job.employment_type) } : {}),
+    hiringOrganization: {
+      "@type": "Organization",
+      name: job.company_name,
+      url: `${SITE_URL}${companyPath(job.company_name)}`,
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        ...(job.city ? { addressLocality: job.city } : {}),
+        ...(job.province ? { addressRegion: job.province } : {}),
+        addressCountry: "CA",
+      },
+    },
+    ...(salary ? { baseSalary: salary } : {}),
+    directApply: false,
+    url: `${SITE_URL}${jobPath(job)}`,
+    identifier: {
+      "@type": "PropertyValue",
+      name: job.company_name,
+      value: job.external_job_id,
+    },
+  };
+}
