@@ -11,14 +11,22 @@ function employmentType(value: string | null): string | undefined {
   return undefined;
 }
 
-/**
- * Google requires an original posting date and a complete job description.
- * BSO's concise editorial summaries are intentionally not treated as complete
- * descriptions. The length gate keeps markup off records that would otherwise
- * be incomplete or misleading.
- */
+function descriptionHtml(value: string): string {
+  const escaped = value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+  return escaped
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+/** Google markup is emitted only for a source-verified, complete description. */
 export function jobPostingJsonLd(job: JobRow): Record<string, unknown> | null {
-  if (!job.date_posted || !job.summary || job.summary.length < 500) return null;
+  if (!job.date_posted || job.description_status !== "verified" || !job.description_text || job.description_text.length < 500) return null;
 
   const salary = job.salary_min !== null && job.salary_currency
     ? {
@@ -37,7 +45,7 @@ export function jobPostingJsonLd(job: JobRow): Record<string, unknown> | null {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: job.title,
-    description: `<p>${job.summary}</p>`,
+    description: descriptionHtml(job.description_text),
     datePosted: job.date_posted,
     ...(job.application_deadline ? { validThrough: `${job.application_deadline}T23:59:59-04:00` } : {}),
     ...(employmentType(job.employment_type) ? { employmentType: employmentType(job.employment_type) } : {}),

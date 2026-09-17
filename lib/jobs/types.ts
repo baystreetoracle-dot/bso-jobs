@@ -29,6 +29,9 @@ export type JobRow = {
   status: "active" | "closed" | "draft";
   featured: boolean;
   summary: string | null;
+  description_text: string | null;
+  description_status: "missing" | "verified" | "partial" | "unavailable";
+  description_verified_at: string | null;
   source_record_id: string;
   data_quality_notes: string | null;
   last_verified_at: string | null;
@@ -51,4 +54,3 @@ export type JobLandingContent = {
   sections: JobLandingSection[];
   links: Array<{ href: string; label: string }>;
 };
-

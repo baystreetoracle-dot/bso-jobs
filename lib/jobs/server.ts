@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { JobRow } from "./types";
 
-const JOB_COLUMNS = "id,external_job_id,company_id,company_name,title,location_display,city,province,country,workplace_type,category,specialization,seniority,employment_type,program_type,term_start,term_end,term_length_months,date_posted,application_deadline,salary_min,salary_max,salary_currency,salary_period,application_url,source_url,source_name,status,featured,summary,source_record_id,data_quality_notes,last_verified_at,created_at,updated_at";
+const JOB_COLUMNS = "id,external_job_id,company_id,company_name,title,location_display,city,province,country,workplace_type,category,specialization,seniority,employment_type,program_type,term_start,term_end,term_length_months,date_posted,application_deadline,salary_min,salary_max,salary_currency,salary_period,application_url,source_url,source_name,status,featured,summary,description_text,description_status,description_verified_at,source_record_id,data_quality_notes,last_verified_at,created_at,updated_at";
 
 function publicClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -51,4 +51,3 @@ export async function getActiveJobById(id: string): Promise<JobRow | null> {
   const job = data as unknown as JobRow | null;
   return job && isCurrentJob(job) ? job : null;
 }
-
