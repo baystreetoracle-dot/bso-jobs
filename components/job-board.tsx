@@ -90,7 +90,7 @@ const displayCategory = (company:string) => corporateFinanceFirms.has(company) ?
 const rankOrder = ["Intern / Co-op","Analyst","Associate","Vice President","Director","Managing Director"] as const;
 const featuredCompanyOrder = ["BMO Capital Markets","Macquarie Capital","Morgan Stanley"];
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
-const homepageTrendingOrder = ["2618460","R260021697","210762506","R7181","JR015548","R260021761"];
+const homepageTrendingOrder = ["549798030828","R260021697","210762506","R7181","JR015548","R260021761"];
 const recruitingUpdates:Record<string,RecruitingUpdate> = {
   "24194": { label:"First rounds underway", note:"Confirmed by a verified anonymous source: First-round invitations have begun." },
 };
