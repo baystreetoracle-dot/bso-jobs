@@ -86,7 +86,7 @@ const firmGroups = [
 ] as const;
 const corporateFinanceFirms = firmGroups[5].companies;
 const firmGroup = (company:string) => firmGroups.find(group=>group.companies.has(company));
-const displayCategory = (company:string) => corporateFinanceFirms.has(company) ? "Corporate Finance" : "Investment Banking";
+const displayCategory = (company:string, storedCategory:string) => storedCategory==="Corporate Finance"||corporateFinanceFirms.has(company) ? "Corporate Finance" : "Investment Banking";
 const rankOrder = ["Intern / Co-op","Analyst","Associate","Vice President","Director","Managing Director"] as const;
 const featuredCompanyOrder = ["BMO Capital Markets","Macquarie Capital","Morgan Stanley"];
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
@@ -173,7 +173,7 @@ const mapRow = (row:JobRow):LoadedJob => ({
     location:row.location_display,
     city:row.city,
     province:row.province,
-    category:displayCategory(row.company_name),
+    category:displayCategory(row.company_name,row.category),
     seniority:normalizeRank(row),
     storedSeniority:row.seniority,
     program:row.program_type??row.employment_type??"Not specified",
