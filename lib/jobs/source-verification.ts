@@ -37,6 +37,14 @@ function normalizeText(value: unknown): string {
     .replace(/&nbsp;|&#160;/gi, " ").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function torontoDate(): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Toronto", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date());
+  const value = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${value.year}-${value.month}-${value.day}`;
+}
+
 function titleTokens(value: string): Set<string> {
   return new Set(value.toLowerCase().replace(/[^a-z0-9]+/g, " ").split(/\s+/).filter((token) => token.length > 2));
 }
@@ -103,7 +111,14 @@ async function verifyEightfold(job: VerifiableJob, sourceUrl: string): Promise<V
     if (!titleMatches(job.title, normalizeText(detail.posting_name ?? detail.name))) return result("inconclusive", "eightfold", endpoint, "Eightfold returned a different job title.");
     const identities = [detail.id, detail.display_job_id, detail.ats_job_id].map((value) => String(value ?? "").trim()).filter(Boolean);
     if (!identities.includes(job.external_job_id) && !identities.includes(positionId)) return result("inconclusive", "eightfold", endpoint, `Eightfold returned different identifiers (${identities.join(", ")}).`);
-    return result("live", "eightfold", endpoint, "Eightfold public position detail is active.");
+    const applyByValue = detail.custom_JD?.data_fields?.applyByDate?.[0];
+    const deadline = normalizeSourceDate(applyByValue);
+    if (deadline && deadline <= torontoDate()) {
+      return result("closed", "eightfold", endpoint, `Eightfold application deadline (${deadline}) has been reached.`, deadline);
+    }
+    const detailText = normalizeText(`${detail.job_description ?? ""} ${JSON.stringify(detail.preApplyInfoBanner ?? {})}`);
+    if (CLOSED_TEXT.test(detailText)) return result("closed", "eightfold", endpoint, "Eightfold states that applications are no longer being accepted.", deadline);
+    return result("live", "eightfold", endpoint, "Eightfold public position detail is active.", deadline);
   } catch { return result("inconclusive", "eightfold", endpoint, "Eightfold returned malformed JSON."); }
 }
 
