@@ -4,8 +4,8 @@ import { getActiveJobs } from "@/lib/jobs/server";
 
 export const revalidate = 300;
 
-const title = "Investment Banking Jobs in Canada | BSO Jobs";
-const description = "Explore current investment banking jobs and internships across Canada. Find analyst, associate and student opportunities in Toronto, Calgary, Montreal and Vancouver.";
+const title = "Finance Jobs in Canada | BSO Jobs";
+const description = "Explore current Canadian opportunities across investment banking, corporate finance, private equity, private credit, asset management and hedge funds.";
 
 export async function generateMetadata({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}):Promise<Metadata> {
   const params = await searchParams;
