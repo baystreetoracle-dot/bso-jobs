@@ -53,7 +53,13 @@ const CORE_FIRMS = [
   html("natixis", "Natixis", "Natixis/Groupe BPCE public careers platform", "https://home.cib.natixis.com/careers", ["https://recrutement.natixis.com/nos-offres-demploi?location=Canada"], /recrutement\.natixis\.com\/(?:offre|job)\//i),
 ];
 
-export const FIRMS = [...CORE_FIRMS, ...CANADIAN_FIRMS];
+export const INVESTMENT_BANKING_FIRMS = [...CORE_FIRMS, ...CANADIAN_FIRMS].map((firm) => ({
+  ...firm,
+  universe: "investment-banking",
+}));
+
+export const FIRMS = [...INVESTMENT_BANKING_FIRMS, ...BUYSIDE_FIRMS];
 
 export const FIRMS_BY_KEY = new Map(FIRMS.map((firm) => [firm.key, firm]));
 import { CANADIAN_FIRMS } from "./canadian-firms.mjs";
+import { BUYSIDE_FIRMS } from "./buyside-firms.mjs";

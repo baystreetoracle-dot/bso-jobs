@@ -1,9 +1,22 @@
 import { isCanadianText, plainText, splitLocation, stableUrlId } from "./adapters/shared.mjs";
+import { canonicalCompanyId } from "./normalization/companies.mjs";
 
 const IB_TITLE = /\b(?:global\s+)?investment bank(?:ing|er)?\b|\bmergers?\s*(?:&|and)\s*acquisitions?\b|\bm\s*&\s*a\b|\bfinancial sponsors?\b|\bleveraged finance\b|\bsyndicated\s*(?:&|and)\s*leveraged finance\b|\bequity capital markets?\b|\bdebt capital markets?\b|\brestructuring\b|\bproject finance advisory\b|\binfrastructure advisory\b|\breal estate investment banking\b/i;
 const IB_METADATA = /\b(?:global\s+investment\s+banking|investment\s+banking|IBD|GIB|M&A|mergers?\s+(?:and|&)\s+acquisitions?|financial\s+sponsors?|leveraged\s+finance|equity\s+capital\s+markets?|debt\s+capital\s+markets?|restructuring|project\s+finance\s+advisory|infrastructure\s+advisory|global advisory)\b/i;
 const IB_DESCRIPTION = /\b(?:role|position|opportunity|candidate|you)\b[^.]{0,120}\b(?:within|join|part of|member of|support(?:ing)?)\b[^.]{0,100}\b(?:global\s+)?investment banking\s+(?:division|team|group|program|department|coverage|product)|\b(?:global\s+)?investment banking\s+(?:division|team|group|program|department|coverage group|product group)\b[^.]{0,180}\b(?:seeking|hiring|role|position|opportunity)|\bas part of\b[^.]{0,80}\b(?:global\s+)?investment banking\b/i;
 const PLAUSIBLE_IB = /\b(?:M&A|mergers?|acquisitions?|capital raising|financial advisory|strategic advisory|underwriting|sponsor coverage|project finance|infrastructure finance|syndicat(?:ed|ion)|leveraged finance|equity capital markets?|debt capital markets?)\b/i;
+
+const BUY_SIDE_TITLE = /\b(?:investment|investing|investments|portfolio|private equity|private credit|public equities?|public credit|credit analyst|research analyst|fundamental analyst|principal|acquisitions?)\b/i;
+const BUY_SIDE_STRATEGY = /\b(?:private equity|private capital|private credit|direct lending|growth equity|venture capital|infrastructure(?: investments?)?|natural resources?(?: investments?)?|public equities?|public credit|fixed income|fundamental equity|absolute return|hedge fund|long\s*\/\s*short|event[- ]driven|special situations|real estate investments?|real estate acquisitions?|capital markets\s*(?:and|&)\s*credit investments?|external managers?|manager selection|principal investments?)\b/i;
+const DECISION_EVIDENCE = /\b(?:source|sourcing|underwrit(?:e|ing)|due diligence|investment recommendations?|investment committee|financial model(?:ing|ling)?|valuation|transaction execution|security selection|portfolio construction|asset allocation|investment ideas?|fundamental (?:investment )?research|direct investing|evaluate (?:potential )?investments?|analy[sz](?:e|ing) investment opportunities|acquisitions? and dispositions?|portfolio management|manage(?:s|d|ment)? portfolios?|capital allocation|relative value|credit research|investment thesis|deal execution)\b/i;
+const SUPPORT_DOMINANT = [
+  ["accountingFinance", /\b(?:fund accounting|accountant|financial reporting|FP&A|tax|treasury|controller|corporate finance department)\b/i, "Accounting, reporting or corporate-finance support mandate."],
+  ["operationsSupport", /\b(?:investment operations|fund operations|trade operations|portfolio management and operations|settlements?|middle office|back office|administrative|executive assistant|portfolio reporting|performance measurement|performance reporting|portfolio analytics|data management)\b/i, "Operations, administration, reporting, analytics or performance-measurement mandate."],
+  ["riskCompliance", /\b(?:compliance|enterprise risk|operational risk|portfolio risk|total portfolio risk|risk management|internal audit|KYC|AML|legal counsel)\b/i, "Risk, compliance, audit or legal mandate."],
+  ["technologyData", /\b(?:software (?:engineer|developer)|developer|engineer|data engineer|technology|cyber|IT support|systems analyst|business analyst.*(?:system|solution)|valuation solutions)\b/i, "Technology, engineering, systems or data mandate."],
+  ["clientCommercial", /\b(?:investor relations|fundraising|distribution|wholesal(?:e|er|ing)|client service|relationship manager|marketing|sales enablement|product marketing|human resources|recruiter)\b/i, "Fundraising, distribution, client-service, sales, marketing or HR mandate."],
+  ["esg", /\b(?:sustainable investing|responsible investing|ESG)\b/i, "ESG/sustainable-investing mandate without direct investment decision-making."],
+];
 
 const REJECTION_RULES = [
   ["corporateBanking", /\b(?:corporate banking|commercial banking|corporate lending|relationship manager)\b/i, "Corporate or commercial banking role."],
@@ -91,6 +104,87 @@ function inferSpecialization(source) {
   return values.find(([, pattern]) => pattern.test(source))?.[0] ?? null;
 }
 
+function inferBuySidePath(firm, title, source) {
+  if (/\bprivate credit\b/i.test(title)) return "Private Credit";
+  if (/\b(?:private equity|private capital|growth equity|venture capital|buyout)\b/i.test(title)) return "Private Equity";
+  if (/\b(?:hedge fund|long\s*\/\s*short|event[- ]driven|absolute return|special situations)\b/i.test(title)) return "Hedge Fund";
+  if (/\b(?:real estate|property investments?)\b/i.test(title)) return "Real Estate Investing";
+  if (/\bpublic credit|fixed income|public equities?\b/i.test(title)) return firm.careerPath === "Institutional Investing" ? "Institutional Investing" : "Asset Management";
+  if (/\b(?:infrastructure|natural resources?|external portfolio|manager selection|multi[- ]asset|thematic investing)\b/i.test(title)) return firm.careerPath === "Institutional Investing" ? "Institutional Investing" : "Asset Management";
+  if (firm.careerPath === "Institutional Investing" && /\b(?:investment|investing|portfolio)\b/i.test(title)) return "Institutional Investing";
+  if (/\b(?:private credit|direct lending|credit investments?)\b/i.test(source)) return "Private Credit";
+  if (/\b(?:private equity|private capital|growth equity|venture capital|buyout)\b/i.test(source)) return "Private Equity";
+  if (/\b(?:hedge fund|long\s*\/\s*short|event[- ]driven|absolute return|special situations)\b/i.test(source)) return "Hedge Fund";
+  if (/\b(?:real estate investments?|real estate acquisitions?|property investments?)\b/i.test(source)) return "Real Estate Investing";
+  if (/\b(?:pension|infrastructure investments?|natural resources investments?|external managers?|capital markets\s*(?:and|&)\s*credit investments?)\b/i.test(source)) return "Institutional Investing";
+  if (/\b(?:asset management|portfolio management|public equities?|public credit|fixed income|security selection|fundamental research)\b/i.test(source)) return "Asset Management";
+  return firm.careerPath ?? null;
+}
+
+function inferBuySideSpecialization(source) {
+  const values = [
+    ["Private Credit", /\b(?:private credit|direct lending)\b/i], ["Infrastructure", /\binfrastructure\b/i],
+    ["Real Estate", /\breal estate|property investments?\b/i], ["Public Equities", /\bpublic equities?|fundamental equity\b/i],
+    ["Public Credit / Fixed Income", /\bpublic credit|fixed income|sovereign credit|corporate credit\b/i],
+    ["Growth / Venture", /\bgrowth equity|venture capital\b/i], ["Natural Resources", /\bnatural resources?|strategic resources?\b/i],
+    ["External Managers", /\bexternal managers?|manager selection\b/i], ["Private Equity", /\bprivate equity|buyout\b/i],
+  ];
+  return values.find(([, pattern]) => pattern.test(source))?.[0] ?? null;
+}
+
+function classifyBuySide(candidate, verifiedAt, title, description, metadataText, review) {
+  const source = `${title} ${metadataText} ${description}`;
+  const titleEvidence = BUY_SIDE_TITLE.test(title);
+  const strategyEvidence = BUY_SIDE_STRATEGY.test(`${title} ${metadataText}`) || BUY_SIDE_STRATEGY.test(description);
+  const decisionEvidence = DECISION_EVIDENCE.test(description);
+
+  if (/\b(?:risk|operations?|finance|portfolio analytics|performance|business analyst)\b/i.test(title)) {
+    return { accepted: false, bucket: /risk/i.test(title) ? "riskCompliance" : "operationsSupport", reason: "Title explicitly identifies a risk, operations, analytics, performance or systems-support mandate.", review, plausible: strategyEvidence };
+  }
+
+  for (const [bucket, pattern, reason] of SUPPORT_DOMINANT) {
+    if (pattern.test(title)) return { accepted: false, bucket, reason, review, plausible: strategyEvidence };
+    if (!decisionEvidence && pattern.test(`${metadataText} ${description.slice(0, 2500)}`)) {
+      return { accepted: false, bucket, reason, review, plausible: strategyEvidence };
+    }
+  }
+  if (/\bportfolio trad(?:er|ing)\b/i.test(title)) {
+    return { accepted: false, bucket: "ambiguous", reason: "Trading/execution title does not by itself establish investment recommendation or portfolio-construction authority.", review, plausible: true };
+  }
+  if (!titleEvidence || !strategyEvidence) {
+    return { accepted: false, bucket: "notFrontOfficeInvestment", reason: "Insufficient role-specific investing strategy evidence.", review, plausible: titleEvidence || strategyEvidence };
+  }
+  if (!decisionEvidence) {
+    return { accepted: false, bucket: "ambiguous", reason: "Investment-adjacent title but the description does not establish direct investment decision-making.", review, plausible: true };
+  }
+
+  const careerPath = inferBuySidePath(candidate.firm, title, source);
+  if (!careerPath) return { accepted: false, bucket: "ambiguous", reason: "Front-office evidence found but career path is unclear.", review, plausible: true };
+  const seniority = inferSeniority(title, description, metadataText);
+  const sourceId = String(candidate.externalId ?? stableUrlId(candidate.sourceUrl));
+  const reason = "Description establishes direct investment research, underwriting, execution, selection, allocation or portfolio-management responsibility.";
+  const reviewFlags = [
+    ...(seniority.value === "Unspecified" ? [seniority.note] : []),
+    ...(!BUY_SIDE_STRATEGY.test(title) ? ["Career-path classification depends on metadata or description text."] : []),
+  ];
+  return {
+    accepted: true, reason, reviewFlags, confidence: reviewFlags.length ? 0.78 : 0.92,
+    job: {
+      external_job_id: sourceId, company_id: canonicalCompanyId(candidate.firm), company_name: candidate.firm.name, title,
+      ...normalizeLocation(candidate.locations ?? []), category: careerPath,
+      specialization: inferBuySideSpecialization(source), seniority: seniority.value,
+      employment_type: candidate.employmentType ?? null,
+      program_type: inferProgramType(title, candidate.employmentType, description),
+      date_posted: candidate.datePosted ?? null, application_deadline: candidate.applicationDeadline ?? null,
+      application_url: candidate.applicationUrl ?? candidate.sourceUrl, source_url: candidate.sourceUrl,
+      source_name: `${candidate.firm.name} public careers site`, source_record_id: `${candidate.firm.key}:${sourceId}`,
+      summary: description.slice(0, 500) || null,
+      data_quality_notes: [reason, seniority.note, ...reviewFlags].filter(Boolean).join(" "),
+      status: "active", last_verified_at: verifiedAt, updated_at: verifiedAt,
+    },
+  };
+}
+
 function normalizeLocation(locations) {
   const canadian = locations.map(splitLocation).filter((location) => location.country === "Canada");
   const displays = [...new Set(canadian.map((location) => location.display))];
@@ -111,6 +205,13 @@ export function classifyAndNormalize(candidateInput, verifiedAt) {
   const locationText = (candidate.locations ?? []).join(" / ");
   const review = { firm: candidate.firm.name, title, location: locationText || "Unknown" };
   if (!isCanadianText(locationText)) return { accepted: false, bucket: "nonCanadian", reason: "No physical Canadian location in structured source data.", review };
+  if (/\bCPA\b/i.test(title)) {
+    return { accepted: false, bucket: "accountingFinance", reason: "CPA recruiting opportunity rather than a front-office investment role.", review };
+  }
+
+  if (candidate.firm.universe === "buy-side") {
+    return classifyBuySide(candidate, verifiedAt, title, description, metadataText, review);
+  }
 
   const titleSignal = IB_TITLE.test(title);
   const corporateFinanceSignal = candidate.firm.includeCorporateFinance
@@ -161,7 +262,7 @@ export function classifyAndNormalize(candidateInput, verifiedAt) {
   return {
     accepted: true, reason, reviewFlags,
     job: {
-      external_job_id: sourceId, company_id: candidate.firm.key, company_name: candidate.firm.name, title,
+      external_job_id: sourceId, company_id: canonicalCompanyId(candidate.firm), company_name: candidate.firm.name, title,
       ...normalizeLocation(candidate.locations ?? []), category: "Investment Banking",
       specialization: inferSpecialization(`${title} ${metadataText}`), seniority: seniority.value,
       employment_type: candidate.employmentType ?? null,
@@ -172,5 +273,6 @@ export function classifyAndNormalize(candidateInput, verifiedAt) {
       summary: description.slice(0, 500) || null, data_quality_notes: [reason, seniority.note].filter(Boolean).join(" "),
       status: "active", last_verified_at: verifiedAt, updated_at: verifiedAt,
     },
+    confidence: reviewFlags.length ? 0.82 : 0.95,
   };
 }

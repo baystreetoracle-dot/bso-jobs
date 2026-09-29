@@ -1,0 +1,63 @@
+.cr-ranking-weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 13px;
+  background: #114634;
+}
+
+.cr-ranking-weights span {
+  padding: 7px 9px;
+  background: #f4f7f3;
+  color: #43564d;
+  font-size: .65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.cr-ranking-weights strong { color: #087a35; }
+.cr-editorial-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cr-editorial-preview > section { padding: 20px; border: 1px solid #b8c2ba; background: #fff; }
+.cr-editorial-preview h3 { margin: 0; font: 400 1.8rem/1.1 Georgia, serif; }
+.cr-editorial-preview ol { margin: 18px 0 0; padding-left: 28px; }
+.cr-editorial-preview li { padding: 9px 0 9px 5px; border-top: 1px solid #e0e4df; }
+.cr-editorial-preview li span,
+.cr-editorial-preview li strong,
+.cr-editorial-preview li small { display: block; }
+.cr-editorial-preview li span { color: #087a35; font-size: .64rem; font-weight: 900; text-transform: uppercase; }
+.cr-editorial-preview li strong { margin-top: 3px; font: 400 1rem/1.25 Georgia, serif; }
+.cr-editorial-preview li small { margin-top: 4px; color: #637169; font-size: .64rem; }
+.cr-ranking-table { overflow-x: auto; border: 1px solid #b8c2ba; background: #fff; }
+
+.cr-ranking-table > div {
+  display: grid;
+  grid-template-columns: 58px minmax(250px, 1.35fr) minmax(145px, .7fr) 100px minmax(330px, 1.7fr);
+  gap: 12px;
+  align-items: start;
+  padding: 13px;
+  border-bottom: 1px solid #e0e4df;
+}
+
+.cr-ranking-table > .header {
+  background: #e7ece7;
+  color: #43564d;
+  font-size: .61rem;
+  font-weight: 900;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.cr-ranking-table span { min-width: 0; }
+.cr-ranking-table span > strong,
+.cr-ranking-table span > b,
+.cr-ranking-table span > small { display: block; }
+.cr-ranking-table span > b { margin-top: 3px; font: 400 1rem/1.2 Georgia, serif; }
+.cr-ranking-table span > small { margin-top: 5px; color: #637169; font-size: .65rem; line-height: 1.35; }
+.cr-rank-number { font: 400 1.7rem Georgia, serif; }
+.cr-score { font: 400 1.7rem Georgia, serif; color: #087a35; }
+.cr-component-list em { display: block; margin-top: 7px; color: #234138; font: italic .76rem/1.4 Georgia, serif; }
+
+@media (max-width: 700px) {
+  .cr-editorial-preview { grid-template-columns: 1fr; }
+  .cr-ranking-table > div { min-width: 1050px; }
+}
