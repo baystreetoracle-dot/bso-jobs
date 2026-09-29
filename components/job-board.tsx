@@ -114,7 +114,47 @@ const firmGroups = [
   {label:"Micro-cap boutique",weight:12,companies:new Set<string>(["Yorkdale Partners","Capital Canada","Kluane Partners","Maison Placements","IBK Capital","Sequeira Partners","Mills Dunlop","Karst Peak Capital","Herculean Capital","Left Lane Associates","Oaklins Canada","Broadstone Capital","Alchemy Capital","Fairing Capital","Tequity Advisors","Distinct Capital Partners","Coldwater Corporate Finance","Westonview Capital","Broderick Capital","Penrose Partners","AIM Group Canada","4Front Capital Partners","RWT Growth"])},
 ] as const;
 const corporateFinanceFirms = firmGroups[5].companies;
-const firmGroup = (company:string) => firmGroups.find(group=>group.companies.has(company));
+const companyTypes:Record<string,string> = {};
+const classifyCompanies = (type:string,companies:string[]) => companies.forEach(company=>{companyTypes[company]=type});
+classifyCompanies("Canadian Investment Bank",[
+  "RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank Global Banking and Markets","CIBC Capital Markets","National Bank Capital Markets",
+  "ATB Capital Markets","ATB Cormark Capital Markets","Agentis Capital","Agentis Capital Advisors","Bloom Burton","Bloom Burton & Co.","Canaccord Genuity",
+  "Desjardins Capital Markets","Fort Capital","Haywood Securities","INFOR Financial","Origin Merchant Partners","Peters & Co.","Raymond James Ltd.",
+  "Red Cloud Securities","SCP Resource Finance","Stifel Canada","Ventum Financial","Maxit Capital",
+]);
+classifyCompanies("Global Bank",[
+  "Goldman Sachs","J.P. Morgan","JPMorgan","Morgan Stanley","Bank of America","Barclays","BNP Paribas","Citi","Crédit Agricole","Crédit Agricole CIB",
+  "Jefferies","Macquarie","Macquarie Capital","MUFG","Natixis","Société Générale","UBS","Wells Fargo","Cantor Fitzgerald",
+]);
+classifyCompanies("Global Independent Advisory",[
+  "Evercore","Greenhill & Co.","Mizuho / Greenhill","Perella Weinberg Partners","PWP","Rothschild & Co.","Rothschild & Co","TPH",
+]);
+classifyCompanies("Corporate Finance Advisory",[
+  "Alvarez & Marsal","Baker Tilly Canada Capital","Baker Tilly Canada Capital Corporation","BDO Canada","BDO M&A & Capital Markets","Deloitte Corporate Finance",
+  "Doane Grant Thornton","EY Corporate Finance","EY-Parthenon Corporate Finance","KPMG Corporate Finance","MNP Corporate Finance","PwC","PwC Corporate Finance / Deals",
+  "Raymond Chabot Grant Thornton","Richter","RSM Canada","iA Capital Markets",
+]);
+classifyCompanies("Private Equity",[
+  "Birch Hill Equity Partners","Brookfield Asset Management","Clairvest",
+]);
+classifyCompanies("Hedge Fund",[
+  "Anson Funds","Point72",
+]);
+classifyCompanies("Pension Fund",[
+  "AIMCo","BCI","CPP Investments","HOOPP","IMCO","Ontario Teachers' Pension Plan","Ontario Teachers’ Pension Plan","PSP Investments","University Pension Plan Ontario",
+]);
+classifyCompanies("Investment Management",[
+  "CI Financial","EdgePoint Investment Group","Fengate Asset Management","Peakhill Capital","Purpose Investments",
+]);
+classifyCompanies("Wealth Management",[
+  "Franklin Templeton / Franklin Bissett","Nicola Wealth",
+]);
+classifyCompanies("Real Estate",[
+  "Choice Properties REIT","Crestpoint Real Estate Investments",
+]);
+classifyCompanies("Government Infrastructure Investor",[
+  "Canada Infrastructure Bank",
+]);
 const careerPathLabels:Record<string,string> = {
   "Investment Banking":"Investment Banking",
   "Corporate Finance":"Corporate Finance",
@@ -276,7 +316,7 @@ export default function JobBoard({mode="home",initialCompany=null,initialRows,la
   const jobs=useMemo(()=>loadedJobs.map(({job})=>job),[loadedJobs]);
   const featuredJobs=useMemo(()=>{const preferred=featuredExternalJobOrder.flatMap(externalJobId=>{const match=loadedJobs.find(item=>item.externalJobId===externalJobId);return match?[match.job]:[]});const preferredIds=new Set(preferred.map(job=>job.id));const editorial=loadedJobs.filter(({featured,job})=>featured&&!preferredIds.has(job.id)).map(({job})=>job);const selectedIds=new Set([...preferredIds,...editorial.map(job=>job.id)]);return [...preferred,...editorial,...jobs.filter(job=>!selectedIds.has(job.id))].slice(0,3)},[jobs,loadedJobs]);
   const trendingJobs=useMemo(()=>{const excludedIds=new Set(featuredJobs.map(job=>job.id));const preferred=homepageTrendingOrder.flatMap(externalJobId=>{const match=loadedJobs.find(item=>item.externalJobId===externalJobId);return match&&!excludedIds.has(match.job.id)?[match.job]:[]});const selectedIds=new Set([...excludedIds,...preferred.map(job=>job.id)]);return [...preferred,...jobs.filter(job=>!selectedIds.has(job.id))].slice(0,6)},[featuredJobs,jobs,loadedJobs]);
-  const companies=useMemo(()=>Array.from(new Set(jobs.map(job=>job.company))).map(name=>({name,type:firmGroup(name)?.label??"Financial institution",count:jobs.filter(job=>job.company===name).length})),[jobs]);
+  const companies=useMemo(()=>Array.from(new Set(jobs.map(job=>job.company))).map(name=>({name,type:companyTypes[name]??"Investment Firm",count:jobs.filter(job=>job.company===name).length})),[jobs]);
   const availableCategories=Array.from(new Set(jobs.map(job=>job.category)));
   const categories=["All career paths",...careerPathOrder.filter(path=>availableCategories.includes(path)),...availableCategories.filter(path=>!careerPathOrder.includes(path)).sort()]; const levels=["All levels",...rankOrder.filter(rank=>jobs.some(job=>job.seniority===rank))];
   const filtered=useMemo(()=>{const matches=jobs.filter(j=>`${j.company} ${j.title} ${j.category} ${j.location} ${j.seniority}`.toLowerCase().includes(query.toLowerCase())&&(category==="All career paths"||j.category===category)&&(level==="All levels"||j.seniority===level)&&(!companyFilter||j.company===companyFilter));if(category==="All career paths"&&!companyFilter)return matches;return [...matches].sort((a,b)=>{const left=organicRankById.get(a.id),right=organicRankById.get(b.id);return (right?.baseScore??0)-(left?.baseScore??0)||(right?.rotation??0)-(left?.rotation??0);});},[jobs,query,category,level,companyFilter,organicRankById]);
