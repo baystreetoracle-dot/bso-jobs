@@ -47,6 +47,8 @@ const companyLogos: Record<string,string> = {
   "Crédit Agricole CIB":"/company-logos/bso-supplied/credit-agricole-cib.webp",
   "Deloitte Corporate Finance":"/company-logos/bso-supplied/deloitte.webp",
   "Desjardins Capital Markets":"/company-logos/bso-supplied/desjardins.webp",
+  "EdgePoint Investment Group":"/company-logos/bso-supplied/edgepoint.webp",
+  "EdgePoint Wealth Management":"/company-logos/bso-supplied/edgepoint.webp",
   "Evercore":"/company-logos/bso-supplied/evercore-inc.webp",
   "EY Corporate Finance":"/company-logos/bso-supplied/ey-parthenon.webp",
   "EY-Parthenon Corporate Finance":"/company-logos/bso-supplied/ey-parthenon.webp",
