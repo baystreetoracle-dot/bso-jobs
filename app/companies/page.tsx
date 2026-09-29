@@ -5,11 +5,11 @@ import { getActiveJobs } from "@/lib/jobs/server";
 export const revalidate = 300;
 
 export const metadata:Metadata = {
-  title: "Finance Firms Hiring in Canada | BSO Jobs",
+  title: "Capital Markets Firms & Investment Platforms in Canada | BSO Jobs",
   description: "Explore firms with active opportunities across Canadian investment banking, corporate finance, private equity, private credit, asset management and hedge funds.",
   alternates: { canonical: "/companies" },
   openGraph: {
-    title: "Finance Firms Hiring in Canada | BSO Jobs",
+    title: "Capital Markets Firms & Investment Platforms in Canada | BSO Jobs",
     description: "Explore firms with active investing and advisory opportunities across Canada.",
     url: "/companies",
     type: "website",

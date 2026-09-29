@@ -4,8 +4,8 @@ import { getActiveJobs } from "@/lib/jobs/server";
 
 export const revalidate = 300;
 
-const title = "Finance Jobs in Canada | BSO Jobs";
-const description = "Explore current Canadian opportunities across investment banking, corporate finance, private equity, private credit, asset management and hedge funds.";
+const title = "Canadian Capital Markets Opportunities | BSO Jobs";
+const description = "Explore curated Canadian capital-markets opportunities across investment banking, corporate finance, private equity, private credit, asset management and hedge funds.";
 
 export async function generateMetadata({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}):Promise<Metadata> {
   const params = await searchParams;

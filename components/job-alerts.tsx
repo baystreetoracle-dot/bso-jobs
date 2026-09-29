@@ -76,7 +76,7 @@ export function JobAlertModal({controller}:{controller:JobAlertController}) {
         <span className="job-alert-icon"><Bell size={20}/></span>
         <p className="eyebrow">BSO job alerts</p>
         <h2 id="job-alert-title">{controller.contextualTitle}</h2>
-        <p id="job-alert-description">Get new Canadian finance opportunities sent directly to your inbox.</p>
+        <p id="job-alert-description">Get new Canadian capital-markets opportunities sent directly to your inbox.</p>
         <form onSubmit={controller.submitEmail}>
           <label htmlFor="job-alert-email">Email address</label>
           <input ref={emailRef} id="job-alert-email" type="email" value={controller.email} onChange={event=>controller.setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" required/>
@@ -120,7 +120,7 @@ export function JobAlertInline({onSubmit,submitted}:{onSubmit:(email:string)=>Pr
 }
 
 export function JobAlertJobPageCta({careerPath,onClick}:{careerPath:string;onClick:()=>void}) {
-  const description=careerPath==="Investment Banking"?"Get notified when new Investment Banking opportunities are added.":"Get notified when similar Canadian finance opportunities are added.";
+  const description=careerPath==="Investment Banking"?"Get notified when new Investment Banking opportunities are added.":"Get notified when similar Canadian capital-markets opportunities are added.";
   return <aside className="job-alert-job-cta"><div><p className="eyebrow">Looking for similar roles?</p><p>{description}</p></div><button type="button" onClick={onClick}>Create job alert <ArrowRight size={15}/></button></aside>;
 }
 
