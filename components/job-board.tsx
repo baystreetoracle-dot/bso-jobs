@@ -118,19 +118,19 @@ const recruitingUpdates:Record<string,RecruitingUpdate> = {
   "24194": { label:"First rounds underway", note:"Confirmed by a verified anonymous source: First-round invitations have begun." },
 };
 const marqueeLogos = [
-  {name:"Bank of America",src:"/company-logos/bso-supplied/bank-of-america.webp"},
-  {name:"BMO Capital Markets",src:"/company-logos/bso-supplied/bmo-capital-markets.webp"},
-  {name:"CIBC Capital Markets",src:"/company-logos/bso-supplied/cibc-capital-markets.webp"},
-  {name:"INFOR Financial",src:"/company-logos/bso-supplied/infor-financial.webp",scale:"compact"},
-  {name:"Jefferies",src:"/company-logos/bso-supplied/jefferies.webp",scale:"jefferies"},
-  {name:"Macquarie Capital",src:"/company-logos/bso-supplied/macquariegroup.webp"},
-  {name:"Morgan Stanley",src:"/company-logos/bso-supplied/morgan-stanley.webp"},
-  {name:"National Bank Capital Markets",src:"/company-logos/bso-supplied/national-bank.webp"},
-  {name:"RBC Capital Markets",src:"/company-logos/bso-supplied/rbc-capital-markets.webp"},
-  {name:"Scotiabank Global Banking and Markets",src:"/company-logos/bso-supplied/scotiabank-gbm.webp"},
-  {name:"Stifel",src:"/company-logos/bso-supplied/stifel-financial-corp.webp",scale:"stifel"},
-  {name:"TD Securities",src:"/company-logos/bso-supplied/td.webp"},
-  {name:"UBS",src:"/company-logos/bso-supplied/ubs.webp"},
+  {name:"Atlas Partners",src:"/company-logos/bso-banner/atlas-partners.webp",scale:"atlas"},
+  {name:"Bank of America",src:"/company-logos/bso-banner/bank-of-america.webp"},
+  {name:"BMO Capital Markets",src:"/company-logos/bso-banner/bmo-capital-markets.webp"},
+  {name:"CIBC Capital Markets",src:"/company-logos/bso-banner/cibc-capital-markets.webp"},
+  {name:"CPP Investments",src:"/company-logos/bso-banner/cpp-investments.webp"},
+  {name:"INFOR Financial",src:"/company-logos/bso-banner/infor-financial.webp",scale:"compact"},
+  {name:"Jefferies",src:"/company-logos/bso-banner/jefferies.webp",scale:"jefferies"},
+  {name:"National Bank Capital Markets",src:"/company-logos/bso-banner/national-bank-capital-markets.webp"},
+  {name:"RBC Capital Markets",src:"/company-logos/bso-banner/rbc-capital-markets.webp"},
+  {name:"Scotiabank Global Banking and Markets",src:"/company-logos/bso-banner/scotiabank.webp"},
+  {name:"Stifel",src:"/company-logos/bso-banner/stifel.webp",scale:"stifel"},
+  {name:"TD Securities",src:"/company-logos/bso-banner/td-securities.webp"},
+  {name:"UBS",src:"/company-logos/bso-banner/ubs.webp"},
 ];
 const normalizeRank = (row:JobRow) => {
   const text=`${row.title} ${row.seniority} ${row.program_type??""} ${row.employment_type??""}`.toLowerCase();
