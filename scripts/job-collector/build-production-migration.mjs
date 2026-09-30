@@ -1,16 +1,16 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const REPORT = "dry-run-2026-09-29T02-31-18-723Z.json";
-const ADDITIONS = "local-review-additions-2026-09-29.json";
-const OUTPUT = "20260929043000_publish_high_finance_jobs.sql";
-const TODAY = "2026-09-29";
+const REPORT = process.argv[2] ?? "dry-run-2026-09-29T02-31-18-723Z.json";
+const ADDITIONS = process.argv[3] ?? "local-review-additions-2026-09-29.json";
+const OUTPUT = process.argv[4] ?? "20260929043000_publish_high_finance_jobs.sql";
 
 const reportsDirectory = path.join(process.cwd(), "scripts", "job-collector", "reports");
 const [report, additions] = await Promise.all([
-  readFile(path.join(reportsDirectory, REPORT), "utf8").then(JSON.parse),
-  readFile(path.join(reportsDirectory, ADDITIONS), "utf8").then(JSON.parse),
+  readFile(path.isAbsolute(REPORT) ? REPORT : path.join(reportsDirectory, REPORT), "utf8").then(JSON.parse),
+  ADDITIONS === "-" ? [] : readFile(path.isAbsolute(ADDITIONS) ? ADDITIONS : path.join(reportsDirectory, ADDITIONS), "utf8").then(JSON.parse),
 ]);
+const TODAY = String(report.generatedAt).slice(0, 10);
 
 function cleanText(value = "") {
   return String(value)
@@ -146,6 +146,10 @@ const jobs = proposals.map((item) => {
     last_verified_at: report.generatedAt,
     updated_at: report.generatedAt,
   };
+  if (normalized.company_name === "Brookfield Asset Management" && normalized.external_job_id === "R2047917") {
+    normalized.category = "Institutional Investing";
+    normalized.specialization = "Infrastructure";
+  }
   normalized.summary = item.origin === "bso-exclusive" || item.origin?.startsWith("user-supplied") || item.origin === "curated-workbook"
     ? item.job.summary
     : conciseSummary(normalized);
@@ -252,6 +256,6 @@ ON CONFLICT (source_record_id) DO UPDATE SET
   updated_at = now();
 `;
 
-const outputPath = path.join(process.cwd(), "supabase", "migrations", OUTPUT);
+const outputPath = path.isAbsolute(OUTPUT) ? OUTPUT : path.join(process.cwd(), "supabase", "migrations", OUTPUT);
 await writeFile(outputPath, sql, "utf8");
 console.log(JSON.stringify({ outputPath, jobs: jobs.length, companies: companies.length, verifiedDescriptions: jobs.filter((job) => job.description_status === "verified").length, salaryRows: jobs.filter((job) => job.salary_min != null).length }, null, 2));

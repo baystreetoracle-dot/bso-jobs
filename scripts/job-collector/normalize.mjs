@@ -107,6 +107,9 @@ function inferSpecialization(source) {
 }
 
 function inferBuySidePath(firm, title, source) {
+  if (firm.key === "brookfield-asset-management" && /^vice[- ]president$/i.test(title) && /\binfrastructure\b/i.test(source)) {
+    return "Institutional Investing";
+  }
   if (/\b(?:private credit|private debt|structured credit)\b/i.test(title)) return "Private Credit";
   if (/\b(?:private equity|private capital|growth equity|venture capital|buyout)\b/i.test(title)) return "Private Equity";
   if (/\b(?:hedge fund|long\s*\/\s*short|event[- ]driven|absolute return|special situations)\b/i.test(title)) return "Hedge Fund";
