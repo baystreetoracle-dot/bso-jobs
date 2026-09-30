@@ -1,0 +1,50 @@
+name: Daily job collector digest
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-job-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      INTERNAL_DIGEST_EMAIL: ${{ secrets.INTERNAL_DIGEST_EMAIL }}
+      RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+      COLLECTOR_SOURCE_SCOPE: all
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Scan and reconcile employer sources
+        run: npm run jobs:dry
+
+      - name: Store audit and send internal digest
+        run: npm run jobs:digest
+
+      - name: Upload collector reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: job-collector-${{ github.run_id }}
+          path: scripts/job-collector/reports/
+          retention-days: 30
+          if-no-files-found: warn

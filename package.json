@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "jobs:dry": "node scripts/job-collector/index.mjs --source=all --dry-run",
+    "jobs:digest": "node scripts/job-collector/daily-digest.mjs",
     "jobs:buyside:dry": "node scripts/job-collector/index.mjs --source=buy-side --dry-run",
     "jobs:ib:dry": "node scripts/job-collector/index.mjs --source=investment-banking --dry-run",
     "jobs:rbc:dry": "node scripts/job-collector/index.mjs --source=rbc --dry-run",
