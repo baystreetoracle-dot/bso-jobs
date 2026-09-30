@@ -66,6 +66,7 @@ const companyLogos: Record<string,string> = {
   "J.P. Morgan":"/company-logos/bso-supplied/jpmorgan.webp",
   "JPMorgan":"/company-logos/bso-supplied/jpmorgan.webp",
   "KPMG Corporate Finance":"/company-logos/bso-supplied/kpmg.webp",
+  "Letko Brosseau":"/company-logos/bso-supplied/letko-brosseau.jpg",
   "Macquarie":"/company-logos/bso-supplied/macquariegroup.webp",
   "Macquarie Capital":"/company-logos/bso-supplied/macquariegroup.webp",
   "Maxit Capital":"/company-logos/bso-supplied/maxit-capital.webp",
@@ -144,7 +145,7 @@ classifyCompanies("Pension Fund",[
   "AIMCo","BCI","CPP Investments","HOOPP","IMCO","Ontario Teachers' Pension Plan","Ontario Teachers’ Pension Plan","PSP Investments","University Pension Plan Ontario",
 ]);
 classifyCompanies("Investment Management",[
-  "CI Financial","EdgePoint Investment Group","Fengate Asset Management","Peakhill Capital","Purpose Investments",
+  "CI Financial","EdgePoint Investment Group","Fengate Asset Management","Letko Brosseau","Peakhill Capital","Purpose Investments",
 ]);
 classifyCompanies("Wealth Management",[
   "Franklin Templeton / Franklin Bissett","Nicola Wealth",
@@ -301,10 +302,19 @@ const groupJobs = (jobs:Job[]):JobGroup[] => {
 };
 
 function JobListingCard({group,onSelect}:{group:JobGroup;onSelect:(job:Job)=>void}) {
-  const {primary,variants}=group;
+  const variants=[...group.variants].sort((a,b)=>{
+    if(a.specialization==="General Application")return -1;
+    if(b.specialization==="General Application")return 1;
+    return (a.specialization??a.location).localeCompare(b.specialization??b.location,"en-CA");
+  });
+  const primary=variants.find(job=>job.specialization==="General Application")??group.primary;
   if(variants.length===1)return <article className="job-card" onClick={()=>onSelect(primary)}><CompanyLogo company={primary.company}/><div className="job-copy"><p className="company-name">{primary.company}</p><h3>{primary.title}</h3>{primary.recruitingUpdate&&<span className="process-tag">{primary.recruitingUpdate.label}</span>}<div className="meta"><span><MapPin size={14}/>{primary.location}</span><span><BriefcaseBusiness size={14}/>{primary.seniority}</span><SalaryMeta job={primary}/></div></div><span className="category">{primary.category}</span><div className="job-action"><p>{primary.deadline?"Apply by":"Deadline"}<strong>{fmt(primary.deadline)}</strong></p><Link href={primary.detailPath} onClick={event=>event.stopPropagation()}>View <ArrowUpRight size={15}/></Link></div></article>;
 
-  return <article className="job-card job-card-group"><CompanyLogo company={primary.company}/><div className="job-copy"><p className="company-name">{primary.company}</p><h3>{primary.title}</h3><div className="meta"><span><MapPin size={14}/>{variants.length} locations</span><span><BriefcaseBusiness size={14}/>{primary.seniority}</span></div></div><span className="category">{primary.category}</span><div className="job-action group-job-action"><p>Available in<strong>{variants.length} locations</strong></p></div><details className="job-variants"><summary>Choose a location <ChevronDown size={16}/></summary><div className="job-variant-list">{variants.map(job=><div className="job-variant-row" key={job.id}><div><strong>{job.location}</strong><span>{job.deadline?`Apply by ${fmt(job.deadline)}`:"Deadline open"}</span><SalaryMeta job={job}/></div><Link href={job.detailPath}>View role <ArrowUpRight size={15}/></Link></div>)}</div></details></article>;
+  const locationCount=new Set(variants.map(job=>job.location)).size;
+  const streamCount=new Set(variants.map(job=>job.specialization).filter(Boolean)).size;
+  const groupedByStream=locationCount===1&&streamCount>1;
+  const groupLabel=groupedByStream?`${variants.length} application streams`:`${locationCount} locations`;
+  return <article className="job-card job-card-group"><CompanyLogo company={primary.company}/><div className="job-copy"><p className="company-name">{primary.company}</p><h3>{primary.title}</h3><div className="meta"><span><MapPin size={14}/>{groupedByStream?primary.location:groupLabel}</span><span><BriefcaseBusiness size={14}/>{primary.seniority}</span></div></div><span className="category">{primary.category}</span><div className="job-action group-job-action"><p>Available through<strong>{groupLabel}</strong></p></div><details className="job-variants"><summary>{groupedByStream?"Choose an application stream":"Choose a location"} <ChevronDown size={16}/></summary><div className="job-variant-list">{variants.map(job=><div className="job-variant-row" key={job.id}><div><strong>{groupedByStream?(job.specialization??job.program):job.location}</strong>{groupedByStream&&<span>{job.location}</span>}<span>{job.deadline?`Apply by ${fmt(job.deadline)}`:"Deadline open"}</span><SalaryMeta job={job}/></div><Link href={job.detailPath}>View role <ArrowUpRight size={15}/></Link></div>)}</div></details></article>;
 }
 
 export default function JobBoard({mode="home",initialCompany=null,initialRows,landing=null}:{mode?:BoardMode;initialCompany?:string|null;initialRows:JobRow[];landing?:JobLandingContent|null}) {
