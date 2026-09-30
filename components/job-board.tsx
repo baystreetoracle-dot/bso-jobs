@@ -98,6 +98,7 @@ const companyLogos: Record<string,string> = {
   "SCP Resource Finance":"/company-logos/bso-supplied/scp-resource-finance.webp",
   "Société Générale":"/company-logos/bso-supplied/societe-generale.webp",
   "Stifel Canada":"/company-logos/bso-supplied/stifel-financial-corp.webp",
+  "StepStone Group":"/company-logos/bso-supplied/stepstone-group.jpg",
   "TD Securities":"/company-logos/bso-supplied/td.webp",
   "TPH":"/company-logos/bso-supplied/tudor-pickering-holt.webp",
   "UBS":"/company-logos/bso-supplied/ubs.webp",
@@ -140,7 +141,7 @@ classifyCompanies("Corporate Finance Advisory",[
   "Raymond Chabot Grant Thornton","Richter","RSM Canada","iA Capital Markets",
 ]);
 classifyCompanies("Private Equity",[
-  "Birch Hill Equity Partners","Brookfield Asset Management","Clairvest",
+  "Birch Hill Equity Partners","Brookfield Asset Management","Clairvest","StepStone Group",
 ]);
 classifyCompanies("Hedge Fund",[
   "Anson Funds","Point72",

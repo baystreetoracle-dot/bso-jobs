@@ -55,7 +55,7 @@ function firms(score: number, values: string[]) {
 }
 
 firms(28, ["Brookfield Asset Management", "Onex", "Altas Partners", "Goldman Sachs", "J.P. Morgan", "JPMorgan", "Evercore", "Point72", "Citadel"]);
-firms(27, ["Birch Hill Equity Partners", "Clairvest", "Northleaf Capital", "Novacap", "Rothschild & Co.", "Mizuho / Greenhill", "Morgan Stanley", "Bank of America", "Balyasny Asset Management"]);
+firms(27, ["Birch Hill Equity Partners", "Clairvest", "Northleaf Capital", "Novacap", "StepStone Group", "Rothschild & Co.", "Mizuho / Greenhill", "Morgan Stanley", "Bank of America", "Balyasny Asset Management"]);
 firms(26, ["CPP Investments", "Ontario Teachers' Pension Plan", "Ontario Teachers’ Pension Plan", "PSP Investments", "BCI", "La Caisse", "CDPQ", "OMERS", "AIMCo", "HOOPP", "OPTrust", "IMCO", "Macquarie", "Jefferies", "UBS", "Barclays", "Citi"]);
 firms(25, ["RBC Capital Markets", "TD Securities", "BMO Capital Markets", "CIBC Capital Markets", "Scotiabank Global Banking and Markets", "Scotiabank Global Banking & Markets", "National Bank Capital Markets", "National Bank Financial Markets", "Polar Asset Management", "Waratah Advisors", "Turtle Creek Asset Management", "Maple Rock Capital Partners", "Sprott", "Picton Mahoney Asset Management", "Catalyst Capital Group"]);
 firms(24, ["TorQuest Partners", "Imperial Capital", "Peloton Capital Management", "Kensington Capital Partners", "TriWest Capital Partners", "Ironbridge Equity Partners", "ONCAP", "BNP Paribas", "Société Générale"]);
