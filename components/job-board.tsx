@@ -37,6 +37,7 @@ const companyLogos: Record<string,string> = {
   "Cantor Fitzgerald":"/company-logos/bso-supplied/cantor-fitzgerald.webp",
   "Brookfield Asset Management":"/company-logos/bso-supplied/brookfield-asset-management.webp",
   "CIBC Capital Markets":"/company-logos/bso-supplied/cibc-capital-markets.webp",
+  "CIBC Commercial Banking":"/company-logos/bso-supplied/cibc-capital-markets.webp",
   "CI Financial":"/company-logos/bso-supplied/ci-financial.webp",
   "CPP Investments":"/company-logos/bso-supplied/cpp-investments.webp",
   "CPPIB":"/company-logos/bso-supplied/cpp-investments.webp",
@@ -122,6 +123,9 @@ classifyCompanies("Canadian Investment Bank",[
   "ATB Capital Markets","ATB Cormark Capital Markets","Agentis Capital","Agentis Capital Advisors","Bloom Burton","Bloom Burton & Co.","Canaccord Genuity",
   "Desjardins Capital Markets","Fort Capital","Haywood Securities","INFOR Financial","Origin Merchant Partners","Peters & Co.","Raymond James Ltd.",
   "Red Cloud Securities","SCP Resource Finance","Stifel Canada","Ventum Financial","Maxit Capital",
+]);
+classifyCompanies("Canadian Bank",[
+  "CIBC Commercial Banking",
 ]);
 classifyCompanies("Global Bank",[
   "Goldman Sachs","J.P. Morgan","JPMorgan","Morgan Stanley","Bank of America","Barclays","BNP Paribas","Citi","Crédit Agricole","Crédit Agricole CIB",
