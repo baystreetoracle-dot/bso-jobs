@@ -7,7 +7,9 @@ const IB_DESCRIPTION = /\b(?:role|position|opportunity|candidate|you)\b[^.]{0,12
 const PLAUSIBLE_IB = /\b(?:M&A|mergers?|acquisitions?|capital raising|financial advisory|strategic advisory|underwriting|sponsor coverage|project finance|infrastructure finance|syndicat(?:ed|ion)|leveraged finance|equity capital markets?|debt capital markets?)\b/i;
 
 const BUY_SIDE_TITLE = /\b(?:investment|investing|investments|portfolio|private equity|private credit|public equities?|public credit|credit analyst|research analyst|fundamental analyst|principal|acquisitions?)\b/i;
-const BUY_SIDE_STRATEGY = /\b(?:private equity|private capital|private credit|direct lending|growth equity|venture capital|infrastructure(?: investments?)?|natural resources?(?: investments?)?|public equities?|public credit|fixed income|fundamental equity|absolute return|hedge fund|long\s*\/\s*short|event[- ]driven|special situations|real estate investments?|real estate acquisitions?|capital markets\s*(?:and|&)\s*credit investments?|external managers?|manager selection|principal investments?)\b/i;
+const BUY_SIDE_STRATEGY = /\b(?:private equity|private capital|private credit|private debt|structured credit|direct lending|growth equity|venture capital|infrastructure(?: investments?)?|renewable resources?|natural resources?(?: investments?)?|public equities?|public credit|fixed income|fundamental equity|absolute return|hedge fund|long\s*\/\s*short|event[- ]driven|special situations|real estate(?: investments?)?|real estate acquisitions?|capital markets\s*(?:and|&)\s*credit investments?|external managers?|manager selection|principal investments?|canada growth fund investment management|hoopp capital partners)\b/i;
+const BUY_SIDE_ROLE_LEVEL = /\b(?:student|co-?op|intern(?:ship)?|analyst|associate|principal|vice[- ]president|VP|director|managing director|portfolio manager)\b/i;
+const INSTITUTIONAL_TITLE_MANDATE = /\b(?:private capital|private credit|private debt|structured credit|infrastructure|renewable resources?|natural resources?|real estate|fixed income|canada growth fund investment management|hoopp capital partners)\b/i;
 const DECISION_EVIDENCE = /\b(?:source|sourcing|underwrit(?:e|ing)|due diligence|investment recommendations?|investment committee|financial model(?:ing|ling)?|valuation|transaction execution|security selection|portfolio construction|asset allocation|investment ideas?|fundamental (?:investment )?research|direct investing|evaluate (?:potential )?investments?|analy[sz](?:e|ing) investment opportunities|acquisitions? and dispositions?|portfolio management|manage(?:s|d|ment)? portfolios?|capital allocation|relative value|credit research|investment thesis|deal execution)\b/i;
 const SUPPORT_DOMINANT = [
   ["accountingFinance", /\b(?:fund accounting|accountant|financial reporting|FP&A|tax|treasury|controller|corporate finance department)\b/i, "Accounting, reporting or corporate-finance support mandate."],
@@ -105,14 +107,14 @@ function inferSpecialization(source) {
 }
 
 function inferBuySidePath(firm, title, source) {
-  if (/\bprivate credit\b/i.test(title)) return "Private Credit";
+  if (/\b(?:private credit|private debt|structured credit)\b/i.test(title)) return "Private Credit";
   if (/\b(?:private equity|private capital|growth equity|venture capital|buyout)\b/i.test(title)) return "Private Equity";
   if (/\b(?:hedge fund|long\s*\/\s*short|event[- ]driven|absolute return|special situations)\b/i.test(title)) return "Hedge Fund";
   if (/\b(?:real estate|property investments?)\b/i.test(title)) return "Real Estate Investing";
   if (/\bpublic credit|fixed income|public equities?\b/i.test(title)) return firm.careerPath === "Institutional Investing" ? "Institutional Investing" : "Asset Management";
-  if (/\b(?:infrastructure|natural resources?|external portfolio|manager selection|multi[- ]asset|thematic investing)\b/i.test(title)) return firm.careerPath === "Institutional Investing" ? "Institutional Investing" : "Asset Management";
+  if (/\b(?:infrastructure|renewable resources?|natural resources?|external portfolio|manager selection|multi[- ]asset|thematic investing|canada growth fund investment management|hoopp capital partners)\b/i.test(title)) return firm.careerPath === "Institutional Investing" ? "Institutional Investing" : "Asset Management";
   if (firm.careerPath === "Institutional Investing" && /\b(?:investment|investing|portfolio)\b/i.test(title)) return "Institutional Investing";
-  if (/\b(?:private credit|direct lending|credit investments?)\b/i.test(source)) return "Private Credit";
+  if (/\b(?:private credit|private debt|structured credit|direct lending|credit investments?)\b/i.test(source)) return "Private Credit";
   if (/\b(?:private equity|private capital|growth equity|venture capital|buyout)\b/i.test(source)) return "Private Equity";
   if (/\b(?:hedge fund|long\s*\/\s*short|event[- ]driven|absolute return|special situations)\b/i.test(source)) return "Hedge Fund";
   if (/\b(?:real estate investments?|real estate acquisitions?|property investments?)\b/i.test(source)) return "Real Estate Investing";
@@ -123,7 +125,7 @@ function inferBuySidePath(firm, title, source) {
 
 function inferBuySideSpecialization(source) {
   const values = [
-    ["Private Credit", /\b(?:private credit|direct lending)\b/i], ["Infrastructure", /\binfrastructure\b/i],
+    ["Private Credit", /\b(?:private credit|private debt|structured credit|direct lending)\b/i], ["Infrastructure", /\binfrastructure|renewable resources?\b/i],
     ["Real Estate", /\breal estate|property investments?\b/i], ["Public Equities", /\bpublic equities?|fundamental equity\b/i],
     ["Public Credit / Fixed Income", /\bpublic credit|fixed income|sovereign credit|corporate credit\b/i],
     ["Growth / Venture", /\bgrowth equity|venture capital\b/i], ["Natural Resources", /\bnatural resources?|strategic resources?\b/i],
@@ -137,6 +139,14 @@ function classifyBuySide(candidate, verifiedAt, title, description, metadataText
   const titleEvidence = BUY_SIDE_TITLE.test(title);
   const strategyEvidence = BUY_SIDE_STRATEGY.test(`${title} ${metadataText}`) || BUY_SIDE_STRATEGY.test(description);
   const decisionEvidence = DECISION_EVIDENCE.test(description);
+  const institutionalTitleMandate = candidate.firm.careerPath === "Institutional Investing"
+    && BUY_SIDE_ROLE_LEVEL.test(title)
+    && INSTITUTIONAL_TITLE_MANDATE.test(title);
+  const verifiedInvestmentAnalyst = /\binvestment analyst\b/i.test(title) && decisionEvidence;
+  const verifiedBrookfieldVicePresident = candidate.firm.key === "brookfield-asset-management"
+    && /^vice[- ]president$/i.test(title)
+    && strategyEvidence
+    && decisionEvidence;
 
   if (/\b(?:risk|operations?|finance|portfolio analytics|performance|business analyst)\b/i.test(title)) {
     return { accepted: false, bucket: /risk/i.test(title) ? "riskCompliance" : "operationsSupport", reason: "Title explicitly identifies a risk, operations, analytics, performance or systems-support mandate.", review, plausible: strategyEvidence };
@@ -151,10 +161,10 @@ function classifyBuySide(candidate, verifiedAt, title, description, metadataText
   if (/\bportfolio trad(?:er|ing)\b/i.test(title)) {
     return { accepted: false, bucket: "ambiguous", reason: "Trading/execution title does not by itself establish investment recommendation or portfolio-construction authority.", review, plausible: true };
   }
-  if (!titleEvidence || !strategyEvidence) {
+  if ((!titleEvidence || !strategyEvidence) && !institutionalTitleMandate && !verifiedInvestmentAnalyst && !verifiedBrookfieldVicePresident) {
     return { accepted: false, bucket: "notFrontOfficeInvestment", reason: "Insufficient role-specific investing strategy evidence.", review, plausible: titleEvidence || strategyEvidence };
   }
-  if (!decisionEvidence) {
+  if (!decisionEvidence && !institutionalTitleMandate) {
     return { accepted: false, bucket: "ambiguous", reason: "Investment-adjacent title but the description does not establish direct investment decision-making.", review, plausible: true };
   }
 
@@ -162,7 +172,9 @@ function classifyBuySide(candidate, verifiedAt, title, description, metadataText
   if (!careerPath) return { accepted: false, bucket: "ambiguous", reason: "Front-office evidence found but career path is unclear.", review, plausible: true };
   const seniority = inferSeniority(title, description, metadataText);
   const sourceId = String(candidate.externalId ?? stableUrlId(candidate.sourceUrl));
-  const reason = "Description establishes direct investment research, underwriting, execution, selection, allocation or portfolio-management responsibility.";
+  const reason = institutionalTitleMandate && !decisionEvidence
+    ? "Institutional-investor title explicitly identifies an approved front-office investment strategy."
+    : "Description establishes direct investment research, underwriting, execution, selection, allocation or portfolio-management responsibility.";
   const reviewFlags = [
     ...(seniority.value === "Unspecified" ? [seniority.note] : []),
     ...(!BUY_SIDE_STRATEGY.test(title) ? ["Career-path classification depends on metadata or description text."] : []),

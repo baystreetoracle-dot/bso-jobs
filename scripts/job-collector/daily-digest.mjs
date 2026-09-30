@@ -40,12 +40,6 @@ const eventRows = [
     external_job_id: item.job.external_job_id, reason: item.reason ?? "New qualifying requisition found on an employer source.",
     source_url: item.job.source_url, details: { confidence: item.confidence ?? null, job: item.job },
   })),
-  ...(reconciliation.updated ?? []).map((item) => ({
-    event_type: "proposed_update", company_name: item.proposed.job.company_name, title: item.proposed.job.title,
-    external_job_id: item.proposed.job.external_job_id, job_id: item.current.id,
-    reason: "Authoritative source metadata differs from the stored job.", source_url: item.proposed.job.source_url,
-    details: { changes: item.changes },
-  })),
   ...(reconciliation.closed ?? []).map((item) => ({
     event_type: "proposed_close", company_name: item.job.company_name, title: item.job.title,
     external_job_id: item.job.external_job_id, job_id: item.job.id, reason: item.reason,
@@ -60,6 +54,12 @@ const eventRows = [
   ...sourceReports.filter((item) => item.error).map((item) => ({
     event_type: "source_error", company_name: item.firm.name, title: null, external_job_id: null,
     reason: item.error, source_url: item.firm.careersUrl, details: { provider: item.firm.provider },
+  })),
+  ...(reconciliation.updated ?? []).map((item) => ({
+    event_type: "proposed_update", company_name: item.proposed.job.company_name, title: item.proposed.job.title,
+    external_job_id: item.proposed.job.external_job_id, job_id: item.current.id,
+    reason: "Authoritative source metadata differs from the stored job.", source_url: item.proposed.job.source_url,
+    details: { changes: item.changes },
   })),
 ];
 
@@ -92,13 +92,16 @@ if (eventRows.length) {
 }
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[character]);
-const section = (title, type, emptyText) => {
+const section = (title, type, emptyText, { collapsed = false } = {}) => {
   const items = eventRows.filter((event) => event.event_type === type);
-  return `<h2>${escapeHtml(title)} (${items.length})</h2>${items.length ? `<ul>${items.map((item) => `<li><strong>${escapeHtml([item.company_name,item.title].filter(Boolean).join(" — "))}</strong><br>${escapeHtml(item.reason)}${item.source_url ? `<br><a href="${escapeHtml(item.source_url)}">Employer source</a>` : ""}</li>`).join("")}</ul>` : `<p>${escapeHtml(emptyText)}</p>`}`;
+  const content = items.length ? `<ul>${items.map((item) => `<li><strong>${escapeHtml([item.company_name,item.title].filter(Boolean).join(" — "))}</strong><br>${escapeHtml(item.reason)}${item.source_url ? `<br><a href="${escapeHtml(item.source_url)}">Employer source</a>` : ""}</li>`).join("")}</ul>` : `<p>${escapeHtml(emptyText)}</p>`;
+  return collapsed
+    ? `<details><summary><strong>${escapeHtml(title)} (${items.length})</strong></summary>${content}</details>`
+    : `<h2>${escapeHtml(title)} (${items.length})</h2>${content}`;
 };
 const date = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Toronto", dateStyle: "long" }).format(new Date(report.generatedAt));
-const html = `<!doctype html><html><body style="font-family:Arial,sans-serif;line-height:1.5;color:#10231d;max-width:760px;margin:auto;padding:24px"><h1>BSO Jobs collector digest</h1><p>${escapeHtml(date)}</p><p><strong>${counts.reached}</strong> sources reached · <strong>${counts.failed}</strong> failed · <strong>${counts.excluded}</strong> postings excluded</p>${section("Proposed additions","proposed_add","No new qualifying jobs found.")}${section("Proposed updates","proposed_update","No job metadata changes found.")}${section("Proposed closures","proposed_close","No jobs proposed for closure.")}${section("Needs review","manual_review","No manual-review items.")}${section("Source failures","source_error","All configured sources completed.")}<p><small>This is a review digest. The discovery collector did not publish or close jobs automatically.</small></p></body></html>`;
-const text = `BSO Jobs collector digest — ${date}\n\nSources reached: ${counts.reached}\nSources failed: ${counts.failed}\nProposed additions: ${counts.added}\nProposed updates: ${counts.updated}\nProposed closures: ${counts.closed}\nManual review: ${counts.review}\nExcluded: ${counts.excluded}\n\n${eventRows.map((item) => `[${item.event_type}] ${[item.company_name,item.title].filter(Boolean).join(" — ")}\n${item.reason}\n${item.source_url ?? ""}`).join("\n\n")}\n`;
+const html = `<!doctype html><html><body style="font-family:Arial,sans-serif;line-height:1.5;color:#10231d;max-width:760px;margin:auto;padding:24px"><h1>BSO Jobs collector digest</h1><p>${escapeHtml(date)}</p><p><strong>${counts.reached}</strong> sources reached · <strong>${counts.failed}</strong> failed · <strong>${counts.excluded}</strong> postings excluded</p>${section("Proposed additions","proposed_add","No new qualifying jobs found.")}${section("Proposed closures","proposed_close","No jobs proposed for closure.")}${section("Needs review","manual_review","No manual-review items.")}${section("Source failures","source_error","All configured sources completed.")}${section("Proposed updates","proposed_update","No job metadata changes found.",{ collapsed: true })}<p><small>This is a review digest. The discovery collector did not publish or close jobs automatically.</small></p></body></html>`;
+const text = `BSO Jobs collector digest — ${date}\n\nSources reached: ${counts.reached}\nSources failed: ${counts.failed}\nProposed additions: ${counts.added}\nProposed closures: ${counts.closed}\nManual review: ${counts.review}\nExcluded: ${counts.excluded}\nProposed updates: ${counts.updated}\n\n${eventRows.map((item) => `[${item.event_type}] ${[item.company_name,item.title].filter(Boolean).join(" — ")}\n${item.reason}\n${item.source_url ?? ""}`).join("\n\n")}\n`;
 writeFileSync(resolve(reportsDir, "daily-digest.html"), html, "utf8");
 writeFileSync(resolve(reportsDir, "daily-digest.txt"), text, "utf8");
 
