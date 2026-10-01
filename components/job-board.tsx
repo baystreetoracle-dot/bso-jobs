@@ -191,6 +191,8 @@ const marqueeLogos = [
   {name:"INFOR Financial",src:"/company-logos/bso-banner/infor-financial.webp",scale:"compact"},
   {name:"Jefferies",src:"/company-logos/bso-banner/jefferies.webp",scale:"jefferies"},
   {name:"National Bank Capital Markets",src:"/company-logos/bso-banner/national-bank-capital-markets.webp",scale:"national-bank"},
+  {name:"Novacap",src:"/company-logos/bso-banner/novacap.webp",scale:"novacap"},
+  {name:"ONEX",src:"/company-logos/bso-banner/onex.webp",scale:"onex"},
   {name:"RBC Capital Markets",src:"/company-logos/bso-banner/rbc-capital-markets.webp",scale:"rbc"},
   {name:"Scotiabank Global Banking and Markets",src:"/company-logos/bso-banner/scotiabank.webp",scale:"scotia"},
   {name:"Stifel",src:"/company-logos/bso-banner/stifel.webp",scale:"stifel"},
