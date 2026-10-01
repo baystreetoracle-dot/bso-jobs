@@ -4,6 +4,23 @@
 -- Raw employer location formatting is intentionally not copied over the site's standardized
 -- City, Province display, and missing source metadata does not erase curated enrichment.
 
+INSERT INTO public.companies (
+  company_id, name, parent_company, company_type, website_domain,
+  headquarters_country, status, updated_at
+)
+VALUES (
+  'citi', 'Citi', 'Citigroup Inc.', 'Global Bank', 'citi.com',
+  'United States', 'active', now()
+)
+ON CONFLICT (company_id) DO UPDATE SET
+  name = EXCLUDED.name,
+  parent_company = EXCLUDED.parent_company,
+  company_type = EXCLUDED.company_type,
+  website_domain = EXCLUDED.website_domain,
+  headquarters_country = EXCLUDED.headquarters_country,
+  status = EXCLUDED.status,
+  updated_at = now();
+
 WITH approved AS (
   SELECT job_id, external_job_id, patch
   FROM jsonb_to_recordset($approved_updates$
