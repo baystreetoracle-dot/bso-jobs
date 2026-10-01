@@ -44,7 +44,7 @@ const companyLogos: Record<string,string> = {
   "Canada Infrastructure Bank":"/company-logos/bso-supplied/canada-infrastructure-bank.webp",
   "Choice Properties REIT":"/company-logos/bso-supplied/choice-properties-reit.webp",
   "Clairvest":"/company-logos/bso-supplied/clairvest.webp",
-  "Citi":"/company-logos/bso-supplied/citi.webp",
+  "Citi":"/company-logos/bso-supplied/citi.jpg",
   "Crédit Agricole":"/company-logos/bso-supplied/credit-agricole-cib.webp",
   "Crédit Agricole CIB":"/company-logos/bso-supplied/credit-agricole-cib.webp",
   "Deloitte Corporate Finance":"/company-logos/bso-supplied/deloitte.webp",
