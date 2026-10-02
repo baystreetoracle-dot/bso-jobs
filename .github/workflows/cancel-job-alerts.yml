@@ -1,0 +1,40 @@
+name: Cancel scheduled BSO job alerts
+
+on:
+  workflow_dispatch:
+    inputs:
+      scheduled_at:
+        description: Exact ISO timestamp of the alert batch to cancel
+        required: true
+        type: string
+      dry_run:
+        description: Count matching scheduled emails without cancelling them
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  cancel-alerts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      JOB_ALERT_SCHEDULED_AT: ${{ inputs.scheduled_at }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Count matching scheduled alerts
+        if: ${{ inputs.dry_run }}
+        run: npm run jobs:alerts:cancel:dry
+
+      - name: Cancel matching scheduled alerts
+        if: ${{ !inputs.dry_run }}
+        run: npm run jobs:alerts:cancel

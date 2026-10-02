@@ -24,6 +24,8 @@
     "jobs:descriptions:write": "node scripts/job-collector/descriptions.mjs --write",
     "jobs:alerts:dry": "node --experimental-strip-types scripts/job-alert-broadcast.mjs --dry-run",
     "jobs:alerts:schedule": "node --experimental-strip-types scripts/job-alert-broadcast.mjs --schedule",
+    "jobs:alerts:cancel:dry": "node scripts/job-alert-cancel.mjs --dry-run",
+    "jobs:alerts:cancel": "node scripts/job-alert-cancel.mjs --cancel",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
