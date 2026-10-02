@@ -22,6 +22,8 @@
     "jobs:production-migration": "node scripts/job-collector/build-production-migration.mjs",
     "jobs:descriptions:dry": "node scripts/job-collector/descriptions.mjs --dry-run",
     "jobs:descriptions:write": "node scripts/job-collector/descriptions.mjs --write",
+    "jobs:alerts:dry": "node --experimental-strip-types scripts/job-alert-broadcast.mjs --dry-run",
+    "jobs:alerts:schedule": "node --experimental-strip-types scripts/job-alert-broadcast.mjs --schedule",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

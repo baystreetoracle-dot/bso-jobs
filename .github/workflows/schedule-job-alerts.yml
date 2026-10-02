@@ -1,0 +1,46 @@
+name: Schedule BSO job alerts
+
+on:
+  workflow_dispatch:
+    inputs:
+      scheduled_at:
+        description: ISO timestamp for delivery, for example 2026-10-02T21:00:00Z
+        required: true
+        type: string
+      dry_run:
+        description: Prepare and count alerts without scheduling email
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  job-alerts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+      JOB_ALERT_SCHEDULED_AT: ${{ inputs.scheduled_at }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Prepare personalized alerts
+        if: ${{ inputs.dry_run }}
+        run: npm run jobs:alerts:dry
+
+      - name: Schedule personalized alerts
+        if: ${{ !inputs.dry_run }}
+        run: npm run jobs:alerts:schedule
