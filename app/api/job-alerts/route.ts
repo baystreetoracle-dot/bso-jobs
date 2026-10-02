@@ -1,19 +1,17 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { ALERT_LOCATIONS, ALERT_SENIORITIES, CAREER_PATHS } from "@/lib/job-alerts/preferences";
 
 const CONSENT_TEXT = "I agree to receive relevant BSO Jobs opportunity alerts by email. I can unsubscribe at any time.";
-const careerPaths = ["Investment Banking", "Other"] as const;
-const seniorities = ["Intern / Co-op", "Analyst", "Associate", "Other"] as const;
-const locations = ["Toronto", "Calgary", "Montreal", "Vancouver", "Other"] as const;
 
 const signupSchema = z.object({
   email: z.string().trim().email().max(254),
   website: z.string().max(0).optional(),
   signupSource: z.enum(["delayed-modal", "jobs-inline", "job-page", "contextual-page"]),
-  careerPaths: z.array(z.enum(careerPaths)).max(careerPaths.length).optional(),
-  seniorityPreferences: z.array(z.enum(seniorities)).max(seniorities.length).optional(),
-  locationPreferences: z.array(z.enum(locations)).max(locations.length).optional(),
+  careerPaths: z.array(z.enum(CAREER_PATHS)).max(CAREER_PATHS.length).optional(),
+  seniorityPreferences: z.array(z.enum(ALERT_SENIORITIES)).max(ALERT_SENIORITIES.length).optional(),
+  locationPreferences: z.array(z.enum(ALERT_LOCATIONS)).max(ALERT_LOCATIONS.length).optional(),
   savePreferences: z.boolean().optional(),
 });
 

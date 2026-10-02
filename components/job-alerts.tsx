@@ -3,16 +3,9 @@
 import { ArrowRight, Bell, Check, X } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
+import { ALERT_LOCATIONS, ALERT_SENIORITIES, CAREER_PATHS, type AlertPreferences } from "@/lib/job-alerts/preferences";
 
-export const CAREER_PATHS = ["Investment Banking", "Other"] as const;
-export const ALERT_SENIORITIES = ["Intern / Co-op", "Analyst", "Associate", "Other"] as const;
-export const ALERT_LOCATIONS = ["Toronto", "Calgary", "Montreal", "Vancouver", "Other"] as const;
-
-export type AlertPreferences = {
-  careerPaths: string[];
-  seniorities: string[];
-  locations: string[];
-};
+export type { AlertPreferences } from "@/lib/job-alerts/preferences";
 export type AlertSource = "delayed-modal" | "jobs-inline" | "job-page" | "contextual-page";
 export type AlertStep = "email" | "preferences" | "success";
 

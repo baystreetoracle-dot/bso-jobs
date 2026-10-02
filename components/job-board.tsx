@@ -6,10 +6,11 @@ import Link from "next/link";
 import { FormEvent, Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { JobAlertInline, JobAlertJobPageCta, JobAlertModal, trackJobAlert, type AlertPreferences, type AlertSource, type AlertStep } from "@/components/job-alerts";
 import { rankJobs } from "@/lib/jobs/ranking";
+import { alertCareerPathForStoredCategory, alertSeniorityForStoredValue, jobAlertLocations } from "@/lib/job-alerts/preferences";
+import { getRecruitingUpdate, type RecruitingUpdate } from "@/lib/jobs/recruiting-updates";
 import type { JobLandingContent, JobRow } from "@/lib/jobs/types";
 import { companyPath, jobPath } from "@/lib/jobs/urls";
 
-type RecruitingUpdate = { label:string; note:string };
 type Job = { id:string; externalJobId:string; companyId:string; company:string; title:string; location:string; city:string|null; province:string|null; category:string; seniority:string; storedSeniority:string; program:string; employmentType:string|null; workplaceType:string|null; specialization:string|null; datePosted:string|null; deadline:string|null; salaryMin:number|null; salaryMax:number|null; salaryCurrency:string|null; salaryPeriod:string|null; url:string; detailPath:string; summary:string; descriptionText:string; descriptionStatus:JobRow["description_status"]; recruitingUpdate:RecruitingUpdate|null; exclusive:boolean };
 type LoadedJob = { id:string; externalJobId:string; featured:boolean; job:Job };
 type JobGroup = { key:string; primary:Job; variants:Job[] };
@@ -179,9 +180,6 @@ const rankOrder = ["Intern / Co-op","Analyst","Associate","Vice President","Dire
 const featuredExternalJobOrder = ["anson-investment-analyst-2026-09","R2052799","26997599"];
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
 const homepageTrendingOrder = ["CSS-0012600","JR101593","7058","210790829","549798030828","R7181"];
-const recruitingUpdates:Record<string,RecruitingUpdate> = {
-  "24194": { label:"First rounds underway", note:"Confirmed by a verified anonymous source: First-round invitations have begun." },
-};
 const marqueeLogos = [
   {name:"Atlas Partners",src:"/company-logos/bso-banner/atlas-partners.webp",scale:"atlas"},
   {name:"Bank of America",src:"/company-logos/bso-banner/bank-of-america.webp"},
@@ -230,18 +228,10 @@ function SalaryMeta({job,size=14}:{job:Job;size?:number}){
 const todayToronto = () => { const parts=Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:"America/Toronto",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date()).map(({type,value})=>[type,value])); return `${parts.year}-${parts.month}-${parts.day}`; };
 const fmtToday = (date:string) => new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric",year:"numeric"}).format(new Date(`${date}T12:00:00`));
 const emptyAlertPreferences = ():AlertPreferences => ({careerPaths:[],seniorities:[],locations:[]});
-const alertLocation = (city:string|null,location:string) => {
-  const value=`${city??""} ${location}`.toLowerCase();
-  if(/\btoronto\b/.test(value))return "Toronto";
-  if(/\bcalgary\b/.test(value))return "Calgary";
-  if(/\bmontr[eé]al\b/.test(value))return "Montreal";
-  if(/\bvancouver\b/.test(value))return "Vancouver";
-  return "Other";
-};
 const alertPreferencesForJob = (job:Job):AlertPreferences => ({
-  careerPaths:job.category==="Investment Banking"?["Investment Banking"]:["Other"],
-  seniorities:["Intern / Co-op","Analyst","Associate"].includes(job.seniority)?[job.seniority]:[],
-  locations:[alertLocation(job.city,job.location)],
+  careerPaths:[alertCareerPathForStoredCategory(job.category)],
+  seniorities:[alertSeniorityForStoredValue(job.storedSeniority)],
+  locations:jobAlertLocations({city:job.city,location_display:job.location}),
 });
 
 const mapRow = (row:JobRow):LoadedJob => ({
@@ -275,7 +265,7 @@ const mapRow = (row:JobRow):LoadedJob => ({
     summary:row.summary??"",
     descriptionText:row.description_text??"",
     descriptionStatus:row.description_status,
-    recruitingUpdate:recruitingUpdates[row.external_job_id]??null,
+    recruitingUpdate:getRecruitingUpdate(row.external_job_id),
     exclusive:/BSO Exclusive/i.test(`${row.source_name} ${row.data_quality_notes??""}`),
   },
 });
