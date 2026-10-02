@@ -125,7 +125,7 @@ const failures = [];
 const scheduled = [];
 for (const item of prepared) {
   const recipientHash = crypto.createHash("sha256").update(item.subscriber.email).digest("hex").slice(0, 20);
-  const response = await fetch("https://api.resend.com/emails", {
+  const request = {
     method: "POST",
     headers: {
       authorization: `Bearer ${apiKey}`,
@@ -145,10 +145,18 @@ for (const item of prepared) {
       },
       tags: [{ name: "campaign", value: `friday-${today}` }],
     }),
-  });
-  const result = await response.json();
+  };
+  let response;
+  let result;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    response = await fetch("https://api.resend.com/emails", request);
+    result = await response.json();
+    if (response.status !== 429) break;
+    await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+  }
   if (!response.ok) failures.push({ recipientHash, status: response.status, error: result });
   else scheduled.push({ recipientHash, id: result.id, subject: item.message.subject });
+  await new Promise((resolve) => setTimeout(resolve, 150));
 }
 
 console.log(`Scheduled for ${scheduledAt}: ${scheduled.length}`);
