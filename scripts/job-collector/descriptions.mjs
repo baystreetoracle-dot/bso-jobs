@@ -30,6 +30,34 @@ function normalizedText(value = "") {
     .trim();
 }
 
+const SOFT_CLOSURE_PATTERNS = [
+  /\bno longer accepting applications\b/i,
+  /\bnot accepting (?:new )?applications\b/i,
+  /\bapplications? (?:for (?:this|the) (?:job|position|role) )?(?:is|are) (?:now )?closed\b/i,
+  /\bapplication (?:deadline|period) has (?:already )?passed\b/i,
+  /\b(?:job|position|role|opportunity|posting) (?:is|has been) (?:now )?(?:closed|filled|expired|removed|cancelled|canceled)\b/i,
+  /\b(?:job|position|role|opportunity|posting) is no longer (?:available|open)\b/i,
+  /\bthis requisition is no longer available\b/i,
+  /\bwe(?:'ve| have) (?:already )?received (?:enough|the maximum number of) applications\b/i,
+  /\bapplication limit has been reached\b/i,
+  /\bsorry[^.]{0,100}(?:job|position|role|opportunity)[^.]{0,100}(?:closed|expired|filled|no longer available)\b/i,
+];
+
+function softClosureReason(value) {
+  const text = normalizedText(value);
+  const match = SOFT_CLOSURE_PATTERNS.map((pattern) => text.match(pattern)?.[0]).find(Boolean);
+  return match ? `The employer page states: “${match}”.` : null;
+}
+
+function todayInToronto() {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Toronto", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date()).map(({ type, value }) => [type, value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+const TODAY = todayInToronto();
+
 async function fetchResponse(url, options = {}) {
   const response = await fetch(url, {
     ...options,
@@ -191,6 +219,8 @@ async function extractOracle(job) {
 async function extractUkg(job) {
   const { response, body, finalUrl } = await fetchResponse(job.source_url);
   if (!response.ok) return { status: [404, 410].includes(response.status) ? "closed" : "error", error: `HTTP ${response.status}`, endpoint: finalUrl };
+  const closureReason = softClosureReason(body);
+  if (closureReason) return { status: "closed", error: closureReason, endpoint: finalUrl, method: "Employer soft-closure message" };
   const raw = balancedJsonAfter(body, "CandidateOpportunityDetail(");
   if (!raw) return { status: "closed", error: "UKG returned no public opportunity detail.", endpoint: finalUrl };
   const detail = JSON.parse(raw);
@@ -221,6 +251,8 @@ async function extractJibe(job) {
 async function extractSapHtml(job) {
   const { response, body, finalUrl } = await fetchResponse(job.source_url);
   if (!response.ok) return { status: [404, 410].includes(response.status) ? "closed" : "error", error: `HTTP ${response.status}`, endpoint: finalUrl };
+  const closureReason = softClosureReason(body);
+  if (closureReason) return { status: "closed", error: closureReason, endpoint: finalUrl, method: "Employer soft-closure message" };
   const element = extractElement(body, /<(?:span|div)\b[^>]*(?:itemprop=["']description["']|class=["'][^"']*jobdescription[^"']*["'])[^>]*>/i);
   if (!element) return extractHtml(job);
   const title = normalizedText(body.match(/<meta\b[^>]*(?:property=["']og:title["']|name=["']twitter:title["'])[^>]*content=["']([^"']+)["']/i)?.[1]
@@ -235,6 +267,8 @@ async function extractSapHtml(job) {
 async function extractHtml(job) {
   const { response, body, finalUrl } = await fetchResponse(job.source_url);
   if (!response.ok) return { status: [404, 410].includes(response.status) ? "closed" : "error", error: `HTTP ${response.status}`, endpoint: finalUrl };
+  const closureReason = softClosureReason(body);
+  if (closureReason) return { status: "closed", error: closureReason, endpoint: finalUrl, method: "Employer soft-closure message" };
   const phenom = embeddedPhenom(body);
   if (phenom) return { status: "verified", endpoint: finalUrl, ...phenom };
   const candidates = jsonLdJobs(body);
@@ -292,6 +326,16 @@ async function auditJob(job) {
               : await extractHtml(job);
   } catch (error) {
     return { ...job, status: "error", error: error instanceof Error ? error.message : String(error) };
+  }
+  const effectiveDeadline = String(extracted.deadline ?? job.application_deadline ?? "").slice(0, 10);
+  if (extracted.status !== "closed" && extracted.status !== "error" && /^\d{4}-\d{2}-\d{2}$/.test(effectiveDeadline) && effectiveDeadline < TODAY) {
+    return {
+      ...job,
+      ...extracted,
+      status: "closed",
+      error: `The employer application deadline (${effectiveDeadline}) has passed.`,
+      method: `${extracted.method ?? "Employer source"} and deadline validation`,
+    };
   }
   const titleVerified = extracted.title ? titleMatch(job.title, extracted.title) : false;
   const idVerified = !extracted.externalId
