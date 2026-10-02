@@ -252,7 +252,6 @@ const GREENHOUSE_BOARDS = new Map([
   ["Birch Hill Equity Partners", "birchhillequity"],
   ["Canada Infrastructure Bank", "canadainfrastructurebank"],
   ["Nicola Wealth", "nicolawealth"],
-  ["StepStone Group", "stepstonegroup"],
 ]);
 
 async function extractGreenhouse(job) {
