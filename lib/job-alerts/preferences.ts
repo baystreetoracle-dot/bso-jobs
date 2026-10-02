@@ -19,6 +19,7 @@ export const ALERT_SENIORITIES = [
 ] as const;
 
 export const ALERT_LOCATIONS = ["Toronto", "Calgary", "Montreal", "Vancouver", "Other"] as const;
+export const DEFAULT_ALERT_SENIORITIES = ["Intern / Co-op", "Analyst"] as const;
 
 export type AlertPreferences = {
   careerPaths: string[];
@@ -72,8 +73,11 @@ export function jobAlertLocations(job: Pick<AlertJobFields, "city" | "location_d
 }
 
 export function matchesJobAlertPreferences(job: AlertJobFields, preferences: AlertPreferences) {
+  const selectedSeniorities = preferences.seniorities.length
+    ? preferences.seniorities
+    : [...DEFAULT_ALERT_SENIORITIES];
   const careerPathMatches = matchesMappedValue(job.category, preferences.careerPaths, careerPathValues, knownCategories);
-  const seniorityMatches = matchesMappedValue(job.seniority, preferences.seniorities, seniorityValues, knownSeniorities);
+  const seniorityMatches = matchesMappedValue(job.seniority, selectedSeniorities, seniorityValues, knownSeniorities);
   const jobLocations = jobAlertLocations(job);
   const locationMatches = !preferences.locations.length || preferences.locations.some((location) => jobLocations.includes(location));
   return careerPathMatches && seniorityMatches && locationMatches;
