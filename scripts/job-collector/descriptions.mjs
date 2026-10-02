@@ -43,6 +43,17 @@ const SOFT_CLOSURE_PATTERNS = [
   /\bsorry[^.]{0,100}(?:job|position|role|opportunity)[^.]{0,100}(?:closed|expired|filled|no longer available)\b/i,
 ];
 
+// User-verified active records stay in manual review even when an employer page
+// returns a contradictory soft-closure message. This prevents an automated audit
+// from overriding a deliberate editorial decision.
+const MANUAL_ACTIVE_OVERRIDES = new Set([
+  "R-0000189162",
+  "R-0000189164",
+  "R-0000189234",
+  "R-0000178260",
+  "R-0000187979",
+]);
+
 function softClosureReason(value) {
   const text = normalizedText(value);
   const match = SOFT_CLOSURE_PATTERNS.map((pattern) => text.match(pattern)?.[0]).find(Boolean);
@@ -321,6 +332,7 @@ async function extractHtml(job) {
 }
 
 async function auditJob(job) {
+  const manualActiveOverride = MANUAL_ACTIVE_OVERRIDES.has(job.external_job_id);
   let extracted;
   try {
     if (job.external_job_id === "R_1509729") {
@@ -352,8 +364,16 @@ async function auditJob(job) {
   } catch (error) {
     return { ...job, status: "error", error: error instanceof Error ? error.message : String(error) };
   }
+  if (manualActiveOverride && extracted.status === "closed") {
+    extracted = {
+      ...extracted,
+      status: "partial",
+      error: "Manual active override: retain this listing and review conflicting employer-page status manually.",
+      method: `${extracted.method ?? "Employer source"}; manual active override`,
+    };
+  }
   const effectiveDeadline = String(extracted.deadline ?? job.application_deadline ?? "").slice(0, 10);
-  if (extracted.status !== "closed" && extracted.status !== "error" && /^\d{4}-\d{2}-\d{2}$/.test(effectiveDeadline) && effectiveDeadline < TODAY) {
+  if (!manualActiveOverride && extracted.status !== "closed" && extracted.status !== "error" && /^\d{4}-\d{2}-\d{2}$/.test(effectiveDeadline) && effectiveDeadline < TODAY) {
     return {
       ...job,
       ...extracted,
