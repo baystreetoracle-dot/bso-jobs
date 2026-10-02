@@ -150,6 +150,9 @@ const jobs = proposals.map((item) => {
     normalized.category = "Institutional Investing";
     normalized.specialization = "Infrastructure";
   }
+  if (normalized.category === "Private Equity" && /\bprivate equity\b/i.test(normalized.title)) {
+    normalized.specialization = "Private Equity";
+  }
   normalized.summary = item.origin === "bso-exclusive" || item.origin?.startsWith("user-supplied") || item.origin === "curated-workbook"
     ? item.job.summary
     : conciseSummary(normalized);

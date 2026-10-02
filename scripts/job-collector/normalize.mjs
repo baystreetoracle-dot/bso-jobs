@@ -126,7 +126,11 @@ function inferBuySidePath(firm, title, source) {
   return firm.careerPath ?? null;
 }
 
-function inferBuySideSpecialization(source) {
+function inferBuySideSpecialization(title, source) {
+  if (/\b(?:private equity|private capital|growth equity|venture capital|buyout)\b/i.test(title)) return "Private Equity";
+  if (/\b(?:private credit|private debt|structured credit|direct lending)\b/i.test(title)) return "Private Credit";
+  if (/\binfrastructure|renewable resources?\b/i.test(title)) return "Infrastructure";
+  if (/\breal estate|property investments?\b/i.test(title)) return "Real Estate";
   const values = [
     ["Private Credit", /\b(?:private credit|private debt|structured credit|direct lending)\b/i], ["Infrastructure", /\binfrastructure|renewable resources?\b/i],
     ["Real Estate", /\breal estate|property investments?\b/i], ["Public Equities", /\bpublic equities?|fundamental equity\b/i],
@@ -187,7 +191,7 @@ function classifyBuySide(candidate, verifiedAt, title, description, metadataText
     job: {
       external_job_id: sourceId, company_id: canonicalCompanyId(candidate.firm), company_name: candidate.firm.name, title,
       ...normalizeLocation(candidate.locations ?? []), category: careerPath,
-      specialization: inferBuySideSpecialization(source), seniority: seniority.value,
+      specialization: inferBuySideSpecialization(title, source), seniority: seniority.value,
       employment_type: candidate.employmentType ?? null,
       program_type: inferProgramType(title, candidate.employmentType, description),
       date_posted: candidate.datePosted ?? null, application_deadline: candidate.applicationDeadline ?? null,
