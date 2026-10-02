@@ -3,6 +3,7 @@ import { rankJobs } from "../lib/jobs/ranking.ts";
 import { matchesJobAlertPreferences } from "../lib/job-alerts/preferences.ts";
 import { getRecruitingUpdate } from "../lib/jobs/recruiting-updates.ts";
 import { createUnsubscribeUrl } from "../lib/job-alerts/unsubscribe.ts";
+import { buildJobAlertLogoAttachments } from "../lib/job-alerts/logo-assets.mjs";
 
 const SITE_URL = "https://www.baystreetoracle.ca";
 
@@ -71,15 +72,20 @@ const eligibleJobs = (data ?? []).filter((job) => {
     && (!job.application_deadline || job.application_deadline >= today);
 });
 const jobs = rankJobs(eligibleJobs, { today, diversity: true }).slice(0, 8).map(({ job }) => job);
+const { attachments, companyLogoCids } = await buildJobAlertLogoAttachments(jobs);
 const unsubscribeUrl = createUnsubscribeUrl(recipient, required("SUPABASE_SERVICE_ROLE_KEY"), SITE_URL);
 const careerPathLabel = PREFERENCES.careerPaths.length ? PREFERENCES.careerPaths.join(" + ") : "all career paths";
 const seniorityLabel = PREFERENCES.seniorities.length ? PREFERENCES.seniorities.join(" + ") : "Intern / Co-op + Analyst";
 const roleRows = jobs.map((job) => {
   const recruitingUpdate = getRecruitingUpdate(job.external_job_id);
+  const logoCid = companyLogoCids.get(job.company_name);
+  const logoMarkup = logoCid
+    ? `<img src="cid:${escapeHtml(logoCid)}" width="52" height="52" alt="${escapeHtml(job.company_name)} logo" style="display:block;width:52px;height:52px;object-fit:contain;border:1px solid #e2e6e2;background:#fff">`
+    : `<div style="width:52px;height:52px;border:1px solid #e2e6e2;background:#f4f6f3;color:#083e30;font:800 12px/52px Arial,sans-serif;text-align:center">${escapeHtml(job.company_name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2))}</div>`;
   const updateMarkup = recruitingUpdate
     ? `<p style="margin:9px 0 0;color:#a22a22;font:700 11px/1.45 Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em">${escapeHtml(recruitingUpdate.label)}</p><p style="margin:3px 0 0;color:#a22a22;font:12px/1.45 Arial,sans-serif">${escapeHtml(recruitingUpdate.note)}</p>`
     : "";
-  return `<tr><td style="padding:20px 0;border-top:1px solid #e2e6e2"><p style="margin:0 0 5px;color:#263b33;font:700 12px/1.35 Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em">${escapeHtml(job.company_name)}</p><a href="${escapeHtml(jobUrl(job))}" style="color:#087a35;font:700 16px/1.28 Arial,sans-serif;text-decoration:none">${escapeHtml(job.title)}</a><p style="margin:6px 0 0;color:#263b33;font:13px/1.45 Arial,sans-serif">${escapeHtml(job.location_display)}</p><p style="margin:4px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">${escapeHtml(job.category)} · ${escapeHtml(seniorityLabel)} · ${escapeHtml(formatDeadline(job.application_deadline))}</p>${updateMarkup}<p style="margin:8px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">Matches your career path, level and location preferences</p></td></tr>`;
+  return `<tr><td style="padding:20px 0;border-top:1px solid #e2e6e2"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse"><tr><td width="68" valign="top" style="width:68px;padding:1px 16px 0 0">${logoMarkup}</td><td valign="top"><p style="margin:0 0 5px;color:#263b33;font:700 12px/1.35 Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em">${escapeHtml(job.company_name)}</p><a href="${escapeHtml(jobUrl(job))}" style="color:#087a35;font:700 16px/1.28 Arial,sans-serif;text-decoration:none">${escapeHtml(job.title)}</a><p style="margin:6px 0 0;color:#263b33;font:13px/1.45 Arial,sans-serif">${escapeHtml(job.location_display)}</p><p style="margin:4px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">${escapeHtml(job.category)} · ${escapeHtml(job.seniority ?? "Unspecified")} · ${escapeHtml(formatDeadline(job.application_deadline))}</p>${updateMarkup}<p style="margin:8px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">Matches your career path, level and location preferences</p></td></tr></table></td></tr>`;
 }).join("");
 
 const resultSection = jobs.length
@@ -89,7 +95,7 @@ const resultSection = jobs.length
 const subject = jobs[0] ? `${jobs[0].company_name}, ${jobs[0].title}` : "[TEST] No new BSO Job Alert matches this week";
 const preferenceTitle = `Your job alert for ${careerPathLabel} · ${seniorityLabel}`;
 const locationLine = PREFERENCES.locations.length ? `in ${PREFERENCES.locations.join(" + ")}` : "across Canada";
-const html = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>@media(max-width:620px){.email-shell{width:100%!important}.email-pad{padding-left:20px!important;padding-right:20px!important}.email-title{font-size:28px!important}}</style></head><body style="margin:0;padding:0;background:#f2f3f0;color:#10231d"><div style="display:none;max-height:0;overflow:hidden;opacity:0">Your personalized Canadian capital-markets opportunities from BSO Jobs.</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;background:#f2f3f0"><tr><td align="center" style="padding:28px 12px"><table class="email-shell" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;border-collapse:collapse;background:#fff"><tr><td class="email-pad" style="padding:24px 28px;background:#083e30;color:#fff"><p style="margin:0;font:800 13px/1 Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase">BSO Job Alerts</p><h1 class="email-title" style="margin:22px 0 8px;font:400 32px/1.08 Georgia,serif">${escapeHtml(preferenceTitle)}</h1><p style="margin:0;color:#c9d8d0;font:15px/1.5 Arial,sans-serif">${escapeHtml(locationLine)}</p></td></tr><tr><td class="email-pad" style="padding:28px">${resultSection}<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:25px;border-collapse:collapse"><tr><td bgcolor="#087a35"><a href="${SITE_URL}/jobs" style="display:inline-block;padding:14px 19px;color:#fff;font:800 12px/1 Arial,sans-serif;letter-spacing:.06em;text-decoration:none;text-transform:uppercase">View all jobs</a></td></tr></table></td></tr><tr><td class="email-pad" style="padding:20px 28px;border-top:1px solid #d9ded9;color:#718078;font:11px/1.65 Arial,sans-serif">Questions? Email <a href="mailto:info@baystreetoracle.ca" style="color:#4e6259">info@baystreetoracle.ca</a> and we’ll get back to you shortly.<br>This is a test preview requested by the recipient. No subscription preferences were changed.<br><a href="${escapeHtml(unsubscribeUrl)}" style="color:#4e6259;text-decoration:underline">Unsubscribe from BSO Job Alerts</a></td></tr></table></td></tr></table></body></html>`;
+const html = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>@media(max-width:620px){.email-shell{width:100%!important}.email-pad{padding-left:20px!important;padding-right:20px!important}.email-title{font-size:28px!important}}</style></head><body style="margin:0;padding:0;background:#f2f3f0;color:#10231d"><div style="display:none;max-height:0;overflow:hidden;opacity:0">Your personalized Canadian capital-markets opportunities from BSO Jobs.</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;background:#f2f3f0"><tr><td align="center" style="padding:28px 12px"><table class="email-shell" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;border-collapse:collapse;background:#fff"><tr><td class="email-pad" style="padding:24px 28px;background:#083e30;color:#fff"><img src="cid:bso-logo" width="56" height="56" alt="Bay Street Oracle" style="display:block;width:56px;height:56px;object-fit:cover;border:0"><p style="margin:16px 0 0;font:800 13px/1 Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase">BSO Job Alerts</p><h1 class="email-title" style="margin:18px 0 8px;font:400 32px/1.08 Georgia,serif">${escapeHtml(preferenceTitle)}</h1><p style="margin:0;color:#c9d8d0;font:15px/1.5 Arial,sans-serif">${escapeHtml(locationLine)}</p></td></tr><tr><td class="email-pad" style="padding:28px">${resultSection}<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:25px;border-collapse:collapse"><tr><td bgcolor="#087a35"><a href="${SITE_URL}/jobs" style="display:inline-block;padding:14px 19px;color:#fff;font:800 12px/1 Arial,sans-serif;letter-spacing:.06em;text-decoration:none;text-transform:uppercase">View all jobs</a></td></tr></table></td></tr><tr><td class="email-pad" style="padding:20px 28px;border-top:1px solid #d9ded9;color:#718078;font:11px/1.65 Arial,sans-serif">Questions? Email <a href="mailto:info@baystreetoracle.ca" style="color:#4e6259">info@baystreetoracle.ca</a> and we’ll get back to you shortly.<br>This is a test preview requested by the recipient. No subscription preferences were changed.<br><a href="${escapeHtml(unsubscribeUrl)}" style="color:#4e6259;text-decoration:underline">Unsubscribe from BSO Job Alerts</a></td></tr></table></td></tr></table></body></html>`;
 const text = `BSO Job Alerts\n\n${preferenceTitle} ${locationLine}\n\n${jobs.length ? jobs.map((job) => { const update = getRecruitingUpdate(job.external_job_id); return `${job.title}\n${job.company_name} · ${job.location_display}\n${formatDeadline(job.application_deadline)}${update ? `\n${update.label}: ${update.note}` : ""}\n${jobUrl(job)}`; }).join("\n\n") : "No new matches this week. There are currently no active opportunities matching these preferences."}\n\nView all jobs: ${SITE_URL}/jobs\n\nQuestions? Email info@baystreetoracle.ca and we’ll get back to you shortly.\nThis is a test preview requested by the recipient. No subscription preferences were changed.\nUnsubscribe: ${unsubscribeUrl}`;
 
 const unsubscribeCheck = await fetch(unsubscribeUrl, { redirect: "follow" });
@@ -98,17 +104,16 @@ if (!unsubscribeCheck.ok || !unsubscribePage.includes("Unsubscribe from job aler
   throw new Error(`Unsubscribe confirmation check failed with HTTP ${unsubscribeCheck.status}. Email was not sent.`);
 }
 
-const rawFrom = required("RESEND_FROM_EMAIL");
-const senderAddress = rawFrom.match(/<([^<>]+)>/)?.[1] ?? rawFrom;
 const response = await fetch("https://api.resend.com/emails", {
   method: "POST",
   headers: { authorization: `Bearer ${required("RESEND_API_KEY")}`, "content-type": "application/json" },
   body: JSON.stringify({
-    from: `BSO Job Alerts <${senderAddress}>`,
+    from: "Bay Street Oracle <jobs@baystreetoracle.ca>",
     to: [recipient],
     subject,
     html,
     text,
+    attachments,
   }),
 });
 const resendResult = await response.json();
