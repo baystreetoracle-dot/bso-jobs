@@ -5,11 +5,6 @@ import { getRecruitingUpdate } from "../lib/jobs/recruiting-updates.ts";
 import { createUnsubscribeUrl } from "../lib/job-alerts/unsubscribe.ts";
 
 const SITE_URL = "https://www.baystreetoracle.ca";
-const PREFERENCES = {
-  careerPaths: ["Investment Banking"],
-  seniorities: ["Intern / Co-op"],
-  locations: ["Toronto", "Vancouver"],
-};
 
 function required(name) {
   const value = process.env[name]?.trim();
@@ -51,6 +46,19 @@ function jobUrl(job) {
 const supabase = createClient(required("SUPABASE_URL"), required("SUPABASE_SERVICE_ROLE_KEY"), {
   auth: { persistSession: false, autoRefreshToken: false },
 });
+const recipient = required("TEST_ALERT_RECIPIENT").trim().toLowerCase();
+const { data: subscriber, error: subscriberError } = await supabase.from("job_alert_subscribers")
+  .select("email,status,career_paths,seniority_preferences,location_preferences")
+  .eq("email", recipient)
+  .maybeSingle();
+if (subscriberError) throw subscriberError;
+if (!subscriber) throw new Error("The requested test recipient is not registered for BSO Job Alerts.");
+
+const PREFERENCES = {
+  careerPaths: subscriber.career_paths ?? [],
+  seniorities: subscriber.seniority_preferences ?? [],
+  locations: subscriber.location_preferences ?? [],
+};
 const today = todayInToronto();
 const { data, error } = await supabase.from("jobs")
   .select("id,external_job_id,company_name,title,location_display,city,country,category,seniority,program_type,application_deadline,date_posted,source_name,data_quality_notes")
@@ -62,26 +70,27 @@ const eligibleJobs = (data ?? []).filter((job) => {
   return matchesJobAlertPreferences(job, PREFERENCES)
     && (!job.application_deadline || job.application_deadline >= today);
 });
-const jobs = rankJobs(eligibleJobs, { today, diversity: false }).map(({ job }) => job);
-const recipient = required("TEST_ALERT_RECIPIENT");
+const jobs = rankJobs(eligibleJobs, { today, diversity: true }).slice(0, 8).map(({ job }) => job);
 const unsubscribeUrl = createUnsubscribeUrl(recipient, required("SUPABASE_SERVICE_ROLE_KEY"), SITE_URL);
+const careerPathLabel = PREFERENCES.careerPaths.length ? PREFERENCES.careerPaths.join(" + ") : "all career paths";
+const seniorityLabel = PREFERENCES.seniorities.length ? PREFERENCES.seniorities.join(" + ") : "Intern / Co-op + Analyst";
 const roleRows = jobs.map((job) => {
   const recruitingUpdate = getRecruitingUpdate(job.external_job_id);
   const updateMarkup = recruitingUpdate
     ? `<p style="margin:9px 0 0;color:#a22a22;font:700 11px/1.45 Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em">${escapeHtml(recruitingUpdate.label)}</p><p style="margin:3px 0 0;color:#a22a22;font:12px/1.45 Arial,sans-serif">${escapeHtml(recruitingUpdate.note)}</p>`
     : "";
-  return `<tr><td style="padding:20px 0;border-top:1px solid #e2e6e2"><p style="margin:0 0 5px;color:#263b33;font:700 12px/1.35 Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em">${escapeHtml(job.company_name)}</p><a href="${escapeHtml(jobUrl(job))}" style="color:#087a35;font:700 16px/1.28 Arial,sans-serif;text-decoration:none">${escapeHtml(job.title)}</a><p style="margin:6px 0 0;color:#263b33;font:13px/1.45 Arial,sans-serif">${escapeHtml(job.location_display)}</p><p style="margin:4px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">${escapeHtml(job.category)} · ${escapeHtml(PREFERENCES.seniorities.join(" + "))} · ${escapeHtml(formatDeadline(job.application_deadline))}</p>${updateMarkup}<p style="margin:8px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">Matches your career path, level and location preferences</p></td></tr>`;
+  return `<tr><td style="padding:20px 0;border-top:1px solid #e2e6e2"><p style="margin:0 0 5px;color:#263b33;font:700 12px/1.35 Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em">${escapeHtml(job.company_name)}</p><a href="${escapeHtml(jobUrl(job))}" style="color:#087a35;font:700 16px/1.28 Arial,sans-serif;text-decoration:none">${escapeHtml(job.title)}</a><p style="margin:6px 0 0;color:#263b33;font:13px/1.45 Arial,sans-serif">${escapeHtml(job.location_display)}</p><p style="margin:4px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">${escapeHtml(job.category)} · ${escapeHtml(seniorityLabel)} · ${escapeHtml(formatDeadline(job.application_deadline))}</p>${updateMarkup}<p style="margin:8px 0 0;color:#69766f;font:12px/1.45 Arial,sans-serif">Matches your career path, level and location preferences</p></td></tr>`;
 }).join("");
 
 const resultSection = jobs.length
-  ? `<p style="margin:0 0 24px;color:#344b42;font:14px/1.55 Arial,sans-serif">${jobs.length === 1 ? "One active opportunity matches" : `${jobs.length} active opportunities match`} your preferences.</p><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse">${roleRows}</table>`
-  : `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;background:#f4f6f3;border-left:4px solid #88a598"><tr><td style="padding:22px"><p style="margin:0 0 7px;color:#103b2f;font:700 17px/1.3 Arial,sans-serif">No new matches this week</p><p style="margin:0;color:#596860;font:14px/1.55 Arial,sans-serif">There are currently no active Investment Banking intern or co-op roles in Toronto or Vancouver. An empty weekly alert would normally be skipped; this message was sent only to test the design and embedded image handling.</p></td></tr></table>`;
+  ? `<p style="margin:0 0 24px;color:#344b42;font:14px/1.55 Arial,sans-serif">${eligibleJobs.length > jobs.length ? `Here are your top ${jobs.length} of ${eligibleJobs.length} active matches.` : jobs.length === 1 ? "One active opportunity matches your preferences." : `${jobs.length} active opportunities match your preferences.`}</p><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse">${roleRows}</table>`
+  : `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;background:#f4f6f3;border-left:4px solid #88a598"><tr><td style="padding:22px"><p style="margin:0 0 7px;color:#103b2f;font:700 17px/1.3 Arial,sans-serif">No new matches this week</p><p style="margin:0;color:#596860;font:14px/1.55 Arial,sans-serif">There are currently no active opportunities matching these preferences. An empty weekly alert would normally be skipped; this message was sent only to test the design.</p></td></tr></table>`;
 
-const subject = jobs[0] ? `${jobs[0].company_name}, ${jobs[0].title}` : "[TEST] No new Investment Banking intern roles this week";
-const preferenceTitle = `Your job alert for ${PREFERENCES.careerPaths.join(" + ")} ${PREFERENCES.seniorities.join(" + ")} roles`;
-const locationLine = `in ${PREFERENCES.locations.join(" + ")}`;
-const html = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>@media(max-width:620px){.email-shell{width:100%!important}.email-pad{padding-left:20px!important;padding-right:20px!important}.email-title{font-size:28px!important}}</style></head><body style="margin:0;padding:0;background:#f2f3f0;color:#10231d"><div style="display:none;max-height:0;overflow:hidden;opacity:0">Investment Banking intern and co-op opportunities in Toronto and Vancouver.</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;background:#f2f3f0"><tr><td align="center" style="padding:28px 12px"><table class="email-shell" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;border-collapse:collapse;background:#fff"><tr><td class="email-pad" style="padding:24px 28px;background:#083e30;color:#fff"><p style="margin:0;font:800 13px/1 Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase">BSO Job Alerts</p><h1 class="email-title" style="margin:22px 0 8px;font:400 32px/1.08 Georgia,serif">${escapeHtml(preferenceTitle)}</h1><p style="margin:0;color:#c9d8d0;font:15px/1.5 Arial,sans-serif">${escapeHtml(locationLine)}</p></td></tr><tr><td class="email-pad" style="padding:28px">${resultSection}<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:25px;border-collapse:collapse"><tr><td bgcolor="#087a35"><a href="${SITE_URL}/jobs" style="display:inline-block;padding:14px 19px;color:#fff;font:800 12px/1 Arial,sans-serif;letter-spacing:.06em;text-decoration:none;text-transform:uppercase">View all jobs</a></td></tr></table></td></tr><tr><td class="email-pad" style="padding:20px 28px;border-top:1px solid #d9ded9;color:#718078;font:11px/1.65 Arial,sans-serif">Questions? Email <a href="mailto:info@baystreetoracle.ca" style="color:#4e6259">info@baystreetoracle.ca</a> and we’ll get back to you shortly.<br>This is a test preview requested by the recipient. No subscription preferences were changed.<br><a href="${escapeHtml(unsubscribeUrl)}" style="color:#4e6259;text-decoration:underline">Unsubscribe from BSO Job Alerts</a></td></tr></table></td></tr></table></body></html>`;
-const text = `BSO Job Alerts\n\n${preferenceTitle} ${locationLine}\n\n${jobs.length ? jobs.map((job) => { const update = getRecruitingUpdate(job.external_job_id); return `${job.title}\n${job.company_name} · ${job.location_display}\n${formatDeadline(job.application_deadline)}${update ? `\n${update.label}: ${update.note}` : ""}\n${jobUrl(job)}`; }).join("\n\n") : "No new matches this week. There are currently no active Investment Banking intern or co-op roles in Toronto or Vancouver."}\n\nView all jobs: ${SITE_URL}/jobs\n\nQuestions? Email info@baystreetoracle.ca and we’ll get back to you shortly.\nThis is a test preview requested by the recipient. No subscription preferences were changed.\nUnsubscribe: ${unsubscribeUrl}`;
+const subject = jobs[0] ? `${jobs[0].company_name}, ${jobs[0].title}` : "[TEST] No new BSO Job Alert matches this week";
+const preferenceTitle = `Your job alert for ${careerPathLabel} · ${seniorityLabel}`;
+const locationLine = PREFERENCES.locations.length ? `in ${PREFERENCES.locations.join(" + ")}` : "across Canada";
+const html = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>@media(max-width:620px){.email-shell{width:100%!important}.email-pad{padding-left:20px!important;padding-right:20px!important}.email-title{font-size:28px!important}}</style></head><body style="margin:0;padding:0;background:#f2f3f0;color:#10231d"><div style="display:none;max-height:0;overflow:hidden;opacity:0">Your personalized Canadian capital-markets opportunities from BSO Jobs.</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;background:#f2f3f0"><tr><td align="center" style="padding:28px 12px"><table class="email-shell" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;border-collapse:collapse;background:#fff"><tr><td class="email-pad" style="padding:24px 28px;background:#083e30;color:#fff"><p style="margin:0;font:800 13px/1 Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase">BSO Job Alerts</p><h1 class="email-title" style="margin:22px 0 8px;font:400 32px/1.08 Georgia,serif">${escapeHtml(preferenceTitle)}</h1><p style="margin:0;color:#c9d8d0;font:15px/1.5 Arial,sans-serif">${escapeHtml(locationLine)}</p></td></tr><tr><td class="email-pad" style="padding:28px">${resultSection}<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:25px;border-collapse:collapse"><tr><td bgcolor="#087a35"><a href="${SITE_URL}/jobs" style="display:inline-block;padding:14px 19px;color:#fff;font:800 12px/1 Arial,sans-serif;letter-spacing:.06em;text-decoration:none;text-transform:uppercase">View all jobs</a></td></tr></table></td></tr><tr><td class="email-pad" style="padding:20px 28px;border-top:1px solid #d9ded9;color:#718078;font:11px/1.65 Arial,sans-serif">Questions? Email <a href="mailto:info@baystreetoracle.ca" style="color:#4e6259">info@baystreetoracle.ca</a> and we’ll get back to you shortly.<br>This is a test preview requested by the recipient. No subscription preferences were changed.<br><a href="${escapeHtml(unsubscribeUrl)}" style="color:#4e6259;text-decoration:underline">Unsubscribe from BSO Job Alerts</a></td></tr></table></td></tr></table></body></html>`;
+const text = `BSO Job Alerts\n\n${preferenceTitle} ${locationLine}\n\n${jobs.length ? jobs.map((job) => { const update = getRecruitingUpdate(job.external_job_id); return `${job.title}\n${job.company_name} · ${job.location_display}\n${formatDeadline(job.application_deadline)}${update ? `\n${update.label}: ${update.note}` : ""}\n${jobUrl(job)}`; }).join("\n\n") : "No new matches this week. There are currently no active opportunities matching these preferences."}\n\nView all jobs: ${SITE_URL}/jobs\n\nQuestions? Email info@baystreetoracle.ca and we’ll get back to you shortly.\nThis is a test preview requested by the recipient. No subscription preferences were changed.\nUnsubscribe: ${unsubscribeUrl}`;
 
 const unsubscribeCheck = await fetch(unsubscribeUrl, { redirect: "follow" });
 const unsubscribePage = await unsubscribeCheck.text();
