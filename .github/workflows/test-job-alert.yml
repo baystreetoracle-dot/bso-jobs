@@ -36,4 +36,4 @@ jobs:
         run: echo "::add-mask::$TEST_ALERT_RECIPIENT"
 
       - name: Send requested preview
-        run: node scripts/job-alert-preview.mjs
+        run: node --experimental-strip-types scripts/job-alert-preview.mjs
