@@ -62,7 +62,7 @@ firms(24, ["TorQuest Partners", "Imperial Capital", "Peloton Capital Management"
 firms(24, ["Anson Funds"]);
 firms(22, ["EdgePoint Investment Group"]);
 firms(18, ["Peakhill Capital"]);
-firms(21, ["Agentis Capital", "Agentis Capital Advisors", "Canaccord Genuity", "Stifel Canada", "Raymond James Ltd.", "ATB Cormark Capital Markets", "ATB Capital Markets", "INFOR Financial", "Origin Merchant Partners", "Peters & Co.", "Bloom Burton"]);
+firms(21, ["Agentis Capital", "Canaccord Genuity", "Stifel Canada", "Raymond James Ltd.", "ATB Cormark Capital Markets", "ATB Capital Markets", "INFOR Financial", "Origin Merchant Partners", "Peters & Co.", "Bloom Burton"]);
 firms(13, ["Deloitte Corporate Finance", "KPMG Corporate Finance", "PwC Corporate Finance / Deals", "EY-Parthenon Corporate Finance", "EY Corporate Finance", "BDO Canada", "MNP Corporate Finance", "RSM Canada", "Doane Grant Thornton"]);
 
 const PATH_SCORES: Record<string, number> = {

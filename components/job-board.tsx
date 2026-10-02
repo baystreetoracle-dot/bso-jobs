@@ -19,7 +19,6 @@ type BoardMode = "home"|"jobs"|"companies"|"landing"|"company"|"detail";
 const companyLogos: Record<string,string> = {
   "AIMCo":"/company-logos/bso-supplied/aimco.webp",
   "Agentis Capital":"/company-logos/bso-supplied/agentis-capital.webp",
-  "Agentis Capital Advisors":"/company-logos/bso-supplied/agentis-capital.webp",
   "Alvarez & Marsal":"/company-logos/bso-supplied/alvarez-marsal.webp",
   "Anson Funds":"/company-logos/bso-supplied/anson-funds.webp",
   "ATB Capital Markets":"/company-logos/bso-supplied/atb-capital-markets.webp",
@@ -112,7 +111,7 @@ const firmGroups = [
   {label:"Global bulge bracket",weight:58,companies:new Set<string>(["Goldman Sachs","J.P. Morgan","JPMorgan","Morgan Stanley","Bank of America","Citi","Barclays","UBS","BNP Paribas","Société Générale"])},
   {label:"Independent advisory",weight:48,companies:new Set<string>(["Evercore","Rothschild & Co.","Rothschild & Co","Perella Weinberg Partners","PWP","TPH","Mizuho / Greenhill"])},
   {label:"Global bank",weight:44,companies:new Set<string>(["Jefferies","Macquarie","Macquarie Capital","Wells Fargo","Cantor Fitzgerald","MUFG","Crédit Agricole","Crédit Agricole CIB","Natixis"])},
-  {label:"Independent dealer",weight:34,companies:new Set<string>(["Canaccord Genuity","Stifel Canada","Raymond James Ltd.","Desjardins Capital Markets","ATB Capital Markets","ATB Cormark Capital Markets","INFOR Financial","Origin Merchant Partners","Peters & Co.","Agentis Capital","Agentis Capital Advisors","Bloom Burton","Bloom Burton & Co."])},
+  {label:"Independent dealer",weight:34,companies:new Set<string>(["Canaccord Genuity","Stifel Canada","Raymond James Ltd.","Desjardins Capital Markets","ATB Capital Markets","ATB Cormark Capital Markets","INFOR Financial","Origin Merchant Partners","Peters & Co.","Agentis Capital","Bloom Burton","Bloom Burton & Co."])},
   {label:"Corporate finance advisory",weight:28,companies:new Set<string>(["iA Capital Markets","Deloitte Corporate Finance","KPMG Corporate Finance","PwC","PwC Corporate Finance / Deals","EY Corporate Finance","EY-Parthenon Corporate Finance","MNP Corporate Finance","Baker Tilly Canada Capital","Baker Tilly Canada Capital Corporation","BDO Canada","BDO M&A & Capital Markets","Alvarez & Marsal","RSM Canada","Richter","Doane Grant Thornton","Raymond Chabot Grant Thornton"])},
   {label:"Small-cap boutique",weight:20,companies:new Set<string>(["Ventum Financial","Maxit Capital","SCP Resource Finance","Red Cloud Securities","Haywood Securities","Paradigm Capital","Crosbie & Company","Fort Capital","Morrison Park Advisors","Osprey Capital Partners","Sampford Advisors","Research Capital Corporation","Leede Financial","Beacon Securities","Clarus Securities","Blair Franklin Capital Partners","IJW & Co.","FirePower Capital","Valitas Capital Partners","Clariti Strategic Advisors","NewPoint / Clairfield Canada"])},
   {label:"Micro-cap boutique",weight:12,companies:new Set<string>(["Yorkdale Partners","Capital Canada","Kluane Partners","Maison Placements","IBK Capital","Sequeira Partners","Mills Dunlop","Karst Peak Capital","Herculean Capital","Left Lane Associates","Oaklins Canada","Broadstone Capital","Alchemy Capital","Fairing Capital","Tequity Advisors","Distinct Capital Partners","Coldwater Corporate Finance","Westonview Capital","Broderick Capital","Penrose Partners","AIM Group Canada","4Front Capital Partners","RWT Growth"])},
@@ -122,7 +121,7 @@ const companyTypes:Record<string,string> = {};
 const classifyCompanies = (type:string,companies:string[]) => companies.forEach(company=>{companyTypes[company]=type});
 classifyCompanies("Canadian Investment Bank",[
   "RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank Global Banking and Markets","CIBC Capital Markets","National Bank Capital Markets",
-  "ATB Capital Markets","ATB Cormark Capital Markets","Agentis Capital","Agentis Capital Advisors","Bloom Burton","Bloom Burton & Co.","Canaccord Genuity",
+  "ATB Capital Markets","ATB Cormark Capital Markets","Agentis Capital","Bloom Burton","Bloom Burton & Co.","Canaccord Genuity",
   "Desjardins Capital Markets","Fort Capital","Haywood Securities","INFOR Financial","Origin Merchant Partners","Peters & Co.","Raymond James Ltd.",
   "Red Cloud Securities","SCP Resource Finance","Stifel Canada","Ventum Financial","Maxit Capital",
 ]);

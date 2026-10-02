@@ -22,7 +22,7 @@ import openpyxl
 
 
 COMPANIES = {
-    "Agentis Capital": ("agentis-capital-advisors", "Agentis Capital Advisors"),
+    "Agentis Capital": ("agentis", "Agentis Capital"),
     "BMO Capital Markets": ("bmo-capital-markets", "BMO Capital Markets"),
     "BMO": ("bmo-capital-markets", "BMO Capital Markets"),
     "CIBC Capital Markets": ("cibc", "CIBC Capital Markets"),
