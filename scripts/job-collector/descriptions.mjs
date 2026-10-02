@@ -248,6 +248,30 @@ async function extractJibe(job) {
   };
 }
 
+const GREENHOUSE_BOARDS = new Map([
+  ["Birch Hill Equity Partners", "birchhillequity"],
+  ["Canada Infrastructure Bank", "canadainfrastructurebank"],
+  ["Nicola Wealth", "nicolawealth"],
+  ["StepStone Group", "stepstonegroup"],
+]);
+
+async function extractGreenhouse(job) {
+  const board = GREENHOUSE_BOARDS.get(job.company_name)
+    ?? job.source_url.match(/job-boards\.greenhouse\.io\/([^/?#]+)/i)?.[1];
+  if (!board) return extractHtml(job);
+  const endpoint = `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(board)}/jobs/${encodeURIComponent(job.external_job_id)}`;
+  const { response, body } = await fetchResponse(endpoint, { headers: { accept: "application/json" } });
+  if (response.status === 404) return { status: "closed", error: "The requisition is no longer returned by the employer's public Greenhouse API.", endpoint, method: "Greenhouse public job detail" };
+  if (!response.ok) return { status: "error", error: `Greenhouse returned HTTP ${response.status}.`, endpoint };
+  const detail = JSON.parse(body);
+  if (!detail?.title || !detail?.content) return { status: "error", error: "Incomplete Greenhouse job detail.", endpoint };
+  return {
+    status: "verified", endpoint, title: normalizedText(detail.title), externalId: String(detail.id),
+    description: normalizedText(detail.content), datePosted: detail.updated_at ?? null, deadline: null,
+    method: "Greenhouse public job detail",
+  };
+}
+
 async function extractSapHtml(job) {
   const { response, body, finalUrl } = await fetchResponse(job.source_url);
   if (!response.ok) return { status: [404, 410].includes(response.status) ? "closed" : "error", error: `HTTP ${response.status}`, endpoint: finalUrl };
@@ -313,7 +337,9 @@ async function auditJob(job) {
       };
     } else if (/\.pdf(?:$|\?)/i.test(job.source_url)) {
       return { ...job, status: "manual-pdf", error: "PDF requires text extraction and visual verification." };
-    } else extracted = /\.myworkdayjobs\.com/i.test(job.source_url)
+    } else extracted = GREENHOUSE_BOARDS.has(job.company_name) || /job-boards\.greenhouse\.io/i.test(job.source_url)
+      ? await extractGreenhouse(job)
+      : /\.myworkdayjobs\.com/i.test(job.source_url)
       ? await extractWorkday(job)
       : /\.fa\.(?:us\d\.)?oraclecloud\.com/i.test(job.source_url)
         ? await extractOracle(job)
