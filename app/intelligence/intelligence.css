@@ -195,21 +195,26 @@ html:has(.fp-dialog[open]){overflow:hidden}
 @media(prefers-reduced-motion:reduce){.intel-hero.is-leaving .intel-hero-content>*,.intel-done{animation:none!important}}
 
 /* Phones: everything on one screen, no scrolling. */
+/* Gaps scale with the visible height (svh), so tall phones breathe and in-app browsers such as
+   Instagram's, which lose height to their own toolbars, compress instead of scrolling. */
 @media(max-width:720px){
   .intel-header{height:60px}
-  .intel-hero{padding:20px 20px 28px}
-  .intel-hero h1{font-size:clamp(2.3rem,10.6vw,3rem)}
-  .intel-lede{margin-top:16px;font-size:14.5px;line-height:1.5}
-  .intel-waitlist{margin-top:24px}
-  .intel-email{height:54px}
-  .intel-stats,.intel-notice,.intel-error{margin-top:12px}
-  .intel-partner{margin-top:18px}
-  .intel-logos{margin-top:22px}
+  .intel-hero{padding:clamp(16px,4svh,40px) 20px clamp(20px,5svh,48px)}
+  .intel-hero h1{font-size:min(10.6vw,6.4svh,3rem)}
+  .intel-lede{margin-top:clamp(12px,2.6svh,22px);font-size:14.5px;line-height:1.5}
+  .intel-waitlist{margin-top:clamp(24px,6svh,52px)}
+  .intel-email{height:56px}
+  .intel-stats,.intel-notice,.intel-error{margin-top:clamp(14px,2.8svh,24px)}
+  .intel-partner{margin-top:clamp(22px,5.5svh,48px)}
+  .intel-logos{margin-top:clamp(16px,3.6svh,32px)}
 }
-@media(max-width:720px) and (max-height:640px){
-  .intel-hero h1{font-size:clamp(2rem,9.4vw,2.6rem)}
-  .intel-lede{margin-top:12px;font-size:13.5px}
+@media(max-width:720px) and (max-height:600px){
+  .intel-lede{font-size:13.5px}
+}
+@media(max-width:720px) and (max-height:520px){
+  .intel-header{height:52px}
+  .intel-hero{padding-top:10px;padding-bottom:14px}
   .intel-waitlist{margin-top:18px}
-  .intel-partner{margin-top:14px}
-  .intel-logos{margin-top:16px}
+  .intel-partner{margin-top:16px}
+  .intel-logos{margin-top:12px}
 }
