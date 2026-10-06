@@ -35,7 +35,7 @@ export default async function IntelligencePage() {
       </header>
 
       <IntelligenceHero>
-        <h1>Everything you need to know about Canadian finance.</h1>
+        <h1>Everything you need to know about Canadian <span className="intel-kern-f">f</span>inance.</h1>
         <p className="intel-lede">Who leads each firm, what they are doing, and when they hire. Every fact sourced.</p>
         <IntelligenceWaitlist/>
         <p className="intel-partner">
