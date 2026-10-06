@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { IntelligenceLogoStrip } from "@/components/intelligence-firm-preview";
@@ -8,6 +8,9 @@ import { getActiveJobs } from "@/lib/jobs/server";
 import "./intelligence.css";
 
 export const revalidate = 300;
+
+// Dark browser chrome on phones, matching the page header.
+export const viewport: Viewport = { themeColor: "#0c0c0c", colorScheme: "dark" };
 
 const title = "Early Access | BSO Intelligence";
 const description = "Everything you need to know about Canadian finance: who leads each firm, what they are doing, and when they hire. Join the BSO Intelligence waitlist.";

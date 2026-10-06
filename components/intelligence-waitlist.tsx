@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { track } from "@vercel/analytics";
-import { ArrowRight, Check, Mail } from "lucide-react";
+import { ArrowRight, Check, LoaderCircle, Mail } from "lucide-react";
 import { Comet } from "@/components/comet";
 import { useWaitlistJoined } from "@/components/intelligence-hero";
 import { ScrambleNumber } from "@/components/scramble-number";
@@ -46,10 +46,10 @@ export function IntelligenceWaitlist() {
     <div className="intel-waitlist">
       <form className="intel-email comet-ring" onSubmit={submit}>
         <Mail size={17} aria-hidden="true"/>
-        <input id="intel-email-input" name="email" type="email" placeholder="Enter email address" aria-label="Email address" autoComplete="email" required/>
+        <input id="intel-email-input" name="email" type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" enterKeyHint="go" placeholder="Enter email address" aria-label="Email address" autoComplete="email" required/>
         <input className="intel-honeypot" name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true"/>
         <button type="submit" disabled={pending} aria-label="Get early access">
-          {pending ? "Joining…" : <><span className="intel-email-label">Get early access</span><ArrowRight size={15}/></>}
+          {pending ? <><span className="intel-email-label">Joining…</span><LoaderCircle className="intel-spinner" size={16} aria-hidden="true"/></> : <><span className="intel-email-label">Get early access</span><ArrowRight size={15}/></>}
         </button>
         <Comet/>
       </form>
