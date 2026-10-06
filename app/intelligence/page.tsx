@@ -9,7 +9,7 @@ import "./intelligence.css";
 
 export const revalidate = 300;
 
-const title = "BSO Intelligence — Early Access | Bay Street Oracle";
+const title = "Early Access | BSO Intelligence";
 const description = "Everything you need to know about Canadian finance: who leads each firm, what they are doing, and when they hire. Join the BSO Intelligence waitlist.";
 
 export const metadata: Metadata = {
