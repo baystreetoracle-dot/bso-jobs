@@ -31,6 +31,7 @@ html:has(.intel-page),body:has(.intel-page){background:#0a0a0a}
 .intel-email button:disabled{opacity:.65;cursor:progress}
 .intel-email>input.intel-honeypot{position:absolute;left:-10000px;width:1px;height:1px;opacity:0;pointer-events:none}
 .intel-error{margin:14px 0 0;color:#e08a7a;font-size:13px}
+.intel-notice{margin:14px 0 0;display:inline-flex;align-items:center;gap:7px;color:var(--i-accent);font-size:13px}
 .intel-stats{margin:18px 0 0;color:var(--i-faint);font-size:13px;font-variant-numeric:tabular-nums}
 .scramble-number{position:relative}
 .scramble-number-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

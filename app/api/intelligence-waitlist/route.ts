@@ -25,12 +25,16 @@ export async function POST(request: Request) {
 
     const { error } = await client
       .from("intelligence_waitlist")
-      .upsert({
+      .insert({
         email: body.data.email.toLowerCase(),
         source: "bso-jobs-intelligence-landing",
         consent_text: CONSENT_TEXT,
-      }, { onConflict: "email" });
+      });
 
+    // 23505: the email is already on the list (unique constraint), so the existing signup stands.
+    if (error?.code === "23505") {
+      return NextResponse.json({ error: "You're already on the waitlist.", alreadyJoined: true }, { status: 409 });
+    }
     if (error) {
       console.error("Intelligence waitlist signup failed:", error.message);
       return NextResponse.json({ error: "Unable to join the waitlist right now. Please try again." }, { status: 500 });
