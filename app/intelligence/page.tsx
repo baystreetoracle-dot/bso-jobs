@@ -15,7 +15,7 @@ export const revalidate = 300;
 export const viewport: Viewport = { themeColor: "#0c0c0c", colorScheme: "dark" };
 
 const title = "Early Access | BSO Intelligence";
-const description = "Everything you need to know about Canadian finance: who leads each firm, what they are doing, and when they hire. Join the BSO Intelligence waitlist.";
+const description = "The full Canadian finance database is coming soon: 202 firms, 961 people and 3,383 deals, every fact sourced. Join the BSO Intelligence waitlist for early access.";
 
 export const metadata: Metadata = {
   title,
@@ -41,7 +41,7 @@ export default async function IntelligencePage() {
 
       <IntelligenceHero>
         <p className="intel-kicker">Private beta · Early access now open</p>
-        <h1>Everything you need to know about Canadian <span className="intel-kern-f">f</span>inance.</h1>
+        <h1>The full Canadian <span className="intel-kern-f">f</span>inance database is coming soon.</h1>
         <p className="intel-lede"><span className="intel-proof"><ScrambleNumber value={COVERAGE.firms}/> firms. <ScrambleNumber value={COVERAGE.people}/> people. <ScrambleNumber value={COVERAGE.deals}/> deals. <span className="intel-nowrap">Every fact sourced.</span></span> Add your email to get in before everyone else.</p>
         <IntelligenceWaitlist/>
         <p className="intel-partner">
