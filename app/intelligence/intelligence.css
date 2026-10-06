@@ -207,7 +207,7 @@ html:has(.fp-dialog[open]){overflow:hidden}
   .intel-lede{margin-top:clamp(12px,2.6svh,22px);font-size:14.5px;line-height:1.5}
   .intel-waitlist{margin-top:clamp(24px,6svh,52px)}
   .intel-email{height:56px}
-  .intel-kicker{margin-bottom:clamp(12px,2.6svh,22px);font-size:.62rem;letter-spacing:.14em}
+  .intel-kicker{margin-bottom:clamp(12px,2.6svh,22px);white-space:nowrap;letter-spacing:.1em;font-size:min(.62rem,calc((100vw - 40px) / 34))}
   /* The proof line stays on one line: sized to the screen (the text runs ~24.5x its font size). */
   .intel-proof{white-space:nowrap;font-size:min(14.5px,calc((100vw - 40px) / 26.5))}
   .intel-notice,.intel-error{margin-top:clamp(12px,2.4svh,20px)}
