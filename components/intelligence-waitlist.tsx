@@ -5,8 +5,6 @@ import { track } from "@vercel/analytics";
 import { ArrowRight, Check, LoaderCircle, Mail } from "lucide-react";
 import { Comet } from "@/components/comet";
 import { useWaitlistJoined } from "@/components/intelligence-hero";
-import { ScrambleNumber } from "@/components/scramble-number";
-import { COVERAGE } from "@/lib/intelligence/coverage";
 
 export function IntelligenceWaitlist() {
   const onJoined = useWaitlistJoined();
@@ -46,7 +44,7 @@ export function IntelligenceWaitlist() {
     <div className="intel-waitlist">
       <form className="intel-email comet-ring" onSubmit={submit}>
         <Mail size={17} aria-hidden="true"/>
-        <input id="intel-email-input" name="email" type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" enterKeyHint="go" placeholder="Enter email address" aria-label="Email address" autoComplete="email" required/>
+        <input id="intel-email-input" name="email" type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" enterKeyHint="go" placeholder="Your email for early access" aria-label="Email address" autoComplete="email" required/>
         <input className="intel-honeypot" name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true"/>
         <button type="submit" disabled={pending} aria-label="Get early access">
           {pending ? <><span className="intel-email-label">Joining…</span><LoaderCircle className="intel-spinner" size={16} aria-hidden="true"/></> : <><span className="intel-email-label">Get early access</span><ArrowRight size={15}/></>}
@@ -55,7 +53,6 @@ export function IntelligenceWaitlist() {
       </form>
       {alreadyJoined && <p className="intel-notice" role="status"><Check size={14}/> You&apos;re already on the waitlist. We&apos;ll be in touch.</p>}
       {error && <p className="intel-error" role="alert">{error}</p>}
-      <p className="intel-stats"><ScrambleNumber value={COVERAGE.firms}/> firms · <ScrambleNumber value={COVERAGE.people}/> people · <ScrambleNumber value={COVERAGE.deals}/> deals</p>
     </div>
   );
 }

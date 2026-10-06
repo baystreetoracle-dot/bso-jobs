@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
  * in from left to right until the real value is showing. Skipped for reduced-motion users.
  */
 export function ScrambleNumber({ value, duration = 1300, delay = 150 }: { value: number; duration?: number; delay?: number }) {
-  const target = String(value);
+  const target = value.toLocaleString("en-CA");
   const [text, setText] = useState(target);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function ScrambleNumber({ value, duration = 1300, delay = 150 }: { value:
       if (now - last > 45) {
         last = now;
         const locked = Math.floor(progress * target.length);
-        setText(Array.from(target, (digit, index) => index < locked ? digit : String(Math.floor(Math.random() * 10))).join(""));
+        setText(Array.from(target, (digit, index) => index < locked || !/\d/.test(digit) ? digit : String(Math.floor(Math.random() * 10))).join(""));
       }
       frame = requestAnimationFrame(tick);
     };

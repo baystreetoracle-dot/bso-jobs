@@ -4,6 +4,8 @@ import Link from "next/link";
 import { IntelligenceLogoStrip } from "@/components/intelligence-firm-preview";
 import { IntelligenceHero } from "@/components/intelligence-hero";
 import { IntelligenceWaitlist } from "@/components/intelligence-waitlist";
+import { ScrambleNumber } from "@/components/scramble-number";
+import { COVERAGE } from "@/lib/intelligence/coverage";
 import { getActiveJobs } from "@/lib/jobs/server";
 import "./intelligence.css";
 
@@ -38,13 +40,15 @@ export default async function IntelligencePage() {
       </header>
 
       <IntelligenceHero>
+        <p className="intel-kicker">Private beta · Early access now open</p>
         <h1>Everything you need to know about Canadian <span className="intel-kern-f">f</span>inance.</h1>
-        <p className="intel-lede">Who leads each firm, what they are doing, and when they hire. Every fact sourced.</p>
+        <p className="intel-lede"><span className="intel-proof"><ScrambleNumber value={COVERAGE.firms}/> firms. <ScrambleNumber value={COVERAGE.people}/> people. <ScrambleNumber value={COVERAGE.deals}/> deals. <span className="intel-nowrap">Every fact sourced.</span></span> Add your email to get in before everyone else.</p>
         <IntelligenceWaitlist/>
         <p className="intel-partner">
           <span>Recruiting data developed with</span>
           <Image src="/partners/frontrun.png" alt="FrontRun" width={359} height={53} style={{width:112,height:"auto"}}/>
         </p>
+        <p className="intel-logo-hint">Tap a firm to preview its profile</p>
         <IntelligenceLogoStrip hiring={[...hiring]}/>
       </IntelligenceHero>
     </div>

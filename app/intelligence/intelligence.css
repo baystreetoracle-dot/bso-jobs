@@ -15,13 +15,17 @@ html:has(.intel-page){-webkit-tap-highlight-color:transparent}
 .intel-header .product-switch a:hover{color:var(--i-ink)}
 .intel-header .product-switch a[aria-current=page]{color:var(--i-accent)}
 
-.intel-hero{position:relative;flex:1;padding:48px 20px 72px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.intel-hero{position:relative;flex:1;padding:clamp(24px,5svh,56px) 20px clamp(24px,6svh,72px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .intel-hero>*{position:relative}
 .intel-hero-content{width:100%;display:flex;flex-direction:column;align-items:center}
 .intel-hero .intel-hero-glow{position:absolute;inset:0 0 auto;height:520px;max-height:100%;pointer-events:none;background:radial-gradient(55% 60% at 50% 0%,rgb(0 120 0 / .22),transparent 70%)}
-.intel-hero h1{max-width:820px;margin:0;font:400 clamp(2.5rem,6.4vw,4.9rem)/.98 Georgia,"Times New Roman",serif;letter-spacing:-.045em;font-variant-ligatures:no-common-ligatures}
+.intel-hero h1{max-width:820px;margin:0;font:400 clamp(2.5rem,min(6.4vw,9svh),4.9rem)/.98 Georgia,"Times New Roman",serif;letter-spacing:-.045em;font-variant-ligatures:no-common-ligatures}
 .intel-kern-f{margin-right:.04em}
 .intel-lede{max-width:720px;margin:24px 0 0;color:var(--i-muted);font:16px/1.6 Arial,Helvetica,sans-serif}
+.intel-kicker{margin:0 0 22px;color:var(--i-accent);font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.intel-proof{display:block;color:var(--i-ink-2);font-variant-numeric:tabular-nums}
+.intel-nowrap{white-space:nowrap}
+.intel-logo-hint{margin:34px 0 0;color:var(--i-faint);font-size:11.5px;letter-spacing:.02em}
 
 .intel-waitlist{width:100%;max-width:576px;margin-top:36px}
 .intel-email{height:56px;padding:0 6px 0 24px;display:flex;align-items:center;gap:12px;border-radius:999px;background:var(--i-card);color:var(--i-muted);transition:color .2s}
@@ -37,13 +41,12 @@ html:has(.intel-page){-webkit-tap-highlight-color:transparent}
 .intel-email>input.intel-honeypot{position:absolute;left:-10000px;width:1px;height:1px;opacity:0;pointer-events:none}
 .intel-error{margin:14px 0 0;color:#e08a7a;font-size:13px}
 .intel-notice{margin:14px 0 0;display:inline-flex;align-items:center;gap:7px;color:var(--i-accent);font-size:13px}
-.intel-stats{margin:18px 0 0;color:var(--i-faint);font-size:13px;font-variant-numeric:tabular-nums}
 .scramble-number{position:relative}
 .scramble-number-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 .intel-partner{margin:28px 0 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 9px;color:var(--i-faint);font-size:11.5px}
 .intel-partner img{opacity:.7;max-width:none}
-.intel-logos{margin:40px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.intel-logos{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 .intel-logos button{width:44px;height:44px;padding:0;display:grid;place-items:center;overflow:hidden;background:#fff;border:1px solid #cbd3c9;opacity:.7;filter:grayscale(1);cursor:pointer;transition:filter .3s,opacity .3s,transform .3s cubic-bezier(.22,1,.36,1)}
 .intel-logos button:focus-visible{opacity:1;filter:grayscale(0);transform:translateY(-2px)}
 @media(hover:hover) and (pointer:fine){.intel-logos button:hover{opacity:1;filter:grayscale(0);transform:translateY(-2px)}}
@@ -204,9 +207,11 @@ html:has(.fp-dialog[open]){overflow:hidden}
   .intel-lede{margin-top:clamp(12px,2.6svh,22px);font-size:14.5px;line-height:1.5}
   .intel-waitlist{margin-top:clamp(24px,6svh,52px)}
   .intel-email{height:56px}
-  .intel-stats,.intel-notice,.intel-error{margin-top:clamp(14px,2.8svh,24px)}
-  .intel-partner{margin-top:clamp(22px,5.5svh,48px)}
-  .intel-logos{margin-top:clamp(16px,3.6svh,32px)}
+  .intel-kicker{margin-bottom:clamp(12px,2.6svh,22px);font-size:.62rem;letter-spacing:.14em}
+  .intel-notice,.intel-error{margin-top:clamp(12px,2.4svh,20px)}
+  .intel-partner{margin-top:clamp(20px,4.6svh,40px)}
+  .intel-logo-hint{margin-top:clamp(16px,3.4svh,30px);font-size:11px}
+  .intel-logos{margin-top:10px}
 }
 /* iOS rubber-bands the document even when it fits, and Instagram's in-app browser grows its toolbar
    while you drag. Pin the page to the viewport so the document has nothing to scroll or bounce;
@@ -222,6 +227,15 @@ html:has(.fp-dialog[open]){overflow:hidden}
   .intel-header{height:52px}
   .intel-hero{padding-top:10px;padding-bottom:14px}
   .intel-waitlist{margin-top:18px}
-  .intel-partner{margin-top:16px}
-  .intel-logos{margin-top:12px}
+  .intel-partner{margin-top:14px}
+  .intel-logo-hint{margin-top:12px}
+  .intel-logos{margin-top:8px}
+}
+/* Short desktop windows (small laptops, browser chrome): tighten the vertical rhythm to stay on one screen. */
+@media(min-width:721px) and (max-height:800px){
+  .intel-kicker{margin-bottom:16px}
+  .intel-lede{margin-top:18px}
+  .intel-waitlist{margin-top:28px}
+  .intel-partner{margin-top:22px}
+  .intel-logo-hint{margin-top:24px}
 }
