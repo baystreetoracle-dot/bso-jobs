@@ -166,12 +166,10 @@ html:has(.fp-dialog[open]){overflow:hidden}
 }
 @media(prefers-reduced-motion:reduce){.fp-dialog,.fp-dialog::backdrop,.fp-reveal{animation:none!important}}
 
-/* After joining: the hero lifts away, the firm reel plays, then the confirmation settles in. */
+/* After joining: the hero lifts away and the confirmation settles in. */
 @keyframes intel-away{to{opacity:0;transform:translateY(-28px);filter:blur(4px)}}
 @keyframes intel-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes intel-fade-in{from{opacity:0}to{opacity:1}}
-@keyframes reel-in{from{transform:translateY(-105%);opacity:0;filter:blur(3px)}to{transform:none;opacity:1;filter:blur(0)}}
-@keyframes reel-out{from{transform:none;opacity:1;filter:blur(0)}to{transform:translateY(105%);opacity:0;filter:blur(3px)}}
 .intel-hero.is-leaving .intel-hero-content{pointer-events:none}
 .intel-hero.is-leaving .intel-hero-content>*{animation:intel-away .5s cubic-bezier(.55,0,1,.45) both}
 .intel-hero.is-leaving .intel-hero-content>:nth-child(2){animation-delay:60ms}
@@ -179,18 +177,6 @@ html:has(.fp-dialog[open]){overflow:hidden}
 .intel-hero.is-leaving .intel-hero-content>:nth-child(4){animation-delay:180ms}
 .intel-hero.is-leaving .intel-hero-content>:nth-child(n+5){animation-delay:240ms}
 
-.firm-reel{animation:intel-fade-in .5s ease-out both;transition:opacity .6s ease-out}
-.firm-reel.is-leaving{opacity:0;pointer-events:none}
-.firm-reel-line{margin:0;display:flex;align-items:baseline;justify-content:center;white-space:nowrap;color:var(--i-ink);font:400 min(3rem,calc((100vw - 48px) / 22))/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.03em;font-variant-ligatures:no-common-ligatures}
-.firm-reel-slot{position:relative;display:inline-grid;text-align:left}
-.firm-reel-sizer{grid-area:1/1;visibility:hidden}
-.firm-reel-window{position:absolute;inset:-.35em 0;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 38%,#000 62%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 38%,#000 62%,transparent)}
-.firm-reel-name{position:absolute;left:0;right:0;top:.35em;display:block;color:var(--i-ink-2);will-change:transform,opacity}
-.firm-reel-name.is-in{animation:reel-in var(--reel-ms) cubic-bezier(.22,1,.36,1) both}
-.firm-reel-name.is-out{animation:reel-out calc(var(--reel-ms) * .6) cubic-bezier(.55,0,1,.45) both}
-.firm-reel-name.is-resolved{color:var(--i-accent)}
-.firm-reel-skip{position:fixed;right:24px;bottom:24px;padding:6px;border:0;background:none;color:var(--i-faint);font:13px Arial,Helvetica,sans-serif;cursor:pointer;transition:color .2s}
-.firm-reel-skip:hover{color:var(--i-ink)}
 
 .intel-done{display:flex;flex-direction:column;align-items:center;animation:intel-rise .7s cubic-bezier(.22,1,.36,1) both}
 .intel-done-icon{width:52px;height:52px;display:grid;place-items:center;border:1px solid rgb(92 185 107 / .4);border-radius:999px;background:linear-gradient(180deg,#123a22,#0b2415);color:var(--i-accent);box-shadow:inset 0 1px 0 rgb(255 255 255 / .09),0 12px 32px -14px rgb(0 120 0 / .8)}
@@ -198,4 +184,4 @@ html:has(.fp-dialog[open]){overflow:hidden}
 .intel-done p{margin:16px 0 0;color:var(--i-muted);font:16px/1.6 Arial,Helvetica,sans-serif}
 .intel-done-link{margin-top:34px;padding-bottom:5px;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--i-line-strong);color:var(--i-ink-2);font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;transition:color .2s,border-color .2s}
 .intel-done-link:hover{color:var(--i-accent);border-color:var(--i-accent)}
-@media(prefers-reduced-motion:reduce){.intel-hero.is-leaving .intel-hero-content>*,.firm-reel,.firm-reel-name,.intel-done{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.intel-hero.is-leaving .intel-hero-content>*,.intel-done{animation:none!important}}

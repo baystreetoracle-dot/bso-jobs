@@ -26,9 +26,9 @@ export default async function IntelligencePage() {
     <div className="intel-page">
       <header className="intel-header">
         <div className="brand-group">
-          <Link className="brand" href="/"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link>
+          <Link className="brand" href="/intelligence"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link>
           <div className="product-switch" role="group" aria-label="Bay Street Oracle products">
-            <Link href="/">Jobs</Link>
+            <Link href="/jobs">Jobs</Link>
             <Link href="/intelligence" aria-current="page">Intelligence</Link>
           </div>
         </div>

@@ -7,13 +7,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.baystreetoracle.ca"),
   title: "BSO Jobs — The Canadian Capital Markets Job Board",
   description: "Curated jobs, firms and career intelligence for Canada's capital-markets community.",
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "BSO Jobs",
     title: "BSO Jobs — The Canadian Capital Markets Job Board",
     description: "Curated jobs, firms and career intelligence for Canada's capital-markets community.",
-    url: "/",
   },
   robots: {
     index: true,

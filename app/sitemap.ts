@@ -8,10 +8,9 @@ export default async function sitemap():Promise<MetadataRoute.Sitemap>{
   const jobs=await getActiveJobs();
   const latest=jobs.reduce((value,job)=>job.updated_at>value?job.updated_at:value,"2026-09-01T00:00:00.000Z");
   const fixed:MetadataRoute.Sitemap=[
-    {url:SITE_URL,lastModified:latest,changeFrequency:"weekly",priority:1},
     {url:`${SITE_URL}/jobs`,lastModified:latest,changeFrequency:"daily",priority:.95},
     {url:`${SITE_URL}/companies`,lastModified:latest,changeFrequency:"daily",priority:.75},
-    {url:`${SITE_URL}/intelligence`,changeFrequency:"monthly",priority:.6},
+    {url:`${SITE_URL}/intelligence`,changeFrequency:"monthly",priority:1},
     ...["toronto","internships","analyst","associate"].map(segment=>({url:`${SITE_URL}/jobs/investment-banking/${segment}`,lastModified:latest,changeFrequency:"daily" as const,priority:.85})),
   ];
   const companyEntries=Array.from(new Set(jobs.map(job=>job.company_name))).map(company=>{
