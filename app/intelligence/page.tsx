@@ -40,7 +40,7 @@ export default async function IntelligencePage() {
       </header>
 
       <IntelligenceHero>
-        <p className="intel-kicker">Private beta · Early access now open</p>
+        <p className="intel-kicker">Private beta</p>
         <h1>The full Canadian <span className="intel-kern-f">f</span>inance database is coming soon.</h1>
         <p className="intel-lede"><span className="intel-proof"><ScrambleNumber value={COVERAGE.firms}/> firms. <ScrambleNumber value={COVERAGE.people}/> people. <ScrambleNumber value={COVERAGE.deals}/> deals. <span className="intel-nowrap">Every fact sourced.</span></span> Add your email to get in before everyone else.</p>
         <IntelligenceWaitlist/>
