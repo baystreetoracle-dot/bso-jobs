@@ -1,0 +1,315 @@
+[
+  {
+    "slug": "rbc-capital-markets",
+    "name": "RBC Capital Markets",
+    "type": "Canadian Investment Bank",
+    "logo": "/company-logos/bso-supplied/rbc-capital-markets.webp",
+    "headquarters": "Toronto, ON",
+    "tagline": "Royal Bank of Canada's global corporate and investment bank, which RBC describes as having the scale of a top-10 global investment bank.",
+    "brief": "RBC Capital Markets is the brand under which Royal Bank of Canada runs its corporate and investment banking and markets business; several legal entities operate under it, including RBC Dominion Securities Inc., RBC Capital Markets, LLC and RBC Europe Limited.",
+    "founded": 1900,
+    "counts": {
+      "people": 28,
+      "moves": 16,
+      "deals": 14,
+      "changes": 20,
+      "programs": 4,
+      "interviews": 10,
+      "sources": 64
+    },
+    "leaders": [
+      {
+        "name": "Derek Neldner",
+        "title": "CEO and Group Head, RBC Capital Markets & Co-Head, Global Transaction Banking",
+        "photo": "https://www.rbc.com/newsroom/_assets-custom/images/derek-neldner-sm.jpg"
+      },
+      {
+        "name": "Matthew R. Stopnik",
+        "title": "Global Head, Investment Banking",
+        "photo": "https://www.rbccm.com/assets/rbccm/images/leadership/matthew-stopnik.webp"
+      },
+      {
+        "name": "Jonathan Hunter",
+        "title": "Head, Global Markets",
+        "photo": "https://www.rbccm.com/assets/rbccm/images/leadership/jonathan-hunter.webp"
+      }
+    ],
+    "latestMove": {
+      "person": "Rob Brass",
+      "type": "hire",
+      "title": "Managing Director, Head of Global Semiconductors & Electronics",
+      "date": "2026-10-01"
+    },
+    "latestDeal": {
+      "target": "FireBird Energy II",
+      "role": "Financial advisor (client side not specified on RBC's listing)",
+      "value": null,
+      "currency": null,
+      "date": "2026-08-01"
+    }
+  },
+  {
+    "slug": "goldman-sachs",
+    "name": "Goldman Sachs",
+    "type": "Global Bank",
+    "logo": "/company-logos/bso-supplied/goldman-sachs.webp",
+    "headquarters": "Toronto, ON",
+    "tagline": "Goldman Sachs' Canadian dealer, advising and financing Canadian companies from Toronto and Calgary.",
+    "brief": "Goldman Sachs operates in Canada through Goldman Sachs Canada Inc., with offices in Toronto (TD North Tower) and Calgary (Bankers Hall), where a commodities affiliate, Goldman Sachs Global Commodities (Canada) Corporation, is also registered.",
+    "founded": null,
+    "counts": {
+      "people": 3,
+      "moves": 0,
+      "deals": 3,
+      "changes": 3,
+      "programs": 0,
+      "interviews": 0,
+      "sources": 11
+    },
+    "leaders": [
+      {
+        "name": "Michael Klym",
+        "title": "Chief Executive Officer, Goldman Sachs Canada Inc.",
+        "photo": null
+      },
+      {
+        "name": "Ryan Hui, CFA",
+        "title": "Vice President, Investment Banking",
+        "photo": null
+      },
+      {
+        "name": "David Hatch",
+        "title": "Vice President",
+        "photo": null
+      }
+    ],
+    "latestMove": null,
+    "latestDeal": {
+      "target": "Bank of Montreal AT1 Limited Recourse Capital Notes, Series 7",
+      "role": "Joint Bookrunner",
+      "value": 1000000000,
+      "currency": "USD",
+      "date": "2026-09-08"
+    }
+  },
+  {
+    "slug": "cpp-investments",
+    "name": "CPP Investments",
+    "type": "Pension Fund",
+    "logo": "/company-logos/bso-supplied/cpp-investments.webp",
+    "headquarters": "Toronto, ON",
+    "tagline": "Canada's national pension investor, managing the CPP Fund for more than 22 million Canadians across public and private markets worldwide.",
+    "brief": "CPP Investments is the Crown-created investment organization that manages the Canada Pension Plan Fund, investing money the CPP does not need today to pay benefits.",
+    "founded": 1997,
+    "counts": {
+      "people": 16,
+      "moves": 13,
+      "deals": 13,
+      "changes": 22,
+      "programs": 9,
+      "interviews": 4,
+      "sources": 60
+    },
+    "leaders": [
+      {
+        "name": "John Graham",
+        "title": "President & Chief Executive Officer",
+        "photo": "https://cdn3.cppinvestments.com/wp-content/uploads/2024/11/JohnGraham_Headshot_Q2F25_.jpg"
+      },
+      {
+        "name": "Maximilian Biagosch",
+        "title": "Senior Managing Director, Global Head of Real Assets & Head of Europe",
+        "photo": "https://cdn3.cppinvestments.com/wp-content/uploads/2024/11/Maximilian_Headshot_Q2F25_.jpg"
+      },
+      {
+        "name": "Edwin D. Cass",
+        "title": "Senior Managing Director & Chief Investment Officer",
+        "photo": "https://cdn4.cppinvestments.com/wp-content/uploads/2024/11/Ed_Headshot_Q2F25_.jpg"
+      }
+    ],
+    "latestMove": {
+      "person": "Geoffrey Rubin",
+      "type": "appointment",
+      "title": "Senior Managing Director, One Fund Strategist & Head of Asia Pacific",
+      "date": "2026-08-14"
+    },
+    "latestDeal": {
+      "target": "10.5% of WestConnex and 25% of NorthWestern Roads Group",
+      "role": "Seller",
+      "value": 4500000000,
+      "currency": "AUD",
+      "date": "2026-10-01"
+    }
+  },
+  {
+    "slug": "brookfield",
+    "name": "Brookfield Asset Management",
+    "type": "Private Equity",
+    "headquarters": "New York, NY · Toronto, ON",
+    "logo": "/company-logos/bso-supplied/brookfield-asset-management.webp",
+    "tagline": "Global alternative investment group with over US$1 trillion in AUM across infrastructure, energy, private equity, real estate and credit",
+    "brief": "Brookfield is one of the world's largest alternative investment groups, investing for institutions and individuals across infrastructure, renewable power and transition, private equity, real estate and credit.",
+    "founded": 1899,
+    "counts": {
+      "people": 9,
+      "moves": 2,
+      "deals": 3,
+      "changes": 6,
+      "programs": 3,
+      "interviews": 0,
+      "sources": 14
+    },
+    "leaders": [
+      {
+        "name": "Connor Teskey",
+        "title": "CEO, Brookfield Asset Management; CEO, Energy",
+        "photo": "https://www.brookfield.com/sites/default/files/styles/featured_speakers_2x/public/2025-07/Connor-Teskey_Leadership_1920x2160.jpg?h=6df1fe44&itok=9dESbyfq"
+      },
+      {
+        "name": "Bruce Flatt",
+        "title": "CEO, Brookfield Corporation; Chair, Brookfield Asset Management",
+        "photo": "https://www.brookfield.com/sites/default/files/styles/featured_speakers_2x/public/2025-07/Bruce-Flatt_Leadership_1920x2160.jpg?h=43ea6a7e&itok=yrvtkPwV"
+      },
+      {
+        "name": "Nicholas Goodman",
+        "title": "President & CFO, Brookfield Corporation",
+        "photo": "https://www.brookfield.com/sites/default/files/styles/featured_speakers_2x/public/2025-07/Nicholas-Goodman_Leadership_1920x2160.jpg?h=b55cef1f&itok=yqeRAAqs"
+      }
+    ],
+    "latestMove": {
+      "person": "Howard Marks",
+      "type": "appointment",
+      "title": "Co-Chair, Oaktree; Chair, Brookfield Investment Solutions Group",
+      "date": "2026-08-03"
+    },
+    "latestDeal": {
+      "target": "Reliance Worldwide Corporation (ASX: RWC)",
+      "role": "Acquirer",
+      "value": 2800000000,
+      "currency": "USD",
+      "date": "2026-09-15"
+    }
+  },
+  {
+    "slug": "evercore",
+    "name": "Evercore",
+    "type": "Global Independent Advisory",
+    "logo": "/company-logos/bso-supplied/evercore-inc.webp",
+    "headquarters": "Toronto, ON",
+    "tagline": "Independent advisory firm with a Toronto Strategic Advisory (M&A) office on Bay Street.",
+    "brief": "Evercore's Canadian presence is one office at 181 Bay Street in Toronto, its only Canadian location.",
+    "founded": null,
+    "counts": {
+      "people": 2,
+      "moves": 0,
+      "deals": 3,
+      "changes": 3,
+      "programs": 1,
+      "interviews": 0,
+      "sources": 9
+    },
+    "leaders": [
+      {
+        "name": "Jonathan Bassani",
+        "title": "Managing Director, Strategic Advisory",
+        "photo": null
+      },
+      {
+        "name": "Andrew MacNiven",
+        "title": "Senior Managing Director, Head of Canada",
+        "photo": "https://www.evercore.com/wp-content/uploads/2023/08/andrew_macniven.jpg"
+      }
+    ],
+    "latestMove": null,
+    "latestDeal": {
+      "target": "Lyons Magnus",
+      "role": "Financial advisor to Seller (PSP Investments)",
+      "value": null,
+      "currency": null,
+      "date": "2026-07-20"
+    }
+  },
+  {
+    "slug": "ontario-teachers",
+    "name": "Ontario Teachers' Pension Plan",
+    "type": "Pension Fund",
+    "logo": "/company-logos/bso-supplied/ontario-teachers-pension-plan.webp",
+    "headquarters": "Toronto, ON",
+    "tagline": "Fully funded defined benefit plan for Ontario's teachers and an active global direct investor.",
+    "brief": "Ontario Teachers' administers defined benefit pensions for 346,000 working and retired Ontario teachers and had C$303.2 billion in net assets at June 30, 2026.",
+    "founded": 1990,
+    "counts": {
+      "people": 12,
+      "moves": 5,
+      "deals": 4,
+      "changes": 9,
+      "programs": 2,
+      "interviews": 0,
+      "sources": 25
+    },
+    "leaders": [
+      {
+        "name": "Jo Taylor",
+        "title": "President & CEO",
+        "photo": "https://s7d1.scene7.com/is/image/otpp/OTPP_TAYLOR_jo_186_web-1:CBio?wid=290&hei=195&fmt=webp"
+      },
+      {
+        "name": "Gillian Brown",
+        "title": "Chief Investment Officer, Public & Private Investments",
+        "photo": "https://s7d1.scene7.com/is/image/otpp/OTPP_BROWN_gillian_095_web-1:CBio?wid=290&hei=195&fmt=webp"
+      },
+      {
+        "name": "Stephen McLennan",
+        "title": "Chief Investment Officer, Asset Allocation",
+        "photo": "https://s7d1.scene7.com/is/image/otpp/otpp-mclennan-stephen-0388-web:CBio?wid=290&hei=195&fmt=webp"
+      }
+    ],
+    "latestMove": {
+      "person": "Cathy Cranston",
+      "type": "appointment",
+      "title": "Board Chair",
+      "date": "2027-01-01"
+    },
+    "latestDeal": {
+      "target": "EliseAI",
+      "role": "Co-investor",
+      "value": 350000000,
+      "currency": "USD",
+      "date": "2026-09-29"
+    }
+  },
+  {
+    "slug": "jp-morgan",
+    "name": "J.P. Morgan",
+    "type": "Global Bank",
+    "logo": "/company-logos/bso-supplied/jpmorgan.webp",
+    "headquarters": "Toronto, ON",
+    "tagline": "JPMorganChase's Canadian franchise: about 600 people in Toronto, Montreal, Calgary and Vancouver.",
+    "brief": "J.P. Morgan says it employs more than 600 people in Canada across five lines of business, with teams in Toronto, Montreal, Calgary and Vancouver.",
+    "founded": null,
+    "counts": {
+      "people": 1,
+      "moves": 0,
+      "deals": 5,
+      "changes": 5,
+      "programs": 0,
+      "interviews": 0,
+      "sources": 7
+    },
+    "leaders": [
+      {
+        "name": "David Rawlings",
+        "title": "Chief Executive Officer, J.P. Morgan Bank Canada; Principal Officer, JPMorgan Chase Bank, N.A. (Toronto branch)",
+        "photo": null
+      }
+    ],
+    "latestMove": null,
+    "latestDeal": {
+      "target": "Sagicor Financial senior notes",
+      "role": "Agent (J.P. Morgan Securities Canada Inc.)",
+      "value": 350000000,
+      "currency": "CAD",
+      "date": "2026-09-22"
+    }
+  }
+]

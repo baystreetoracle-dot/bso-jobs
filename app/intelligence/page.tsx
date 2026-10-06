@@ -1,0 +1,49 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { IntelligenceLogoStrip } from "@/components/intelligence-firm-preview";
+import { IntelligenceHero } from "@/components/intelligence-hero";
+import { IntelligenceWaitlist } from "@/components/intelligence-waitlist";
+import { getActiveJobs } from "@/lib/jobs/server";
+import "./intelligence.css";
+
+export const revalidate = 300;
+
+const title = "BSO Intelligence — Early Access | Bay Street Oracle";
+const description = "Everything you need to know about Canadian finance: who leads each firm, what they are doing, and when they hire. Join the BSO Intelligence waitlist.";
+
+export const metadata: Metadata = {
+  title,
+  description,
+  alternates: { canonical: "/intelligence" },
+  openGraph: { title, description, url: "/intelligence", type: "website" },
+};
+export default async function IntelligencePage() {
+  // Firms with active roles get an "Open roles" link in their preview (their BSO Jobs company page exists).
+  const hiring = new Set((await getActiveJobs().catch(() => [])).map((job) => job.company_name));
+
+  return (
+    <div className="intel-page">
+      <header className="intel-header">
+        <div className="brand-group">
+          <Link className="brand" href="/"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link>
+          <div className="product-switch" role="group" aria-label="Bay Street Oracle products">
+            <Link href="/">Jobs</Link>
+            <Link href="/intelligence" aria-current="page">Intelligence</Link>
+          </div>
+        </div>
+      </header>
+
+      <IntelligenceHero>
+        <h1>Everything you need to know about Canadian finance.</h1>
+        <p className="intel-lede">Who leads each firm, what they are doing, and when they hire. Every fact sourced.</p>
+        <IntelligenceWaitlist/>
+        <p className="intel-partner">
+          <span>Recruiting data developed with</span>
+          <Image src="/partners/frontrun.png" alt="FrontRun" width={359} height={53} style={{width:112,height:"auto"}}/>
+        </p>
+        <IntelligenceLogoStrip hiring={[...hiring]}/>
+      </IntelligenceHero>
+    </div>
+  );
+}
