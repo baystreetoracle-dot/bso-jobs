@@ -11,11 +11,11 @@
     "counts": {
       "people": 28,
       "moves": 16,
-      "deals": 14,
+      "deals": 295,
       "changes": 20,
       "programs": 4,
-      "interviews": 10,
-      "sources": 64
+      "interviews": 6,
+      "sources": 434
     },
     "leaders": [
       {
@@ -41,11 +41,11 @@
       "date": "2026-10-01"
     },
     "latestDeal": {
-      "target": "FireBird Energy II",
-      "role": "Financial advisor (client side not specified on RBC's listing)",
-      "value": null,
-      "currency": null,
-      "date": "2026-08-01"
+      "target": "The Boots Group",
+      "role": "Financial advisor to Wittington",
+      "value": 8900000000,
+      "currency": "USD",
+      "date": "2026-10-07"
     }
   },
   {
@@ -60,11 +60,11 @@
     "counts": {
       "people": 3,
       "moves": 0,
-      "deals": 3,
+      "deals": 114,
       "changes": 3,
       "programs": 0,
-      "interviews": 0,
-      "sources": 11
+      "interviews": 6,
+      "sources": 155
     },
     "leaders": [
       {
@@ -104,11 +104,11 @@
     "counts": {
       "people": 16,
       "moves": 13,
-      "deals": 453,
+      "deals": 457,
       "changes": 22,
       "programs": 9,
-      "interviews": 4,
-      "sources": 500
+      "interviews": 5,
+      "sources": 493
     },
     "leaders": [
       {
@@ -153,11 +153,11 @@
     "counts": {
       "people": 9,
       "moves": 2,
-      "deals": 106,
+      "deals": 145,
       "changes": 6,
       "programs": 3,
-      "interviews": 0,
-      "sources": 124
+      "interviews": 2,
+      "sources": 177
     },
     "leaders": [
       {
@@ -202,11 +202,11 @@
     "counts": {
       "people": 2,
       "moves": 0,
-      "deals": 3,
+      "deals": 34,
       "changes": 3,
       "programs": 1,
-      "interviews": 0,
-      "sources": 9
+      "interviews": 2,
+      "sources": 49
     },
     "leaders": [
       {
@@ -222,11 +222,11 @@
     ],
     "latestMove": null,
     "latestDeal": {
-      "target": "Lyons Magnus",
-      "role": "Financial advisor to Seller (PSP Investments)",
+      "target": "Otodata Holdings Inc.",
+      "role": "Financial advisor to Otodata",
       "value": null,
       "currency": null,
-      "date": "2026-07-20"
+      "date": "2026-09-01"
     }
   },
   {
@@ -241,11 +241,11 @@
     "counts": {
       "people": 12,
       "moves": 5,
-      "deals": 138,
+      "deals": 151,
       "changes": 9,
       "programs": 2,
-      "interviews": 0,
-      "sources": 162
+      "interviews": 6,
+      "sources": 174
     },
     "leaders": [
       {
@@ -290,11 +290,11 @@
     "counts": {
       "people": 1,
       "moves": 0,
-      "deals": 5,
+      "deals": 119,
       "changes": 5,
       "programs": 0,
-      "interviews": 0,
-      "sources": 7
+      "interviews": 3,
+      "sources": 147
     },
     "leaders": [
       {
