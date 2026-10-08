@@ -250,7 +250,8 @@ function Avatar({ name, photo }: { name: string; photo: string | null }) {
 
 const label = (type: string) => type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, " ");
 
-const month = (date: string) => new Date(`${date}T12:00:00Z`).toLocaleDateString("en-CA", { month: "short", year: "numeric", timeZone: "UTC" });
+// Research dates are YYYY-MM-DD, or YYYY-MM when only the month is known.
+const month = (date: string) => new Date(`${date.slice(0, 7)}-01T12:00:00Z`).toLocaleDateString("en-CA", { month: "short", year: "numeric", timeZone: "UTC" });
 
 function money(value: number, currency: string | null) {
   const prefix = currency === "USD" ? "US$" : currency === "CAD" ? "C$" : currency === "AUD" ? "A$" : currency ? `${currency} ` : "$";

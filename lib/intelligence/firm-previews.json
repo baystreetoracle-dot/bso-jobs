@@ -104,11 +104,11 @@
     "counts": {
       "people": 16,
       "moves": 13,
-      "deals": 13,
+      "deals": 453,
       "changes": 22,
       "programs": 9,
       "interviews": 4,
-      "sources": 60
+      "sources": 500
     },
     "leaders": [
       {
@@ -153,11 +153,11 @@
     "counts": {
       "people": 9,
       "moves": 2,
-      "deals": 3,
+      "deals": 106,
       "changes": 6,
       "programs": 3,
       "interviews": 0,
-      "sources": 14
+      "sources": 124
     },
     "leaders": [
       {
@@ -241,11 +241,11 @@
     "counts": {
       "people": 12,
       "moves": 5,
-      "deals": 4,
+      "deals": 138,
       "changes": 9,
       "programs": 2,
       "interviews": 0,
-      "sources": 25
+      "sources": 162
     },
     "leaders": [
       {

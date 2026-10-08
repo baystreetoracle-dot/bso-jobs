@@ -15,7 +15,7 @@ export const revalidate = 300;
 export const viewport: Viewport = { themeColor: "#0c0c0c", colorScheme: "dark" };
 
 const title = "Early Access | BSO Intelligence";
-const description = "All of Bay Street, coming soon: 202 firms, 961 people and 3,383 deals, every fact sourced. Join the BSO Intelligence waitlist for early access.";
+const description = "All of Bay Street, coming soon: 204 firms, 1,214 people and 5,136 deals, every fact sourced. Join the BSO Intelligence waitlist for early access.";
 
 export const metadata: Metadata = {
   title,

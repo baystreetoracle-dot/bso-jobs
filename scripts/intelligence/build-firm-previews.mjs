@@ -36,7 +36,9 @@ const previews = FIRMS.map((firm) => {
   const moves = (data.people_moves ?? []).filter(verified).sort(byDateDesc("effective_date"));
   const deals = (data.deals ?? []).filter((deal) => deal.announcement_date).sort(byDateDesc("announcement_date"));
   const move = moves[0];
-  const deal = deals[0];
+  // The one visible deal prefers a hand-curated record (it carries an industry and a clean target)
+  // over a newsroom-ingested one, whose "target" is the press-release headline.
+  const deal = deals.find((item) => item.industry) ?? deals[0];
   return {
     ...firm,
     headquarters: firm.headquarters ?? data.firm.headquarters ?? null,
