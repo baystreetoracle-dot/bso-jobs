@@ -176,7 +176,7 @@ const careerPathLabels:Record<string,string> = {
 const careerPathOrder = ["Investment Banking","Corporate Finance","Private Equity","Private Credit","Asset Management","Hedge Funds"];
 const displayCategory = (company:string, storedCategory:string) => corporateFinanceFirms.has(company) ? "Corporate Finance" : careerPathLabels[storedCategory]??storedCategory;
 const rankOrder = ["Intern / Co-op","Analyst","Associate","Vice President","Director","Managing Director"] as const;
-const featuredExternalJobOrder = ["anson-investment-analyst-2026-09","R2052799","26997599"];
+const featuredExternalJobOrder = ["R-0000189896","R2052799","26997599"];
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
 const homepageTrendingOrder = ["CSS-0012600","JR101593","7058","210790829","549798030828","R7181"];
 const marqueeLogos = [
