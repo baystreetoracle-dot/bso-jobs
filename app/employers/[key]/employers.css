@@ -183,3 +183,13 @@ html:has(.emp-dialog[open]){overflow:hidden}
 .emp-gate-form .emp-button:disabled{opacity:.45;cursor:not-allowed}
 .emp-paid-inner>p.emp-gate-alt{margin:38px 0 0;color:rgba(255,255,255,.6);font:400 .82rem/1.5 Arial,Helvetica,sans-serif}
 .emp-gate-alt a{color:#fff;border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:2px}
+
+/* Email alternative to the request form */
+.emp-email-alt{margin:16px 0 0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;color:var(--muted);font-size:.82rem}
+.emp-email-alt a{color:var(--forest);font-weight:700;border-bottom:1px solid var(--line)}
+.emp-email-alt button{padding:4px 9px;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;color:var(--ink);font:700 .66rem Arial,Helvetica,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.emp-custom-actions{display:grid;justify-items:center;gap:4px}
+.emp-custom-actions p.emp-email-alt{margin:12px 0 0;justify-content:center;color:rgba(255,255,255,.7);font:400 .82rem/1.4 Arial,Helvetica,sans-serif}
+.emp-custom-actions .emp-email-alt a{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
+.emp-custom-actions .emp-email-alt button{background:transparent;border-color:rgba(255,255,255,.4);color:#fff}
+@media(max-width:720px){.emp-custom-actions{justify-items:stretch}.emp-custom-actions .emp-email-alt{justify-content:flex-start}}

@@ -133,7 +133,8 @@ function RequestDialog({ pageKey, packageId, onClose }: { pageKey: string; packa
           <>
             <p className="eyebrow">{custom ? "Custom campaign" : "Request"}</p>
             <h2 id="emp-dialog-title">{custom ? "Tell us what you're hiring for." : pkg?.name}</h2>
-            {pkg && <p className="emp-dialog-price">{pkg.price ? `C$${pkg.price} per role · 30 days` : "Free"}</p>}
+            {pkg && <p className="emp-dialog-price">{pkg.price ? `C${pkg.price} per role · 30 days` : "Free"}</p>}
+            <EmailAlternative/>
             <form className="emp-form" onSubmit={submit}>
               <label className="emp-field wide"><span>Company</span><input name="companyName" autoComplete="organization" required maxLength={160}/></label>
               <label className="emp-field"><span>First name</span><input name="firstName" autoComplete="given-name" required maxLength={80}/></label>
@@ -174,6 +175,27 @@ export function JumpLink({ to, className, children }: { to: string; className?: 
     >
       {children}
     </a>
+  );
+}
+
+/** The plain-email route, for anyone who would rather write than fill in a form. */
+export function EmailAlternative({ prefix = "Prefer email?" }: { prefix?: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(EMPLOYER_EMAIL);
+      setCopied(true);
+      track("employer_email_copied");
+      window.setTimeout(() => setCopied(false), 2200);
+    } catch {
+      // The address stays on screen to copy by hand.
+    }
+  };
+  return (
+    <p className="emp-email-alt">
+      {prefix} <a href={`mailto:${EMPLOYER_EMAIL}`}>{EMPLOYER_EMAIL}</a>
+      <button type="button" onClick={copy} aria-live="polite">{copied ? <><Check size={13}/> Copied</> : "Copy"}</button>
+    </p>
   );
 }
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowRight, ArrowUpRight, Check, Lock } from "lucide-react";
-import { CheckoutLink, CountUp, EmployerPageView, EmployerRequests, JumpLink, RequestButton } from "@/components/employer-page";
+import { CheckoutLink, CountUp, EmailAlternative, EmployerPageView, EmployerRequests, JumpLink, RequestButton } from "@/components/employer-page";
 import { Reveal, SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { AUDIENCE_METRICS, AUDIENCE_NOTE, PACKAGES, checkoutUrl } from "@/lib/employers/packages";
 import "./employers.css";
@@ -136,7 +136,10 @@ export default async function EmployersPage({ params }: { params: Promise<{ key:
               <h2>Recruiting for multiple roles or running an ongoing campaign?</h2>
               <p>Tell us what you&apos;re hiring for and we&apos;ll put together a campaign around your timeline.</p>
             </div>
-            <RequestButton className="emp-button light" packageId="custom">Contact us <ArrowRight size={16}/></RequestButton>
+            <div className="emp-custom-actions">
+              <RequestButton className="emp-button light" packageId="custom">Contact us <ArrowRight size={16}/></RequestButton>
+              <EmailAlternative prefix="Or email"/>
+            </div>
           </div>
         </Reveal>
       </section>
