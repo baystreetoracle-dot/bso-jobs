@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Lock } from "lucide-react";
 import { CheckoutLink, CountUp, EmployerPageView, EmployerRequests, JumpLink, RequestButton } from "@/components/employer-page";
 import { Reveal, SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { AUDIENCE_METRICS, AUDIENCE_NOTE, PACKAGES, checkoutUrl } from "@/lib/employers/packages";
@@ -93,7 +93,8 @@ export default async function EmployersPage({ params }: { params: Promise<{ key:
                   const style = `emp-button ${pkg.emphasized ? "solid" : "outline"}`;
                   return href ? (
                     <div className="emp-card-actions">
-                      <CheckoutLink className={style} href={href} packageId={pkg.id}>Pay C${pkg.price} <ArrowRight size={16}/></CheckoutLink>
+                      <CheckoutLink className={style} href={href} packageId={pkg.id}>{pkg.cta} <ArrowRight size={16}/></CheckoutLink>
+                      <p className="emp-secure"><Lock size={12} aria-hidden="true"/> Secure checkout with Stripe</p>
                       <RequestButton className="emp-card-secondary" packageId={pkg.id}>Questions first? Send a request</RequestButton>
                     </div>
                   ) : (

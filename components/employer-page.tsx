@@ -34,6 +34,28 @@ export function EmployerRequests({ pageKey, children }: { pageKey: string; child
   );
 }
 
+/** The confirmation step in front of the employer page: tick, then continue. */
+export function EmployerGate({ destination }: { destination: string }) {
+  const [confirmed, setConfirmed] = useState(false);
+  return (
+    <form
+      className="emp-gate-form"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!confirmed) return;
+        track("employer_gate_confirmed", utmParams());
+        window.location.assign(destination + window.location.search);
+      }}
+    >
+      <label className="emp-gate-check">
+        <input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)}/>
+        <span>I confirm I&apos;m hiring on behalf of an employer or recruiting firm.</span>
+      </label>
+      <button type="submit" className="emp-button light" disabled={!confirmed}>Continue <ArrowRight size={16}/></button>
+    </form>
+  );
+}
+
 /** Records employer_checkout_completed once, on the page Stripe returns to after payment. */
 export function CheckoutCompleted({ packageId }: { packageId: string }) {
   useEffect(() => {

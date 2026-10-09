@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+
 /** The BSO Jobs header, shared by the job board and the employer pages. */
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const close = () => setMenuOpen(false);
-  return <header className="site-header"><div className="brand-group"><Link className="brand" href="/jobs"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link><div className="product-switch" role="group" aria-label="Bay Street Oracle products"><Link href="/jobs" aria-current="page">Jobs</Link><Link href="/intelligence">Intelligence</Link></div></div><nav className={menuOpen?"open":""}><Link href="/jobs" onClick={close}>Jobs</Link><Link href="/companies" onClick={close}>Companies</Link><Link href="/jobs#newsletter" onClick={close}>Newsletter</Link><a className="nav-employer" href="mailto:info@baystreetoracle.ca?subject=BSO%20Hiring%20Campaign" onClick={close}>For employers</a></nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle menu"><span/><span/></button></header>;
+  return <header className="site-header"><div className="brand-group"><Link className="brand" href="/jobs"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link><div className="product-switch" role="group" aria-label="Bay Street Oracle products"><Link href="/jobs" aria-current="page">Jobs</Link><Link href="/intelligence">Intelligence</Link></div></div><nav className={menuOpen?"open":""}><Link href="/jobs" onClick={close}>Jobs</Link><Link href="/companies" onClick={close}>Companies</Link><Link href="/jobs#newsletter" onClick={close}>Newsletter</Link><Link className="nav-employer" href="/employers" onClick={close}>For employers</Link></nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle menu"><span/><span/></button></header>;
 }
 
 /** The BSO Jobs footer, shared by the job board and the employer pages. */
