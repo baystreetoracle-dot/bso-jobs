@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-import { CountUp, EmployerPageView, PackageLink } from "@/components/employer-page";
+import { CountUp, EmployerPageView, EmployerRequests, JumpLink, RequestButton } from "@/components/employer-page";
 import { Reveal, SiteFooter, SiteHeader } from "@/components/site-chrome";
-import { AUDIENCE_METRICS, AUDIENCE_NOTE, PACKAGES, customCampaignMailto, packageMailto } from "@/lib/employers/packages";
+import { AUDIENCE_METRICS, AUDIENCE_NOTE, PACKAGES } from "@/lib/employers/packages";
 import "./employers.css";
 
 const title = "Recruit on BSO Jobs | For Employers";
 const description = "Reach Canada's next generation of finance talent. Featured listings and recruiting campaigns on BSO Jobs for investment banks, private equity firms, asset managers and investors.";
 
+// A private, unlisted page: shared by link only, never indexed. The key lives in EMPLOYER_PAGE_KEY
+// (the repository is public, so it must not appear in code).
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "/employers" },
-  openGraph: { title, description, url: "/employers", type: "website" },
+  robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
+  openGraph: { title, description, type: "website" },
 };
 
 const STEPS = [
@@ -24,12 +27,16 @@ const STEPS = [
 
 const PATHS = ["Investment banking", "Corporate finance", "Private equity", "Private credit", "Asset management", "Hedge funds"];
 
-export default function EmployersPage() {
-  const upgrade = PACKAGES.find((pkg) => pkg.id === "featured")!;
+export default async function EmployersPage({ params }: { params: Promise<{ key: string }> }) {
+  const { key } = await params;
+  const pageKey = process.env.EMPLOYER_PAGE_KEY;
+  if (!pageKey || key !== pageKey) notFound();
+
   return (
+    <EmployerRequests pageKey={key}>
     <main className="emp-page">
       <EmployerPageView/>
-      <SiteHeader current="employers"/>
+      <SiteHeader/>
 
       <section className="emp-hero" id="top">
         <div className="emp-hero-copy">
@@ -37,8 +44,8 @@ export default function EmployersPage() {
           <h1 className="emp-rise" style={{ ["--d" as string]: "90ms" }}>Reach Canada&apos;s next generation of finance talent.</h1>
           <p className="emp-hero-lede emp-rise" style={{ ["--d" as string]: "180ms" }}>BSO Jobs puts your role in front of a focused audience building careers across Canadian capital markets.</p>
           <div className="emp-hero-actions emp-rise" style={{ ["--d" as string]: "270ms" }}>
-            <a className="emp-button light" href="#packages">View packages <ArrowRight size={16}/></a>
-            <a className="emp-button ghost" href="#custom">Contact us</a>
+            <JumpLink className="emp-button light" to="packages">View packages <ArrowRight size={16}/></JumpLink>
+            <JumpLink className="emp-button ghost" to="custom">Contact us</JumpLink>
           </div>
         </div>
         <div className="emp-metrics emp-rise" style={{ ["--d" as string]: "360ms" }}>
@@ -77,16 +84,16 @@ export default function EmployersPage() {
                   {pkg.inherits && <li className="emp-inherits">{pkg.inherits}</li>}
                   {pkg.features.map((feature) => <li key={feature}><Check size={15} aria-hidden="true"/>{feature}</li>)}
                 </ul>
-                <PackageLink className={`emp-button ${pkg.emphasized ? "solid" : "outline"}`} href={packageMailto(pkg)} packageId={pkg.id}>
+                <RequestButton className={`emp-button ${pkg.emphasized ? "solid" : "outline"}`} packageId={pkg.id}>
                   {pkg.cta} <ArrowRight size={16}/>
-                </PackageLink>
+                </RequestButton>
               </article>
             </Reveal>
           ))}
         </div>
         <Reveal className="emp-upgrade">
           <p><strong>Already have a role on BSO Jobs?</strong> Upgrade its visibility at any time.</p>
-          <PackageLink className="emp-text-link" href={packageMailto(upgrade)} packageId="upgrade">Upgrade a role <ArrowUpRight size={15}/></PackageLink>
+          <RequestButton className="emp-text-link" packageId="featured">Upgrade a role <ArrowUpRight size={15}/></RequestButton>
         </Reveal>
       </section>
 
@@ -113,12 +120,13 @@ export default function EmployersPage() {
               <h2>Recruiting for multiple roles or running an ongoing campaign?</h2>
               <p>Tell us what you&apos;re hiring for and we&apos;ll put together a campaign around your timeline.</p>
             </div>
-            <PackageLink className="emp-button light" href={customCampaignMailto()} packageId="custom">Contact us <ArrowRight size={16}/></PackageLink>
+            <RequestButton className="emp-button light" packageId="custom">Contact us <ArrowRight size={16}/></RequestButton>
           </div>
         </Reveal>
       </section>
 
       <SiteFooter/>
     </main>
+    </EmployerRequests>
   );
 }

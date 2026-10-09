@@ -118,3 +118,42 @@
   .emp-rise{animation:none}
   .emp-steps-track ol::before,.emp-steps-track li{transition:none}
 }
+
+/* Request form: a light, square panel in the BSO Jobs style; a bottom sheet on phones. */
+button.emp-text-link{background:none;border-width:0 0 1px;border-style:solid;cursor:pointer;font-family:Arial,Helvetica,sans-serif}
+.emp-button.solid-green{background:var(--green);color:#fff;border-color:var(--green)}
+@media(hover:hover) and (pointer:fine){.emp-button.solid-green:hover{background:var(--forest);border-color:var(--forest)}}
+.emp-button.wide{width:100%}
+.emp-button:disabled{opacity:.65;cursor:progress}
+html:has(.emp-dialog[open]){overflow:hidden}
+.emp-dialog{width:min(560px,calc(100vw - 32px));max-width:none;max-height:min(90vh,820px);margin:auto;padding:0;border:1px solid var(--line);background:var(--paper);color:var(--ink);box-shadow:0 40px 90px -30px rgba(6,44,34,.55);overflow:auto;overscroll-behavior:contain;animation:emp-dialog-in .4s cubic-bezier(.2,.7,.2,1) both}
+.emp-dialog::backdrop{background:rgba(6,44,34,.45);backdrop-filter:blur(4px);animation:emp-fade .3s ease both}
+@keyframes emp-dialog-in{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes emp-fade{from{opacity:0}to{opacity:1}}
+.emp-dialog-panel{position:relative;padding:38px 36px 30px}
+.emp-dialog-close{position:absolute;top:16px;right:16px;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.emp-dialog h2{margin:12px 0 0;padding-right:40px;font:400 clamp(1.8rem,4vw,2.4rem)/1 Georgia,serif;letter-spacing:-.04em}
+.emp-dialog-price{margin:10px 0 0;color:var(--muted);font-size:.82rem}
+.emp-form{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.emp-field{display:grid;gap:7px;min-width:0}
+.emp-field.wide{grid-column:1/-1}
+.emp-field>span{color:var(--ink);font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.emp-field em{margin-left:4px;color:var(--muted);font-style:normal;font-weight:700;letter-spacing:.04em;text-transform:none}
+.emp-field input,.emp-field textarea{width:100%;min-width:0;padding:13px 14px;border:1px solid var(--line);border-radius:0;background:#fff;color:var(--ink);font:16px Arial,Helvetica,sans-serif;outline:none;transition:border-color .2s}
+.emp-field textarea{resize:vertical}
+.emp-field input:focus,.emp-field textarea:focus{border-color:var(--green)}
+.emp-honeypot{position:absolute;left:-10000px;width:1px;height:1px;opacity:0;pointer-events:none}
+.emp-form-error{grid-column:1/-1;margin:0;color:#a3262a;font-size:.85rem}
+.emp-form .emp-button{grid-column:1/-1;margin-top:6px}
+.emp-form-note{grid-column:1/-1;margin:0;color:var(--muted);font-size:.75rem}
+.emp-dialog-done{padding:16px 0 4px;display:grid;justify-items:start;gap:14px}
+.emp-dialog-done h2{margin:0}
+.emp-dialog-done p{margin:0;color:#283c35;font:1.02rem/1.55 Georgia,serif}
+.emp-done-icon{width:46px;height:46px;display:grid;place-items:center;background:var(--green);color:#fff}
+@media(max-width:720px){
+  .emp-dialog{width:100vw;max-height:92svh;margin:auto 0 0;border-width:1px 0 0;animation-name:emp-sheet-in}
+  @keyframes emp-sheet-in{from{transform:translateY(100%)}to{transform:none}}
+  .emp-dialog-panel{padding:30px 20px calc(24px + env(safe-area-inset-bottom))}
+  .emp-form{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.emp-dialog,.emp-dialog::backdrop{animation:none}}
