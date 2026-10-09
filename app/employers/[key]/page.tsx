@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-import { CountUp, EmployerPageView, EmployerRequests, JumpLink, RequestButton } from "@/components/employer-page";
+import { CheckoutLink, CountUp, EmployerPageView, EmployerRequests, JumpLink, RequestButton } from "@/components/employer-page";
 import { Reveal, SiteFooter, SiteHeader } from "@/components/site-chrome";
-import { AUDIENCE_METRICS, AUDIENCE_NOTE, PACKAGES } from "@/lib/employers/packages";
+import { AUDIENCE_METRICS, AUDIENCE_NOTE, PACKAGES, checkoutUrl } from "@/lib/employers/packages";
 import "./employers.css";
 
 const title = "Recruit on BSO Jobs | For Employers";
@@ -18,9 +18,11 @@ export const metadata: Metadata = {
   openGraph: { title, description, type: "website" },
 };
 
-const STEPS = [
+const stepsFor = (checkout: boolean) => [
   { title: "Choose a package", text: "Pick the level of visibility the role needs." },
-  { title: "Share the role", text: "Send the company, role and the link to your posting." },
+  checkout
+    ? { title: "Check out securely", text: "Pay by card through Stripe, adding the company and role as you go." }
+    : { title: "Share the role", text: "Send the company, role and the link to your posting." },
   { title: "We review it", text: "The BSO team confirms the details and schedules the campaign." },
   { title: "Your role goes live", text: "Placement and distribution run for 30 days." },
 ];
@@ -31,6 +33,8 @@ export default async function EmployersPage({ params }: { params: Promise<{ key:
   const { key } = await params;
   const pageKey = process.env.EMPLOYER_PAGE_KEY;
   if (!pageKey || key !== pageKey) notFound();
+  const upgradeUrl = checkoutUrl("featured");
+  const steps = stepsFor(Boolean(upgradeUrl));
 
   return (
     <EmployerRequests pageKey={key}>
@@ -84,16 +88,27 @@ export default async function EmployersPage({ params }: { params: Promise<{ key:
                   {pkg.inherits && <li className="emp-inherits">{pkg.inherits}</li>}
                   {pkg.features.map((feature) => <li key={feature}><Check size={15} aria-hidden="true"/>{feature}</li>)}
                 </ul>
-                <RequestButton className={`emp-button ${pkg.emphasized ? "solid" : "outline"}`} packageId={pkg.id}>
-                  {pkg.cta} <ArrowRight size={16}/>
-                </RequestButton>
+                {(() => {
+                  const href = pkg.price ? checkoutUrl(pkg.id) : null;
+                  const style = `emp-button ${pkg.emphasized ? "solid" : "outline"}`;
+                  return href ? (
+                    <div className="emp-card-actions">
+                      <CheckoutLink className={style} href={href} packageId={pkg.id}>Pay C${pkg.price} <ArrowRight size={16}/></CheckoutLink>
+                      <RequestButton className="emp-card-secondary" packageId={pkg.id}>Questions first? Send a request</RequestButton>
+                    </div>
+                  ) : (
+                    <RequestButton className={style} packageId={pkg.id}>{pkg.cta} <ArrowRight size={16}/></RequestButton>
+                  );
+                })()}
               </article>
             </Reveal>
           ))}
         </div>
         <Reveal className="emp-upgrade">
           <p><strong>Already have a role on BSO Jobs?</strong> Upgrade its visibility at any time.</p>
-          <RequestButton className="emp-text-link" packageId="featured">Upgrade a role <ArrowUpRight size={15}/></RequestButton>
+          {upgradeUrl
+            ? <CheckoutLink className="emp-text-link" href={upgradeUrl} packageId="featured">Upgrade a role <ArrowUpRight size={15}/></CheckoutLink>
+            : <RequestButton className="emp-text-link" packageId="featured">Upgrade a role <ArrowUpRight size={15}/></RequestButton>}
         </Reveal>
       </section>
 
@@ -101,7 +116,7 @@ export default async function EmployersPage({ params }: { params: Promise<{ key:
         <Reveal className="emp-steps-head"><p className="eyebrow">How it works</p><h2 id="emp-steps-title">From brief to live campaign.</h2></Reveal>
         <Reveal className="emp-steps-track">
           <ol>
-            {STEPS.map((step, index) => (
+            {steps.map((step, index) => (
               <li key={step.title} style={{ ["--i" as string]: index }}>
                 <span className="emp-step-num">{String(index + 1).padStart(2, "0")}</span>
                 <h3>{step.title}</h3>

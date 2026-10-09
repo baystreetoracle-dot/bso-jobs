@@ -34,6 +34,23 @@ export function EmployerRequests({ pageKey, children }: { pageKey: string; child
   );
 }
 
+/** Records employer_checkout_completed once, on the page Stripe returns to after payment. */
+export function CheckoutCompleted({ packageId }: { packageId: string }) {
+  useEffect(() => {
+    track("employer_checkout_completed", { package: packageId });
+  }, [packageId]);
+  return null;
+}
+
+/** Goes straight to the package's Stripe checkout, recording employer_checkout_started first. */
+export function CheckoutLink({ href, packageId, className, children }: { href: string; packageId: PackageId; className?: string; children: ReactNode }) {
+  return (
+    <a className={className} href={href} onClick={() => track("employer_checkout_started", { package: packageId, ...utmParams() })}>
+      {children}
+    </a>
+  );
+}
+
 export function RequestButton({ packageId, className, children }: { packageId: RequestPackage; className?: string; children: ReactNode }) {
   const open = useContext(RequestContext);
   return <button type="button" className={className} onClick={() => open?.(packageId)}>{children}</button>;

@@ -158,3 +158,18 @@ html:has(.emp-dialog[open]){overflow:hidden}
   .emp-form{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.emp-dialog,.emp-dialog::backdrop{animation:none}}
+
+/* Checkout mode: pay button plus a quiet route to ask first. */
+.emp-card-actions{margin-top:auto;display:grid;gap:12px}
+.emp-card-actions .emp-button{width:100%}
+.emp-card-secondary{padding:0;border:0;background:none;color:var(--muted);font:600 .76rem Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;justify-self:center}
+.is-emphasized .emp-card-secondary{color:rgba(255,255,255,.7)}
+@media(hover:hover) and (pointer:fine){.emp-card-secondary:hover{color:var(--forest)}.is-emphasized .emp-card-secondary:hover{color:#fff}}
+
+/* Payment received */
+.emp-paid{position:relative;overflow:hidden;min-height:calc(100svh - 76px);padding:clamp(70px,9vw,120px) 4vw;display:grid;align-items:center;color:#fff;background:linear-gradient(132deg,#007800 0%,#075e24 42%,#114634 100%)}
+.emp-paid-inner{position:relative;z-index:2;max-width:760px}
+.emp-paid .emp-done-icon{margin-bottom:26px;width:52px;height:52px;background:#fff;color:var(--green)}
+.emp-paid h1{margin:16px 0 20px;font:400 clamp(2.8rem,6vw,5.4rem)/.95 Georgia,"Times New Roman",serif;letter-spacing:-.05em}
+.emp-paid-inner>p:not(.eyebrow){max-width:600px;margin:0;color:#dce9dc;font:400 clamp(1rem,1.5vw,1.25rem)/1.5 Georgia,serif}
+@media(max-width:720px){.emp-paid{min-height:calc(100svh - 68px);padding:56px 20px}}

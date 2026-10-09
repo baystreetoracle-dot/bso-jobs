@@ -92,3 +92,31 @@ export const PACKAGE_AMOUNTS: Record<PackageId | "custom", number | null> = {
   "recruiting-campaign": 399,
   custom: null,
 };
+
+/**
+ * Stripe Payment Links per paid package. Each collects company and role, allows 1–10 roles,
+ * and returns to /employers/<key>/paid. Test links come from the Bay Street Oracle sandbox;
+ * live links are added once the Stripe account is activated.
+ */
+const CHECKOUT_LINKS: Record<"test" | "live", Partial<Record<PackageId, string>>> = {
+  test: {
+    featured: "https://buy.stripe.com/test_14A6oAfmkcij6eM64easg03",
+    "hiring-boost": "https://buy.stripe.com/test_fZu9AM3DC1DF8mU2S2asg04",
+    "recruiting-campaign": "https://buy.stripe.com/test_7sYeV6dec4PR8mUboyasg05",
+  },
+  live: {},
+};
+
+/**
+ * Which links the page uses, from EMPLOYER_CHECKOUT_MODE ("test" | "live"). Unset means no
+ * checkout: paid packages fall back to the request form. Server-side only.
+ */
+export function checkoutMode(): "test" | "live" | null {
+  const mode = process.env.EMPLOYER_CHECKOUT_MODE;
+  return mode === "test" || mode === "live" ? mode : null;
+}
+
+export function checkoutUrl(packageId: PackageId): string | null {
+  const mode = checkoutMode();
+  return mode ? CHECKOUT_LINKS[mode][packageId] ?? null : null;
+}
