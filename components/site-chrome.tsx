@@ -1,14 +1,74 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { ArrowRight, X } from "lucide-react";
+import { useModalDialog } from "@/components/use-modal-dialog";
 
+const NAV_LINKS = [
+  { href: "/jobs", label: "Jobs" },
+  { href: "/companies", label: "Companies" },
+  { href: "/jobs#newsletter", label: "Newsletter" },
+  { href: "/employers", label: "For employers", employer: true },
+] as const;
+
+/** Current page: an exact match or a child route. The newsletter anchor is never "current". */
+const isCurrent = (path: string, href: string) => !href.includes("#") && (path === href || path.startsWith(`${href}/`));
+const isJobsRoute = (path: string) => /^\/(jobs|companies)(\/|$)/.test(path);
+const noop = () => () => {};
 
 /** The BSO Jobs header, shared by the job board and the employer pages. */
 export function SiteHeader() {
+  const path = usePathname() ?? "";
   const [menuOpen, setMenuOpen] = useState(false);
-  const close = () => setMenuOpen(false);
-  return <header className="site-header"><div className="brand-group"><Link className="brand" href="/jobs"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link><div className="product-switch" role="group" aria-label="Bay Street Oracle products"><Link href="/jobs" aria-current="page">Jobs</Link><Link href="/intelligence">Intelligence</Link></div></div><nav className={menuOpen?"open":""}><Link href="/jobs" onClick={close}>Jobs</Link><Link href="/companies" onClick={close}>Companies</Link><Link href="/jobs#newsletter" onClick={close}>Newsletter</Link><Link className="nav-employer" href="/employers" onClick={close}>For employers</Link></nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle menu"><span/><span/></button></header>;
+  const [lastPath, setLastPath] = useState(path);
+  // Navigating closes the menu.
+  if (path !== lastPath) {
+    setLastPath(path);
+    setMenuOpen(false);
+  }
+  return <header className="site-header"><div className="brand-group"><Link className="brand" href="/jobs"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link><div className="product-switch" role="group" aria-label="Bay Street Oracle products"><Link href="/jobs" aria-current={isJobsRoute(path)?"page":undefined}>Jobs</Link><Link href="/intelligence">Intelligence</Link></div></div><nav aria-label="BSO Jobs">{NAV_LINKS.map(link=><Link key={link.href} className={"employer" in link?"nav-employer":undefined} href={link.href} aria-current={isCurrent(path,link.href)?"page":undefined}>{link.label}</Link>)}</nav><button type="button" className="menu-button" onClick={()=>setMenuOpen(true)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Open menu"><span/><span/></button><MobileMenu open={menuOpen} path={path} onClose={()=>setMenuOpen(false)}/></header>;
+}
+
+/**
+ * Full-screen phone menu that slides in from the right, ported from BSO Intelligence
+ * (components/layout/mobile-menu.tsx there) in the Jobs palette. Portalled to <body> because the
+ * header's backdrop blur would otherwise contain a fixed panel.
+ */
+function MobileMenu({ open, path, onClose }: { open: boolean; path: string; onClose: () => void }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closer = useRef<HTMLButtonElement>(null);
+  const mounted = useSyncExternalStore(noop, () => true, () => false);
+  useModalDialog(open, onClose, panelRef, closer);
+  if (!mounted) return null;
+  return createPortal(
+    <div id="mobile-menu" ref={panelRef} className={`mobile-menu${open?" is-open":""}`} role="dialog" aria-modal="true" aria-label="Menu" inert={!open}>
+      <div className="mobile-menu-glow" aria-hidden="true"/>
+      <div className="mobile-menu-top">
+        <Link href="/jobs" className="mobile-menu-brand" onClick={onClose} aria-label="BSO Jobs home"><img src="/bso-logo.png" alt=""/><span>Jobs</span></Link>
+        <button ref={closer} type="button" className="mobile-menu-close" onClick={onClose} aria-label="Close menu"><X size={16} strokeWidth={1.6}/></button>
+      </div>
+      <div className="mobile-menu-body">
+        <nav aria-label="BSO Jobs">
+          {NAV_LINKS.map((link, index) => {
+            const current = isCurrent(path, link.href);
+            return (
+              <Link key={link.href} href={link.href} onClick={onClose} aria-current={current?"page":undefined} className="mobile-menu-link" style={{ transitionDelay: open ? `${80 + index * 40}ms` : "0ms" }}>
+                <span>{link.label}</span><ArrowRight size={16}/>
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="mobile-menu-actions">
+          <Link href="/jobs#newsletter" className="mobile-menu-primary" onClick={onClose}>Join the BSO briefing</Link>
+          <Link href="/intelligence" className="mobile-menu-secondary" onClick={onClose}>BSO Intelligence <ArrowRight size={16}/></Link>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
 }
 
 /** The BSO Jobs footer, shared by the job board and the employer pages. */
