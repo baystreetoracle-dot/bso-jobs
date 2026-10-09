@@ -78,6 +78,7 @@ const companyLogos: Record<string,string> = {
   "MUFG":"/company-logos/bso-supplied/mufg.webp",
   "National Bank Capital Markets":"/company-logos/bso-supplied/national-bank.webp",
   "Natixis":"/company-logos/bso-supplied/natixis-corporate-investment-banking.webp",
+  "NewPoint / Clairfield Canada":"/company-logos/bso-supplied/newpoint-clairfield-canada.webp",
   "Origin Merchant Partners":"/company-logos/bso-supplied/origin-merchant-partners.webp",
   "Peters & Co.":"/company-logos/bso-supplied/peters-and-co.webp",
   "PwC":"/company-logos/bso-supplied/pwc.webp",
@@ -124,7 +125,7 @@ classifyCompanies("Canadian Investment Bank",[
   "RBC Capital Markets","TD Securities","BMO Capital Markets","Scotiabank Global Banking and Markets","CIBC Capital Markets","National Bank Capital Markets",
   "ATB Capital Markets","ATB Cormark Capital Markets","Agentis Capital","Bloom Burton","Bloom Burton & Co.","Canaccord Genuity",
   "Desjardins Capital Markets","Fort Capital","Haywood Securities","INFOR Financial","Origin Merchant Partners","Peters & Co.","Raymond James Ltd.",
-  "Red Cloud Securities","SCP Resource Finance","Stifel Canada","Ventum Financial","Maxit Capital",
+  "Red Cloud Securities","SCP Resource Finance","Stifel Canada","Ventum Financial","Maxit Capital","NewPoint / Clairfield Canada",
 ]);
 classifyCompanies("Canadian Bank",[
   "CIBC Commercial Banking",
