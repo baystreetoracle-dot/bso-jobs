@@ -11,6 +11,7 @@ export default async function sitemap():Promise<MetadataRoute.Sitemap>{
     {url:`${SITE_URL}/jobs`,lastModified:latest,changeFrequency:"daily",priority:.95},
     {url:`${SITE_URL}/companies`,lastModified:latest,changeFrequency:"daily",priority:.75},
     {url:`${SITE_URL}/intelligence`,changeFrequency:"monthly",priority:1},
+    {url:`${SITE_URL}/employers`,changeFrequency:"monthly",priority:.6},
     ...["toronto","internships","analyst","associate"].map(segment=>({url:`${SITE_URL}/jobs/investment-banking/${segment}`,lastModified:latest,changeFrequency:"daily" as const,priority:.85})),
   ];
   const companyEntries=Array.from(new Set(jobs.map(job=>job.company_name))).map(company=>{
