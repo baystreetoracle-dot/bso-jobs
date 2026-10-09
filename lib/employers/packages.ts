@@ -95,8 +95,8 @@ export const PACKAGE_AMOUNTS: Record<PackageId | "custom", number | null> = {
 
 /**
  * Stripe Payment Links per paid package. Each collects company and role, allows 1–10 roles,
- * and returns to /employers/<key>/paid. Test links come from the Bay Street Oracle sandbox;
- * live links are added once the Stripe account is activated.
+ * and returns to /employers/<key>/paid. Test links: Bay Street Oracle sandbox
+ * (acct_1UOevG45jhG3DGTH). Live links: Bay Street Oracle live account (acct_1UOev3QTwm4VAz9G).
  */
 const CHECKOUT_LINKS: Record<"test" | "live", Partial<Record<PackageId, string>>> = {
   test: {
@@ -104,7 +104,11 @@ const CHECKOUT_LINKS: Record<"test" | "live", Partial<Record<PackageId, string>>
     "hiring-boost": "https://buy.stripe.com/test_fZu9AM3DC1DF8mU2S2asg04",
     "recruiting-campaign": "https://buy.stripe.com/test_7sYeV6dec4PR8mUboyasg05",
   },
-  live: {},
+  live: {
+    featured: "https://buy.stripe.com/7sYeVf855fo20c51b05AQ00",
+    "hiring-boost": "https://buy.stripe.com/6oU4gBfxxa3I9MFg5U5AQ01",
+    "recruiting-campaign": "https://buy.stripe.com/dRmcN72KLdfU7Ex6vk5AQ02",
+  },
 };
 
 /**
