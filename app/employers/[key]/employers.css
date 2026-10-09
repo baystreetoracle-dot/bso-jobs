@@ -31,7 +31,7 @@
 .emp-metrics dl>div:last-child{border-bottom:1px solid rgba(255,255,255,.22)}
 .emp-metrics dd{margin:0;font:400 clamp(2.4rem,3.6vw,3.4rem)/1 Georgia,serif;letter-spacing:-.03em}
 .emp-metrics dt{margin-top:8px;color:#b9e5b7;font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-.emp-metrics-note{max-width:360px;margin:12px 0 0;color:rgba(255,255,255,.5);font-size:.6rem;line-height:1.5}
+.emp-metrics-note{margin:12px 0 0;color:rgba(255,255,255,.5);font-size:.6rem;white-space:nowrap}
 
 /* Career paths strip */
 .emp-paths{padding:20px 4vw;display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;border-bottom:1px solid var(--line);background:#fff}
@@ -98,6 +98,7 @@
 }
 @media(max-width:720px){
   .emp-hero{padding:56px 20px 48px}
+  .emp-metrics-note{display:none}
   .emp-hero-actions .emp-button{flex:1 1 auto}
   .emp-metrics dl{column-gap:14px}
   .emp-metrics dd{font-size:clamp(1.5rem,7vw,2.1rem)}

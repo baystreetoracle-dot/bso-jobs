@@ -29,8 +29,9 @@ export const AUDIENCE_METRICS = [
   { value: AUDIENCE.canadianShare, suffix: "%", label: "Canadian audience" },
 ] as const;
 
-const longDate = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-CA", { month: "long", day: "numeric", timeZone: "UTC" });
-export const AUDIENCE_NOTE = `30-day run rate from BSO Jobs analytics: ${AUDIENCE.visitors.toLocaleString("en-CA")} visitors and ${AUDIENCE.pageViews.toLocaleString("en-CA")} page views in the ${DAYS_LIVE} days since launch (${longDate(AUDIENCE.launchDate)} to ${longDate(AUDIENCE.measuredThrough)}).`;
+const shortDate = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-CA", { month: "short", day: "numeric", timeZone: "UTC" });
+/** One line under the figures; the raw totals stay in AUDIENCE above. */
+export const AUDIENCE_NOTE = `30-day run rate · ${DAYS_LIVE} days since launch (${shortDate(AUDIENCE.launchDate)} – ${shortDate(AUDIENCE.measuredThrough)})`;
 
 export type PackageId = "standard" | "featured" | "hiring-boost" | "recruiting-campaign";
 
