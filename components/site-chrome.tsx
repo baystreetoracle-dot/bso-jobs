@@ -29,7 +29,7 @@ export function SiteHeader() {
     setLastPath(path);
     setMenuOpen(false);
   }
-  return <header className="site-header"><div className="brand-group"><Link className="brand" href="/jobs"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link><div className="product-switch" role="group" aria-label="Bay Street Oracle products"><Link href="/jobs" aria-current={isJobsRoute(path)?"page":undefined}>Jobs</Link><Link href="/intelligence">Intelligence</Link></div></div><nav aria-label="BSO Jobs">{NAV_LINKS.map(link=><Link key={link.href} className={"employer" in link?"nav-employer":undefined} href={link.href} aria-current={isCurrent(path,link.href)?"page":undefined}>{link.label}</Link>)}</nav><button type="button" className="menu-button" onClick={()=>setMenuOpen(true)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Open menu"><span/><span/></button><MobileMenu open={menuOpen} path={path} onClose={()=>setMenuOpen(false)}/></header>;
+  return <header className="site-header"><div className="brand-group"><Link className="brand" href="/jobs"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link><div className="product-switch" role="group" aria-label="Bay Street Oracle products"><Link href="/jobs" aria-current={isJobsRoute(path)?"page":undefined}>Jobs</Link><Link href="/">Intelligence</Link></div></div><nav aria-label="BSO Jobs">{NAV_LINKS.map(link=><Link key={link.href} className={"employer" in link?"nav-employer":undefined} href={link.href} aria-current={isCurrent(path,link.href)?"page":undefined}>{link.label}</Link>)}</nav><button type="button" className="menu-button" onClick={()=>setMenuOpen(true)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Open menu"><span/><span/></button><MobileMenu open={menuOpen} path={path} onClose={()=>setMenuOpen(false)}/></header>;
 }
 
 /**
@@ -63,7 +63,7 @@ function MobileMenu({ open, path, onClose }: { open: boolean; path: string; onCl
         </nav>
         <div className="mobile-menu-actions">
           <Link href="/jobs#newsletter" className="mobile-menu-primary" onClick={onClose}>Join the BSO briefing</Link>
-          <Link href="/intelligence" className="mobile-menu-secondary" onClick={onClose}>BSO Intelligence <ArrowRight size={16}/></Link>
+          <Link href="/" className="mobile-menu-secondary" onClick={onClose}>BSO Intelligence <ArrowRight size={16}/></Link>
         </div>
       </div>
     </div>,
