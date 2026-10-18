@@ -97,6 +97,7 @@ const companyLogos: Record<string,string> = {
   "Richter":"/company-logos/bso-supplied/richter.webp",
   "Rothschild & Co.":"/company-logos/bso-supplied/rothschildandco.webp",
   "RSM Canada":"/company-logos/bso-supplied/rsm.webp",
+  "Sagard":"/company-logos/bso-supplied/sagard.svg",
   "Scotiabank Global Banking and Markets":"/company-logos/bso-supplied/scotiabank-gbm.webp",
   "SCP Resource Finance":"/company-logos/bso-supplied/scp-resource-finance.webp",
   "Société Générale":"/company-logos/bso-supplied/societe-generale.webp",
@@ -153,7 +154,7 @@ classifyCompanies("Pension Fund",[
   "AIMCo","BCI","CPP Investments","HOOPP","IMCO","Ontario Teachers' Pension Plan","Ontario Teachers’ Pension Plan","PSP Investments","University Pension Plan Ontario",
 ]);
 classifyCompanies("Investment Management",[
-  "CI Financial","EdgePoint Investment Group","Fengate Asset Management","Letko Brosseau","Peakhill Capital","Purpose Investments",
+  "CI Financial","EdgePoint Investment Group","Fengate Asset Management","Letko Brosseau","Peakhill Capital","Purpose Investments","Sagard",
 ]);
 classifyCompanies("Wealth Management",[
   "Franklin Templeton / Franklin Bissett","Nicola Wealth",
