@@ -94,6 +94,13 @@ function inferProgramType(title, employmentType, description) {
   return "Unspecified";
 }
 
+function normalizeSeniorityForProgram(seniority, programType) {
+  if (programType === "Internship" || programType === "Co-op") {
+    return { value: "Intern / Co-op", note: null };
+  }
+  return seniority;
+}
+
 function inferSpecialization(source) {
   const values = [
     ["Mergers & Acquisitions", /\bM&A\b|mergers?\s*(?:&|and)\s*acquisitions?/i],
@@ -177,7 +184,11 @@ function classifyBuySide(candidate, verifiedAt, title, description, metadataText
 
   const careerPath = inferBuySidePath(candidate.firm, title, source);
   if (!careerPath) return { accepted: false, bucket: "ambiguous", reason: "Front-office evidence found but career path is unclear.", review, plausible: true };
-  const seniority = inferSeniority(title, description, metadataText);
+  const programType = inferProgramType(title, candidate.employmentType, description);
+  const seniority = normalizeSeniorityForProgram(
+    inferSeniority(title, description, metadataText),
+    programType,
+  );
   const sourceId = String(candidate.externalId ?? stableUrlId(candidate.sourceUrl));
   const reason = institutionalTitleMandate && !decisionEvidence
     ? "Institutional-investor title explicitly identifies an approved front-office investment strategy."
@@ -192,8 +203,10 @@ function classifyBuySide(candidate, verifiedAt, title, description, metadataText
       external_job_id: sourceId, company_id: canonicalCompanyId(candidate.firm), company_name: candidate.firm.name, title,
       ...normalizeLocation(candidate.locations ?? []), category: careerPath,
       specialization: inferBuySideSpecialization(title, source), seniority: seniority.value,
-      employment_type: candidate.employmentType ?? null,
-      program_type: inferProgramType(title, candidate.employmentType, description),
+      employment_type: programType === "Internship" || programType === "Co-op"
+        ? programType
+        : candidate.employmentType ?? null,
+      program_type: programType,
       date_posted: candidate.datePosted ?? null, application_deadline: candidate.applicationDeadline ?? null,
       application_url: candidate.applicationUrl ?? candidate.sourceUrl, source_url: candidate.sourceUrl,
       source_name: `${candidate.firm.name} public careers site`, source_record_id: `${candidate.firm.key}:${sourceId}`,
@@ -262,7 +275,11 @@ export function classifyAndNormalize(candidateInput, verifiedAt) {
   }
   if (!directSignal) return { accepted: false, bucket: "notInvestmentBanking", reason: "No role-specific Investment Banking evidence.", review, plausible: PLAUSIBLE_IB.test(`${title} ${metadataText}`) };
 
-  const seniority = inferSeniority(title, description, metadataText);
+  const programType = inferProgramType(title, candidate.employmentType, description);
+  const seniority = normalizeSeniorityForProgram(
+    inferSeniority(title, description, metadataText),
+    programType,
+  );
   const evidence = titleSignal
     ? "title"
     : corporateFinanceSignal
@@ -284,8 +301,10 @@ export function classifyAndNormalize(candidateInput, verifiedAt) {
       external_job_id: sourceId, company_id: canonicalCompanyId(candidate.firm), company_name: candidate.firm.name, title,
       ...normalizeLocation(candidate.locations ?? []), category: "Investment Banking",
       specialization: inferSpecialization(`${title} ${metadataText}`), seniority: seniority.value,
-      employment_type: candidate.employmentType ?? null,
-      program_type: inferProgramType(title, candidate.employmentType, description),
+      employment_type: programType === "Internship" || programType === "Co-op"
+        ? programType
+        : candidate.employmentType ?? null,
+      program_type: programType,
       date_posted: candidate.datePosted ?? null, application_deadline: candidate.applicationDeadline ?? null,
       application_url: candidate.applicationUrl ?? candidate.sourceUrl, source_url: candidate.sourceUrl,
       source_name: `${candidate.firm.name} public careers site`, source_record_id: `${candidate.firm.key}:${sourceId}`,
