@@ -5,6 +5,7 @@ import { rankJobs } from "@/lib/jobs/ranking";
 import { matchesJobAlertPreferences } from "@/lib/job-alerts/preferences";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { jobPath } from "@/lib/jobs/urls";
+import { buildJobAlertLogoUrls } from "@/lib/job-alerts/logo-assets.mjs";
 import "./preview-gallery.css";
 
 export const dynamic = "force-dynamic";
@@ -108,6 +109,10 @@ export default async function JobAlertPreviewsPage({ searchParams }: { searchPar
   const ready = drafts.filter((draft) => draft.selected.length > 0);
   const skipped = drafts.filter((draft) => draft.selected.length === 0);
   const selectedDraft = ready.find((draft) => draft.subscriber.id === query.subscriber) ?? ready[0] ?? null;
+  const { bsoLogoUrl, companyLogoUrls } = selectedDraft
+    ? await buildJobAlertLogoUrls(selectedDraft.selected)
+    : { bsoLogoUrl: "", companyLogoUrls: new Map<string, string>() };
+  const subject = selectedDraft ? `${selectedDraft.selected[0].company_name}, ${selectedDraft.selected[0].title}` : "";
 
   return <main className="preview-admin">
     <header className="preview-header">
@@ -130,11 +135,12 @@ export default async function JobAlertPreviewsPage({ searchParams }: { searchPar
             <div><span>Seniority</span><strong>{label(selectedDraft.subscriber.seniority_preferences, "Intern / Co-op + Analyst")}</strong></div>
             <div><span>Location</span><strong>{label(selectedDraft.subscriber.location_preferences, "Across Canada")}</strong></div>
           </div>
+          <div className="draft-subject"><span>Subject</span><strong>{subject}</strong></div>
           <div className="email-shell">
-            <div className="email-hero"><p>BSO Job Alerts</p><h2>Your job alert for {label(selectedDraft.subscriber.career_paths, "capital markets")} · {label(selectedDraft.subscriber.seniority_preferences, "Intern / Co-op + Analyst")}</h2><span>{selectedDraft.subscriber.location_preferences?.length ? `in ${selectedDraft.subscriber.location_preferences.join(" + ")}` : "across Canada"}</span></div>
+            <div className="email-hero"><img src={bsoLogoUrl} width="56" height="56" alt="Bay Street Oracle" /><p>BSO Job Alerts</p><h2>Your job alert for {label(selectedDraft.subscriber.career_paths, "capital markets")} · {label(selectedDraft.subscriber.seniority_preferences, "Intern / Co-op + Analyst")}</h2><span>{selectedDraft.subscriber.location_preferences?.length ? `in ${selectedDraft.subscriber.location_preferences.join(" + ")}` : "across Canada"}</span></div>
             <div className="email-body">
               <p>{selectedDraft.eligibleCount > selectedDraft.selected.length ? `Here are your top ${selectedDraft.selected.length} of ${selectedDraft.eligibleCount} active matches.` : `${selectedDraft.selected.length} active ${selectedDraft.selected.length === 1 ? "opportunity matches" : "opportunities match"} your preferences.`}</p>
-              {selectedDraft.selected.map((job) => <article key={job.id}><div className="company-mark">{job.company_name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2)}</div><div><p>{job.company_name}</p><a href={jobPath(job)} target="_blank">{job.title}</a><span>{job.location_display}</span><small>{job.category} · {job.seniority ?? "Unspecified"} · {deadline(job.application_deadline)}</small></div></article>)}
+              {selectedDraft.selected.map((job) => <article key={job.id}><div className="company-mark">{companyLogoUrls.get(job.company_name) ? <img src={companyLogoUrls.get(job.company_name)} alt={`${job.company_name} logo`} /> : job.company_name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2)}</div><div><p>{job.company_name}</p><a href={jobPath(job)} target="_blank">{job.title}</a><span>{job.location_display}</span><small>{job.category} · {job.seniority ?? "Unspecified"} · {deadline(job.application_deadline)}</small></div></article>)}
               <a className="all-jobs" href="/jobs" target="_blank">View all jobs</a>
             </div>
             <footer>Questions? Email info@baystreetoracle.ca.<br />The delivered email includes the subscriber’s secure unsubscribe link.</footer>
