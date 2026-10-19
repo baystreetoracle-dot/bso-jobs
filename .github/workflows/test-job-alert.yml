@@ -7,6 +7,18 @@ on:
         description: Email address that should receive the test preview
         required: true
         type: string
+      career_paths:
+        description: Optional comma-separated career paths for this preview
+        required: false
+        type: string
+      seniorities:
+        description: Optional comma-separated seniority levels for this preview
+        required: false
+        type: string
+      locations:
+        description: Optional comma-separated locations for this preview
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -23,6 +35,9 @@ jobs:
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
       TEST_ALERT_RECIPIENT: ${{ inputs.recipient }}
+      TEST_ALERT_CAREER_PATHS: ${{ inputs.career_paths }}
+      TEST_ALERT_SENIORITIES: ${{ inputs.seniorities }}
+      TEST_ALERT_LOCATIONS: ${{ inputs.locations }}
 
     steps:
       - uses: actions/checkout@v4

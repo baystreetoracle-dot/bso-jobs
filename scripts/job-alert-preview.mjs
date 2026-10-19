@@ -14,6 +14,11 @@ function required(name) {
   return value;
 }
 
+function previewPreference(name, fallback) {
+  const value = process.env[name]?.trim();
+  return value ? value.split(",").map((item) => item.trim()).filter(Boolean) : fallback;
+}
+
 function escapeHtml(value = "") {
   return String(value).replace(/[&<>"']/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;",
@@ -57,9 +62,9 @@ if (subscriberError) throw subscriberError;
 if (!subscriber) throw new Error("The requested test recipient is not registered for BSO Job Alerts.");
 
 const PREFERENCES = {
-  careerPaths: subscriber.career_paths ?? [],
-  seniorities: subscriber.seniority_preferences ?? [],
-  locations: subscriber.location_preferences ?? [],
+  careerPaths: previewPreference("TEST_ALERT_CAREER_PATHS", subscriber.career_paths ?? []),
+  seniorities: previewPreference("TEST_ALERT_SENIORITIES", subscriber.seniority_preferences ?? []),
+  locations: previewPreference("TEST_ALERT_LOCATIONS", subscriber.location_preferences ?? []),
 };
 const today = todayInToronto();
 const { data, error } = await supabase.from("jobs")
