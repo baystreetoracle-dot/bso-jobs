@@ -27,7 +27,7 @@ type Job = {
   city: string | null;
   country: string | null;
   category: string;
-  seniority: string | null;
+  seniority: string;
   program_type: string | null;
   application_deadline: string | null;
   date_posted: string | null;
@@ -93,7 +93,7 @@ export default async function JobAlertPreviewsPage({ searchParams }: { searchPar
   if (jobError) throw jobError;
 
   const subscribers = (subscriberRows ?? []) as Subscriber[];
-  const jobs = (jobRows ?? []) as Job[];
+  const jobs = (jobRows ?? []).map((job) => ({ ...job, seniority: job.seniority ?? "Unspecified" })) as Job[];
   const today = todayInToronto();
   const drafts = subscribers.map((subscriber) => {
     const preferences = {
