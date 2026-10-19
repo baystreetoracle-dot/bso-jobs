@@ -54,12 +54,22 @@ const supabase = createClient(required("SUPABASE_URL"), required("SUPABASE_SERVI
   auth: { persistSession: false, autoRefreshToken: false },
 });
 const recipient = required("TEST_ALERT_RECIPIENT").trim().toLowerCase();
-const { data: subscriber, error: subscriberError } = await supabase.from("job_alert_subscribers")
+const { data: savedSubscriber, error: subscriberError } = await supabase.from("job_alert_subscribers")
   .select("email,status,career_paths,seniority_preferences,location_preferences")
   .eq("email", recipient)
   .maybeSingle();
 if (subscriberError) throw subscriberError;
-if (!subscriber) throw new Error("The requested test recipient is not registered for BSO Job Alerts.");
+const hasCompletePreviewProfile = ["TEST_ALERT_CAREER_PATHS", "TEST_ALERT_SENIORITIES", "TEST_ALERT_LOCATIONS"]
+  .every((name) => Boolean(process.env[name]?.trim()));
+if (!savedSubscriber && !hasCompletePreviewProfile) {
+  throw new Error("The requested test recipient is not registered. Supply all three preview preference overrides to continue without changing subscriber data.");
+}
+const subscriber = savedSubscriber ?? {
+  email: recipient,
+  career_paths: [],
+  seniority_preferences: [],
+  location_preferences: [],
+};
 
 const PREFERENCES = {
   careerPaths: previewPreference("TEST_ALERT_CAREER_PATHS", subscriber.career_paths ?? []),
