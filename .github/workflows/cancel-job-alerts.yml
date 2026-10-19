@@ -21,7 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+      BREVO_FROM_EMAIL: ${{ secrets.BREVO_FROM_EMAIL }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
       JOB_ALERT_SCHEDULED_AT: ${{ inputs.scheduled_at }}
 
     steps:

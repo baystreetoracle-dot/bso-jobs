@@ -1,6 +1,7 @@
 import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
+import { requiredEmailProviderConfig, sendTransactionalEmail } from "../../lib/email/brevo.mjs";
 
 function loadEnv(path) {
   if (!existsSync(path)) return;
@@ -105,19 +106,18 @@ const text = `BSO Jobs collector digest — ${date}\n\nSources reached: ${counts
 writeFileSync(resolve(reportsDir, "daily-digest.html"), html, "utf8");
 writeFileSync(resolve(reportsDir, "daily-digest.txt"), text, "utf8");
 
-const resendKey = process.env.RESEND_API_KEY;
 const recipient = process.env.INTERNAL_DIGEST_EMAIL;
-const from = process.env.RESEND_FROM_EMAIL;
 let emailStatus = "skipped";
 let emailError = null;
-if (resendKey && recipient && from) {
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { authorization: `Bearer ${resendKey}`, "content-type": "application/json" },
-    body: JSON.stringify({ from, to: recipient.split(",").map((item) => item.trim()).filter(Boolean), subject: `BSO Jobs daily collector: ${counts.added} new, ${counts.closed} closures, ${counts.failed} source failures`, html, text }),
-  });
-  if (response.ok) emailStatus = "sent";
-  else { emailStatus = "failed"; emailError = `Resend returned HTTP ${response.status}: ${await response.text()}`; }
+if (recipient && ((process.env.BREVO_API_KEY && process.env.BREVO_FROM_EMAIL) || (process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL))) {
+  try {
+    const { provider, apiKey, from } = requiredEmailProviderConfig();
+    await sendTransactionalEmail({ provider, apiKey, from, to: recipient.split(",").map((item) => item.trim()).filter(Boolean), subject: `BSO Jobs daily collector: ${counts.added} new, ${counts.closed} closures, ${counts.failed} source failures`, html, text, tags: ["bso-daily-collector"] });
+    emailStatus = "sent";
+  } catch (error) {
+    emailStatus = "failed";
+    emailError = error instanceof Error ? error.message : String(error);
+  }
 }
 const { error: emailUpdateError } = await supabase.from("collector_runs").update({
   email_status: emailStatus,

@@ -24,3 +24,15 @@ Vercel and use the detected defaults:
 
 Future pushes to `main` automatically create new deployments after the GitHub
 repository is connected in Vercel.
+
+## Email delivery
+
+Transactional email is delivered through Brevo. Configure these secrets in
+GitHub Actions, and in Vercel for employer-request notifications:
+
+- `BREVO_API_KEY`
+- `BREVO_FROM_EMAIL` (for example, `Bay Street Oracle <jobs@baystreetoracle.ca>`)
+
+The sender address and its domain must be verified in Brevo. Existing job-alert
+workflows support dry runs, immediate delivery, previews, scheduling up to 72
+hours ahead, and cancellation by the deterministic Brevo batch identifier.

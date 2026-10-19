@@ -13,7 +13,10 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+      BREVO_FROM_EMAIL: ${{ secrets.BREVO_FROM_EMAIL }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
 
     steps:
       - uses: actions/checkout@v4
