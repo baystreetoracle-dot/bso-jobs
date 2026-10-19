@@ -106,5 +106,7 @@ async function notifyTeam(body: z.infer<typeof requestSchema>) {
     subject: `New employer request: ${body.companyName} — ${packageName}`,
     text,
     html,
+    scheduledAt: undefined,
+    batchId: undefined,
   });
 }
