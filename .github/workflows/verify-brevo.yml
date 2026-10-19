@@ -1,0 +1,38 @@
+name: Verify Brevo configuration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+      BREVO_FROM_EMAIL: ${{ secrets.BREVO_FROM_EMAIL }}
+    steps:
+      - name: Verify API authentication and sender
+        shell: bash
+        run: |
+          node <<'NODE'
+          const key = process.env.BREVO_API_KEY;
+          const from = process.env.BREVO_FROM_EMAIL;
+          if (!key || !from) throw new Error("BREVO_API_KEY and BREVO_FROM_EMAIL are required.");
+
+          const headers = { accept: "application/json", "api-key": key };
+          const accountResponse = await fetch("https://api.brevo.com/v3/account", { headers });
+          if (!accountResponse.ok) throw new Error(`Brevo authentication failed with HTTP ${accountResponse.status}.`);
+
+          const sendersResponse = await fetch("https://api.brevo.com/v3/senders", { headers });
+          const senderPayload = await sendersResponse.json().catch(() => ({}));
+          if (!sendersResponse.ok) throw new Error(`Brevo sender check failed with HTTP ${sendersResponse.status}.`);
+
+          const senderEmail = (from.match(/<([^>]+)>/)?.[1] ?? from).trim().toLowerCase();
+          const sender = (senderPayload.senders ?? []).find((item) => String(item.email ?? "").trim().toLowerCase() === senderEmail);
+          if (!sender) throw new Error(`Configured sender ${senderEmail} does not exist in Brevo.`);
+          if (sender.active === false) throw new Error(`Configured sender ${senderEmail} is not active in Brevo.`);
+
+          console.log(`Brevo authentication is valid and ${senderEmail} is an active sender.`);
+          NODE
