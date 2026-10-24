@@ -97,7 +97,7 @@ const companyLogos: Record<string,string> = {
   "Richter":"/company-logos/bso-supplied/richter.webp",
   "Rothschild & Co.":"/company-logos/bso-supplied/rothschildandco.webp",
   "RSM Canada":"/company-logos/bso-supplied/rsm.webp",
-  "Sagard":"/company-logos/bso-supplied/sagard.svg",
+  "Sagard":"/company-logos/bso-supplied/sagard.png",
   "Scotiabank Global Banking and Markets":"/company-logos/bso-supplied/scotiabank-gbm.webp",
   "SCP Resource Finance":"/company-logos/bso-supplied/scp-resource-finance.webp",
   "Société Générale":"/company-logos/bso-supplied/societe-generale.webp",
