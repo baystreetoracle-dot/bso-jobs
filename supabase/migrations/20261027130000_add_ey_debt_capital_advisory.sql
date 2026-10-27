@@ -1,0 +1,81 @@
+-- Publish the employer-verified EY Debt Capital Advisory role supplied on
+-- October 27, 2026.
+
+INSERT INTO public.jobs (
+  external_job_id, company_id, company_name, title,
+  location_display, city, province, country, workplace_type,
+  category, specialization, seniority, employment_type, program_type,
+  date_posted, salary_min, salary_max, salary_currency, salary_period,
+  application_url, source_url, source_name,
+  status, featured, summary, description_text,
+  description_status, description_verified_at, source_record_id,
+  data_quality_notes, last_verified_at, updated_at
+)
+VALUES (
+  '1750981',
+  'ey-corporate-finance',
+  'EY Corporate Finance',
+  'Analyst or Associate, Debt Capital Advisory',
+  'Toronto, ON',
+  'Toronto',
+  'ON',
+  'Canada',
+  NULL,
+  'Investment Banking',
+  'Debt Capital Advisory',
+  'Associate',
+  'Full-time',
+  'Full-time',
+  '2026-10-08',
+  73000,
+  138000,
+  'CAD',
+  'year',
+  'https://careers.ey.com/ey/job/Toronto-Analyst-or-Associate%2C-Debt-Capital-Advisory-ON-M5H-0B3/1445832833/',
+  'https://careers.ey.com/ey/job/Toronto-Analyst-or-Associate%2C-Debt-Capital-Advisory-ON-M5H-0B3/1445832833/',
+  'EY Corporate Finance public careers site',
+  'active',
+  false,
+  'Toronto Analyst or Associate role executing debt advisory, capital-placement and structured-financing mandates for EY Corporate Finance.',
+  $description$EY Corporate Finance is hiring an Analyst or Associate for its Debt Capital Advisory practice in Toronto. The team advises clients on debt capital, capital placement, acquisition and divestiture financing, capital raises and structured-financing transactions.
+
+Responsibilities include developing financial models, researching comparable companies and precedent transactions, preparing pitches and client materials, participating in management meetings, managing due diligence, completing valuation and financial due-diligence work and collaborating with EY-Parthenon transaction, valuation and restructuring teams. Associates also support business development, client relationships and junior-team mentorship.
+
+Applicants should have an undergraduate degree, preferably with a CPA and an interest in the CFA designation. EY requests two to three years of relevant experience for the Analyst level and four to five years for the Associate level. The stated Toronto salary ranges are CAD $73,000 to $99,500 for Analysts and CAD $98,000 to $138,000 for Associates.$description$,
+  'verified',
+  now(),
+  'ey-corporate-finance:1750981',
+  'Verified against EY Canada''s employer-hosted posting on 2026-10-27. Requisition 1750981; posted 2026-10-08. The database salary envelope spans the employer''s separate Analyst and Associate ranges; the description preserves both level-specific ranges.',
+  now(),
+  now()
+)
+ON CONFLICT (source_record_id) DO UPDATE SET
+  company_id = EXCLUDED.company_id,
+  company_name = EXCLUDED.company_name,
+  title = EXCLUDED.title,
+  location_display = EXCLUDED.location_display,
+  city = EXCLUDED.city,
+  province = EXCLUDED.province,
+  country = EXCLUDED.country,
+  workplace_type = EXCLUDED.workplace_type,
+  category = EXCLUDED.category,
+  specialization = EXCLUDED.specialization,
+  seniority = EXCLUDED.seniority,
+  employment_type = EXCLUDED.employment_type,
+  program_type = EXCLUDED.program_type,
+  date_posted = EXCLUDED.date_posted,
+  salary_min = EXCLUDED.salary_min,
+  salary_max = EXCLUDED.salary_max,
+  salary_currency = EXCLUDED.salary_currency,
+  salary_period = EXCLUDED.salary_period,
+  application_url = EXCLUDED.application_url,
+  source_url = EXCLUDED.source_url,
+  source_name = EXCLUDED.source_name,
+  status = EXCLUDED.status,
+  summary = EXCLUDED.summary,
+  description_text = EXCLUDED.description_text,
+  description_status = EXCLUDED.description_status,
+  description_verified_at = EXCLUDED.description_verified_at,
+  data_quality_notes = EXCLUDED.data_quality_notes,
+  last_verified_at = EXCLUDED.last_verified_at,
+  updated_at = EXCLUDED.updated_at;
