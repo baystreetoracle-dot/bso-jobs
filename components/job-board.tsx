@@ -182,7 +182,7 @@ const displayCategory = (company:string, storedCategory:string) => corporateFina
 const rankOrder = ["Intern / Co-op","Analyst","Associate","Vice President","Director","Managing Director"] as const;
 const featuredExternalJobOrder = ["R260028848","R2052799","26997599"];
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
-const homepageTrendingOrder = ["CSS-0012600","JR101593","7058","210790829","549798030828","R7181"];
+const homepageTrendingOrder = ["CSS-0012600","fort-capital-vancouver-analyst-2026-11","JR101593","7058","210790829","549798030828","R7181"];
 const marqueeLogos = [
   {name:"Atlas Partners",src:"/company-logos/bso-banner/atlas-partners.webp",scale:"atlas"},
   {name:"Bank of America",src:"/company-logos/bso-banner/bank-of-america.webp"},
