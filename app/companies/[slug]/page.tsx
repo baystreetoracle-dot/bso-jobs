@@ -5,6 +5,8 @@ import { getActiveJobs } from "@/lib/jobs/server";
 import { companyPath, slugify } from "@/lib/jobs/urls";
 
 export const revalidate = 300;
+// Rendered on first visit, then served from the cache and refreshed every five minutes (ISR).
+export function generateStaticParams(){return [];}
 
 async function companyJobs(slug:string){
   const jobs=await getActiveJobs();

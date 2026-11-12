@@ -6,6 +6,8 @@ import { jobPostingJsonLd } from "@/lib/jobs/structured-data";
 import { jobIdFromSlug, jobPath } from "@/lib/jobs/urls";
 
 export const revalidate = 300;
+// Rendered on first visit, then served from the cache and refreshed every five minutes (ISR).
+export function generateStaticParams(){return [];}
 
 async function jobFromSlug(slug:string){
   const id=jobIdFromSlug(slug);

@@ -13,6 +13,8 @@ const NAV_LINKS = [
   { href: "/jobs#newsletter", label: "Newsletter" },
   { href: "/employers", label: "For employers", employer: true },
 ] as const;
+/** The header pills: the board's own sections. For employers and the briefing sit at the right. */
+const SECTION_LINKS = NAV_LINKS.slice(0, 2);
 
 /** Current page: an exact match or a child route. The newsletter anchor is never "current". */
 const isCurrent = (path: string, href: string) => !href.includes("#") && (path === href || path.startsWith(`${href}/`));
@@ -29,7 +31,42 @@ export function SiteHeader() {
     setLastPath(path);
     setMenuOpen(false);
   }
-  return <header className="site-header"><div className="brand-group"><Link className="brand" href="/jobs"><img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle"/><span className="brand-name">BAY STREET ORACLE</span></Link><div className="product-switch" role="group" aria-label="Bay Street Oracle products"><Link href="/jobs" aria-current={isJobsRoute(path)?"page":undefined}>Jobs</Link><Link href="/">Intelligence</Link></div></div><nav aria-label="BSO Jobs">{NAV_LINKS.map(link=><Link key={link.href} className={"employer" in link?"nav-employer":undefined} href={link.href} aria-current={isCurrent(path,link.href)?"page":undefined}>{link.label}</Link>)}</nav><button type="button" className="menu-button" onClick={()=>setMenuOpen(true)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Open menu"><span/><span/></button><MobileMenu open={menuOpen} path={path} onClose={()=>setMenuOpen(false)}/></header>;
+  return (
+    <header className="site-header">
+      <div className="brand-group">
+        <Link className="brand" href="/jobs">
+          <img className="brand-logo" src="/bso-logo.png" alt="Bay Street Oracle" width={44} height={44} />
+          <span className="brand-name">BAY STREET ORACLE</span>
+        </Link>
+        {/* Intelligence is a separate app on this domain, so its link is a plain <a> (a full page load,
+            fetched ahead on hover by the speculation rules in app/layout.tsx), never <Link>. */}
+        <div className="product-switch" role="group" aria-label="Bay Street Oracle products">
+          <Link href="/jobs" aria-current={isJobsRoute(path) ? "page" : undefined}>Jobs</Link>
+          <a href="/">Intelligence</a>
+        </div>
+        <nav className="section-nav" aria-label="BSO Jobs">
+          {SECTION_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} aria-current={isCurrent(path, link.href) ? "page" : undefined}>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+      <div className="header-actions">
+        <Link className="pill-glass" href="/employers" aria-current={isCurrent(path, "/employers") ? "page" : undefined}>
+          For employers
+        </Link>
+        <Link className="pill-solid" href="/jobs#newsletter">
+          Join the briefing
+        </Link>
+        <button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Open menu">
+          <span />
+          <span />
+        </button>
+      </div>
+      <MobileMenu open={menuOpen} path={path} onClose={() => setMenuOpen(false)} />
+    </header>
+  );
 }
 
 /**
@@ -63,7 +100,7 @@ function MobileMenu({ open, path, onClose }: { open: boolean; path: string; onCl
         </nav>
         <div className="mobile-menu-actions">
           <Link href="/jobs#newsletter" className="mobile-menu-primary" onClick={onClose}>Join the BSO briefing</Link>
-          <Link href="/" className="mobile-menu-secondary" onClick={onClose}>BSO Intelligence <ArrowRight size={16}/></Link>
+          <a href="/" className="mobile-menu-secondary">BSO Intelligence <ArrowRight size={16}/></a>
         </div>
       </div>
     </div>,

@@ -7,20 +7,16 @@ export const revalidate = 300;
 const title = "Canadian Capital Markets Opportunities | BSO Jobs";
 const description = "Explore curated Canadian capital-markets opportunities across investment banking, corporate finance, private equity, private credit, asset management and hedge funds.";
 
-export async function generateMetadata({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}):Promise<Metadata> {
-  const params = await searchParams;
-  const filtered = Object.keys(params).length > 0;
-  return {
-    title,
-    description,
-    alternates: { canonical: "/jobs" },
-    openGraph: { title, description, url: "/jobs", type: "website" },
-    robots: filtered ? { index: false, follow: true } : { index: true, follow: true },
-  };
-}
+// Static (no searchParams), so the board is served from Vercel's cache and refreshed every five minutes.
+// Filtered addresses (?company=) carry the canonical /jobs, so search engines still index one page.
+export const metadata: Metadata = {
+  title,
+  description,
+  alternates: { canonical: "/jobs" },
+  openGraph: { title, description, url: "/jobs", type: "website" },
+};
 
-export default async function JobsPage({searchParams}:{searchParams:Promise<{company?:string}>}) {
-  const {company}=await searchParams;
+export default async function JobsPage() {
   const jobs=await getActiveJobs();
-  return <JobBoard mode="jobs" initialCompany={company} initialRows={jobs}/>;
+  return <JobBoard mode="jobs" initialRows={jobs}/>;
 }
