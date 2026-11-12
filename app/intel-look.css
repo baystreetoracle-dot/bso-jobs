@@ -1,209 +1,49 @@
 /*
- * BSO Jobs in BSO Intelligence's look (bso-intelligence app/globals.css): the near-black page, graphite
- * cards on soft hairlines, one green accent, Inter for type, and the same header, so switching between
- * the two products at www.baystreetoracle.ca reads as one site. Loaded last; it overrides colour, type,
- * radius and motion only. Layout is unchanged.
+ * BSO Jobs with BSO Intelligence's grammar (bso-intelligence app/globals.css), in Jobs' own palette and
+ * type: the same header layout (lock-up, product switch, section pills, pill buttons, hiding on the way
+ * down), rounded cards and pill controls, and the same motion. Colours and fonts stay Jobs'. Loaded last;
+ * layout is unchanged.
  */
 :root {
-  --paper: #0a0a0a;
-  --paper-2: #141414;
-  --card: #121212;
-  --card-2: #171717;
-  --ink: #f2f2ef;
-  --ink-2: #d2d2ce;
-  --muted: #a1a19c;
-  --faint: #8a8a85;
-  --line: #222222;
-  --line-strong: #333333;
-  --fill: #1c1c1c;
-  --green: #5cb96b; /* text and active states on black, as Intelligence's --accent */
-  --brand: #007800; /* fills */
-  --forest: #a9d9b1;
-  --deep: #121212;
-  --mint: #b8d6b4;
-  --accent-soft: #10241a;
-  --caution: #d8b36a;
-  --white: #f2f2ef;
-  --sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --radius: 16px;
-  color-scheme: dark;
 }
 
-body {
-  background:
-    radial-gradient(1100px 520px at 50% -140px, rgb(255 255 255 / 0.07), transparent 70%),
-    radial-gradient(900px 600px at 100% 0%, rgb(0 120 0 / 0.06), transparent 60%),
-    linear-gradient(180deg, #111111 0px, #0a0a0a 700px, #070707 100%);
-  background-color: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-feature-settings: "ss01", "cv11";
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-}
-::selection {
-  background: var(--accent-soft);
-  color: var(--ink);
-}
-:focus-visible,
-.filter-wrap :focus-visible,
-.newsletter-inner :focus-visible,
-footer :focus-visible,
-.hero :focus-visible,
-.directory-hero :focus-visible {
-  outline-color: var(--green);
-}
-
-/* ── Type: Inter throughout,
-as Intelligence. Headlines medium and tight,
-copy regular. ── */
-.hero h1,
-.hero-stat strong,
-.directory-hero h1,
-.section-heading h1,
-.section-heading h2,
-.jobs-aside h2,
-.employer-copy h2,
-.featured-card h3,
-.job-copy h3,
-.job-variant-row strong,
-.company-card h3,
-.story-number,
-.lead-story h3,
-.story h3,
-.newsletter-inner h2,
-.job-modal h2,
-.seo-support h2,
-.job-detail h1,
-.job-alert-step h2,
-.job-alert-inline h3,
-.job-description h2,
-html .emp-hero h1,
-html .emp-metrics dd,
-html .emp-price,
-html .emp-steps-head h2,
-html .emp-steps-track h3,
-html .emp-custom h2,
-html .emp-dialog h2,
-html .emp-paid h1,
-footer>div p,
-.signup-success,
-.mobile-menu-link span {
-  font-family: var(--sans);
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  text-wrap: balance;
-}
-.featured-card h3,.job-copy h3,.company-card h3,.story h3,.job-variant-row strong,.job-alert-inline h3 {
-  letter-spacing: -0.015em;
-}
-.hero h1,.directory-hero h1 {
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-}
-.hero-copy>p:last-child,
-.directory-hero>p:last-child,
-.search-band input,
-.section-heading>p,
-.featured-top>span,
-.jobs-aside>p:last-child,
-.lead-story>div>p:not(.eyebrow),
-.story>span,
-.employer-copy>p:nth-of-type(2),
-.employer-card>div,
-.modal-summary,
-.seo-support p,
-.job-detail-summary,
-.job-description>div,
-.job-alert-step>p:not(.eyebrow),
-.job-alert-inline>div>p:last-child,
-.job-alert-job-cta div>p:last-child,
-html .emp-hero-lede,
-html .emp-summary,
-html .emp-upgrade p,
-html .emp-step-num,
-html .emp-custom-inner p:not(.eyebrow),
-html .emp-dialog-done p,
-html .emp-paid-inner>p:not(.eyebrow),
-html .emp-gate-check,
-.empty-reset,
-.job-alert-step input[type=email],
-.job-alert-inline input,
-.job-alert-error {
-  font-family: var(--sans) !important;
-  letter-spacing: normal;
-}
-.eyebrow {
-  color: var(--green);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-.eyebrow.light {
-  color: var(--green);
-}
-
-/* ── Header: Intelligence's bar exactly (dark glass, Arial lock-up), with Jobs' sections as its pills. ── */
+/* ── Header: Intelligence's arrangement, Jobs' colours ── */
 .site-header {
   height: calc(76px + env(safe-area-inset-top));
   padding: env(safe-area-inset-top) 4vw 0;
   gap: 16px;
   z-index: 40;
-  background: rgba(12, 12, 12, 0.88);
-  border-bottom: 1px solid #222222;
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  font-family: Arial, Helvetica, sans-serif;
   transition: transform 0.28s var(--ease);
 }
 html[data-nav="hidden"] .site-header {
   transform: translateY(-100%);
 }
-.brand {
-  color: #f2f2ef;
-}
-.product-switch {
-  border-left-color: #333333;
-}
-.product-switch a {
-  color: #7f7f7a;
-}
-.product-switch a:hover {
-  color: #f2f2ef;
-}
-.product-switch a[aria-current="page"] {
-  color: #5cb96b;
-}
-.section-nav {
+.site-header nav.section-nav {
   display: flex;
   align-items: center;
   gap: 4px;
   margin-left: 13px;
   padding-left: 12px;
-  border-left: 1px solid #333333;
-  font-family: var(--sans);
+  border-left: 1px solid var(--line);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 .site-header nav.section-nav a:after {
   display: none;
 }
-.site-header nav.section-nav {
-  gap: 4px;
-  font-size: 13.5px;
-  font-weight: 500;
-}
 .section-nav a {
-  padding: 6px 12px;
+  padding: 7px 13px;
   border-radius: 999px;
   color: var(--muted);
-  font-size: 13.5px;
-  font-weight: 500;
   white-space: nowrap;
   transition: color 0.2s, background-color 0.2s;
 }
 .section-nav a:hover {
   color: var(--ink);
 }
-.section-nav a[aria-current="page"] {
+.site-header nav.section-nav a[aria-current="page"] {
   background: var(--fill);
   color: var(--ink);
 }
@@ -211,37 +51,37 @@ html[data-nav="hidden"] .site-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--sans);
 }
 .pill-solid,
 .pill-glass {
-  height: 32px;
+  height: 34px;
   padding: 0 16px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 0.78rem;
+  font-weight: 700;
   white-space: nowrap;
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 .pill-solid {
-  background: var(--ink);
-  color: var(--paper);
+  border: 1px solid var(--forest);
+  background: var(--forest);
+  color: #fff;
 }
 .pill-solid:hover {
-  background: var(--ink-2);
+  border-color: var(--green);
+  background: var(--green);
 }
 .pill-glass {
-  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-  background: color-mix(in srgb, var(--ink) 6%, transparent);
-  color: var(--ink-2);
-}
-.pill-glass:hover {
-  border-color: color-mix(in srgb, var(--ink) 24%, transparent);
-  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  border: 1px solid var(--line-strong);
   color: var(--ink);
+}
+.pill-glass:hover,
+.pill-glass[aria-current="page"] {
+  border-color: var(--forest);
+  background: var(--fill);
 }
 .brand-name {
   display: none;
@@ -252,7 +92,7 @@ html[data-nav="hidden"] .site-header {
   }
 }
 @media (max-width: 980px) {
-  .section-nav,
+  .site-header nav.section-nav,
   .header-actions .pill-glass {
     display: none;
   }
@@ -266,319 +106,94 @@ html[data-nav="hidden"] .site-header {
     display: none;
   }
 }
-.menu-button span {
-  background: var(--ink);
-}
-
-/* Phone menu, dark */
-.mobile-menu {
-  background: var(--paper);
-}
-.mobile-menu-glow {
-  background: radial-gradient(90% 50% at 100% 0%, rgb(0 120 0 / 0.16), transparent 70%);
-}
-.mobile-menu-brand span {
-  color: var(--green);
-}
-.mobile-menu-primary {
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
-}
+.mobile-menu-primary,
 .mobile-menu-secondary {
   border-radius: 999px;
-  border-color: var(--line-strong);
-  color: var(--ink);
 }
 
-/* ── Heroes: dark,
-with Intelligence's green glow in place of the green slab. ── */
-.hero,
-.directory-hero,
-html .emp-hero,
-html .emp-paid {
-  color: var(--ink);
-  background:
-    radial-gradient(900px 460px at 88% -12%, rgb(0 120 0 / 0.34), transparent 68%),
-    radial-gradient(700px 380px at 0% 110%, rgb(0 120 0 / 0.12), transparent 70%),
-    transparent;
-  border-bottom: 1px solid var(--line);
-}
-.hero:before {
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 62px 62px;
-}
-.hero-copy>p:last-child,
-.directory-hero>p:last-child,
-.hero-stat span {
-  color: var(--muted);
-}
-.hero-orbit {
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-/* Search and filters: one graphite panel, rounded, like Intelligence's search. */
-.filter-wrap {
-  color: var(--ink);
-  background: var(--card);
-  border: 1px solid var(--line);
+/* ── Rounded surfaces and pill controls, as Intelligence ── */
+.filter-wrap,
+.featured-card,
+.story,
+.lead-story,
+.job-detail aside,
+.job-alert-job-cta,
+.employer-card,
+.empty,
+html .emp-card,
+html .emp-paths,
+html .anson-role-layout aside {
   border-radius: var(--radius);
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.02), 0 24px 48px -24px rgb(0 0 0 / 0.9);
 }
-.search-band input {
-  color: var(--ink);
+.filter-wrap {
+  overflow: hidden;
 }
-.search-band input::placeholder {
-  color: var(--faint);
+.newsletter-inner,
+.job-alert-inline,
+html .emp-custom-inner {
+  border-radius: 24px;
 }
-.search-band > span,
-.select-row label > span {
-  color: var(--faint);
+.job-alert-inline {
+  overflow: hidden;
 }
-.search-band:focus-within {
-  box-shadow: inset 0 -1px 0 var(--green);
-}
-.select-row label {
-  background: var(--fill);
-  border-right: 0;
-  border-radius: 10px;
+.job-alert-modal {
+  border-radius: 20px;
 }
 .select-row {
   gap: 6px;
 }
-.select-row select {
-  color: var(--ink);
-}
-.select-row option {
-  background: var(--card);
-  color: var(--ink);
-}
-.select-row label:focus-within {
-  background: #232323;
-  outline: 2px solid var(--green);
-}
-.select-row button {
-  color: var(--muted);
+.select-row label {
+  border-right: 0;
+  border-radius: 10px;
 }
 .active-filter {
   border-radius: 10px;
-  background: var(--accent-soft);
-  color: var(--forest);
-}
-
-/* ── Surfaces ── */
-.logo-marquee {
-  background: transparent;
-  border-bottom-color: var(--line);
-}
-.logo-marquee-item img {
-  filter: grayscale(1) invert(1) brightness(1.4);
-  opacity: 0.55;
-  mix-blend-mode: screen;
-}
-.logo-marquee-item:hover img {
-  filter: grayscale(1) invert(1) brightness(1.8);
-  opacity: 0.9;
-}
-.logo-marquee-note {
-  color: var(--faint);
-}
-.featured-card,
-.story,
-.job-detail aside,
-.job-alert-job-cta,
-html .emp-card,
-html .emp-paths {
-  background: var(--card);
-  border-color: var(--line);
-  border-radius: var(--radius);
-}
-.featured-card {
-  transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
-}
-.featured-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--line-strong);
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.04), 0 24px 48px -24px rgb(0 0 0 / 0.9);
-}
-.featured-top > span,
-.story > span {
-  color: var(--faint);
-}
-.featured-bottom {
-  border-top-color: var(--line);
 }
 .company-logo {
-  border-color: var(--line);
   border-radius: 10px;
-  background: #fff;
-}
-.company-logo span {
-  color: #10231d;
-}
-.company-name {
-  color: var(--green);
 }
 .bso-exclusive-tag,
 .process-tag,
-.category {
+.category,
+html .anson-exclusive {
   border-radius: 6px;
-}
-.process-tag {
-  border-color: rgb(216 179 106 / 0.4);
-  background: rgb(216 179 106 / 0.1);
-  color: var(--caution);
-}
-.category {
-  background: var(--fill);
-  color: var(--ink-2);
-}
-
-.jobs-section {
-  background: transparent;
-  border-top: 1px solid var(--line);
-}
-.job-list {
-  border-top-color: var(--line-strong);
 }
 .job-card {
   border-radius: 12px;
 }
-.job-card:hover {
-  background: var(--card);
+.modal-process-note {
+  border-radius: 0 10px 10px 0;
 }
-.job-action p strong {
-  color: var(--ink);
-}
-.job-variants,
-.job-variant-list {
-  border-top-color: var(--line);
-}
-.job-variants summary {
-  color: var(--forest);
-}
-.empty {
-  border-radius: var(--radius);
-  background: var(--card);
-  border-color: var(--line);
-}
-.empty-reset,
-.section-cta a {
+.modal-close,
+.job-alert-close,
+.newsletter-icon,
+.job-alert-icon {
   border-radius: 999px;
-  border-color: var(--line-strong);
-  color: var(--ink);
-  background: color-mix(in srgb, var(--ink) 6%, transparent);
 }
-.section-cta a:hover,
-.empty-reset:hover {
-  color: var(--paper);
-  background: var(--ink);
-  border-color: var(--ink);
+.section-cta a,
+.empty-reset,
+.employer-copy > a,
+.apply-button,
+.job-alert-primary,
+.job-alert-job-cta button,
+.alert-preference-group span,
+.job-alert-step input[type=email],
+html .emp-button,
+html .anson-actions a,
+html .anson-facts span {
+  border-radius: 999px;
 }
-.section-cta.inverse a {
-  border-color: var(--line-strong);
-  color: var(--ink);
-}
-.section-cta.inverse a:hover {
-  color: var(--paper);
-  background: var(--ink);
-}
-.skeleton {
-  background: linear-gradient(90deg, var(--paper-2) 0, #1f1f1f 40%, var(--paper-2) 80%);
-  background-size: 800px 100%;
-}
-
-.companies-section {
-  color: var(--ink);
-  background: radial-gradient(900px 500px at 100% 0%, rgb(0 120 0 / 0.14), transparent 65%), transparent;
-  border-top: 1px solid var(--line);
-}
-.company-grid {
-  border-color: var(--line);
-}
-.company-card {
-  color: var(--ink);
-  border-color: var(--line);
-}
-.company-card:hover {
-  background: var(--card);
-}
-.company-card p,
-.company-card > span {
-  color: var(--faint);
-}
-.section-heading.inverse > p {
-  color: var(--muted);
-}
-
-.lead-story {
-  color: var(--ink);
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-.lead-story > div > p:not(.eyebrow) {
-  color: var(--muted);
-}
-.story-number {
-  color: var(--green);
-}
-.lead-story a {
-  color: var(--green);
-}
-
-/* Newsletter and alert bands: a graphite panel lit from the corner,
-as Intelligence's aurora panels. */
-.newsletter-inner,
-.job-alert-inline,
-html .emp-custom-inner {
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background:
-    radial-gradient(700px 360px at 100% 0%, rgb(0 120 0 / 0.28), transparent 65%),
-    var(--card);
-}
-.job-alert-inline {
-  border-left: 1px solid var(--line);
-}
-.newsletter-icon {
-  border-color: var(--line-strong);
-  border-radius: 12px;
-}
-.newsletter-inner > div > p:last-child,
-.newsletter-inner small,
-.job-alert-inline > div > p:last-child,
-.job-alert-inline form > label {
-  color: var(--muted);
+.job-alert-step input[type=email] {
+  padding-left: 18px;
 }
 .newsletter-inner input,
-.job-alert-step input[type=email],
-.job-alert-inline input,
-html .emp-field input,
-html .emp-field textarea {
-  border: 1px solid var(--line-strong);
-  background: var(--paper-2);
-  color: var(--ink);
-}
-.newsletter-inner input {
+.job-alert-inline input {
   border-radius: 999px 0 0 999px;
   padding-left: 20px;
 }
 .newsletter-inner button,
 .job-alert-inline form button {
-  border: 0;
   border-radius: 0 999px 999px 0;
-  background: var(--ink);
-  color: var(--paper);
-}
-.job-alert-inline form button {
-  border: 1px solid var(--ink);
-}
-.job-alert-inline input {
-  border-radius: 999px 0 0 999px;
 }
 @media (max-width: 720px) {
   .newsletter-inner input,
@@ -592,192 +207,17 @@ html .emp-field textarea {
     margin-top: 8px;
   }
 }
-.signup-success {
-  border-radius: var(--radius);
-  border-color: var(--line-strong);
-  color: var(--ink);
-}
-.signup-error,
-.job-alert-inline form > p {
-  color: #e08a7a;
-}
-
-.employer-section {
-  background: transparent;
-  border-top: 1px solid var(--line);
-}
-.employer-copy > a,
-.apply-button,
-.job-alert-primary {
-  border-radius: 999px;
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-}
-.employer-card {
-  border-color: var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-  box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.9);
-}
-.employer-card > div,
-.employer-card li {
-  border-bottom-color: var(--line);
-}
-
-/* Footer: Intelligence's — the page colour, a hairline above, quiet links. */
-footer {
-  color: var(--ink);
-  background: #070707;
-  border-top: 1px solid var(--line);
-}
-footer > div {
-  color: var(--muted);
-}
-footer > div a {
-  transition: color 0.2s;
-}
-footer > div a:hover {
-  color: var(--ink);
-}
-footer > div p {
-  color: var(--ink);
-}
-.footer-socials a {
-  border-color: var(--line-strong);
-}
-.footer-socials a:hover {
-  background: var(--fill);
-  border-color: var(--line-strong);
-}
-footer > small {
-  border-top-color: var(--line);
-  color: var(--faint);
-}
-
-/* ── Job quick view, job page, alerts modal ── */
-.modal-backdrop,
-.job-alert-backdrop {
-  background: rgb(0 0 0 / 0.62);
-}
-.job-modal,
-.job-alert-modal {
-  background: var(--paper-2);
-  border-left: 1px solid var(--line);
-  box-shadow: -24px 0 64px rgb(0 0 0 / 0.6);
-}
-.job-alert-modal {
-  border: 1px solid var(--line);
-  border-radius: 20px;
-}
-.modal-close,
-.job-alert-close {
-  border-color: var(--line-strong);
-  border-radius: 999px;
-  color: var(--ink);
-}
-.modal-process-note {
-  border-left-color: var(--caution);
-  border-radius: 0 10px 10px 0;
-  background: rgb(216 179 106 / 0.1);
-  color: var(--caution);
-}
-.job-modal dl,
-.job-detail dl,
-.job-description {
-  border-top-color: var(--line-strong);
-}
-.job-modal dl div,
-.job-detail dl div {
-  border-bottom-color: var(--line);
-}
-.job-description > div {
-  color: var(--ink-2);
-}
-.detail-link,
-.seo-links a,
-.job-detail aside a {
-  color: var(--green);
-}
-.seo-support,
-.job-detail {
-  background: transparent;
-}
-.seo-links {
-  border-top-color: var(--line-strong);
-}
-.job-detail aside a {
-  border-bottom-color: var(--line);
-}
-.job-alert-icon {
-  border-radius: 12px;
-  background: var(--brand);
-}
-.job-alert-secondary {
-  color: var(--muted);
-}
-.job-alert-step input[type=email] {
-  border-radius: 999px;
-  padding-left: 18px;
-}
-.alert-preference-group span {
-  border-radius: 999px;
-  border-color: var(--line-strong);
-  background: transparent;
-  color: var(--ink-2);
-}
-.alert-preference-group label.selected span {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-}
-.alert-preference-group legend,
-.job-alert-step form > label {
-  color: var(--muted);
-}
-.job-alert-error {
-  color: #e08a7a !important;
-}
-.job-alert-job-cta button {
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
-}
 .sheet-handle {
   border-radius: 999px;
 }
 
-html /* ── Employer pages ── */
-.emp-button {
-  border-radius: 999px;
+/* ── Motion: Intelligence's lift, page fade and easing; nothing for reduced motion ── */
+.featured-card {
+  transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
-html .emp-button.light,
-html .emp-button.solid {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+.featured-card:hover {
+  transform: translateY(-4px);
 }
-html .emp-button.light:hover,
-html .emp-button.solid:hover {
-  background: var(--ink-2);
-  border-color: var(--ink-2);
-}
-html .emp-summary,
-html .emp-upgrade p,
-html .emp-dialog-done p {
-  color: var(--ink-2);
-}
-html .emp-dialog-close,
-html .emp-email-alt button {
-  background: var(--fill);
-  color: var(--ink);
-}
-html .emp-paid .emp-done-icon {
-  background: var(--brand);
-  color: #fff;
-}
-
-/* ── Motion: Intelligence's page fade, one easing, nothing for reduced motion ── */
 .site-header ~ :not(footer):not(script) {
   animation: bso-page-in 260ms ease-out backwards;
 }
@@ -786,92 +226,15 @@ html .emp-paid .emp-done-icon {
     opacity: 0;
   }
 }
+@media (hover: none) {
+  .featured-card:hover {
+    transform: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .site-header ~ *,
   .site-header {
     animation: none;
     transition: none;
   }
-}
-html .emp-hero-lede,
-html .emp-custom-inner p:not(.eyebrow),
-html .emp-paid-inner > p:not(.eyebrow) {
-  color: var(--muted);
-}
-
-/* ── Exclusive role pages (Anson, Fort): the same dark page, the exclusive red kept as the one mark. ── */
-html .anson-role-page {
-  background: transparent;
-  color: var(--ink);
-}
-html .anson-role-nav,
-html .anson-role-layout {
-  border-color: var(--line);
-}
-html .anson-role-nav a {
-  color: var(--ink);
-}
-html .anson-role-nav span {
-  color: #e08a7a;
-}
-html .anson-company {
-  color: var(--green);
-}
-html .anson-exclusive {
-  border-radius: 6px;
-}
-html .anson-role-hero h1,
-html .anson-role-layout h2 {
-  font-family: var(--sans);
-  font-weight: 500;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-}
-html .anson-role-layout h2 {
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-}
-html .anson-facts span {
-  border-radius: 999px;
-  background: var(--fill);
-  color: var(--ink-2);
-}
-html .anson-intro,
-html .anson-role-layout p,
-html .anson-role-layout li {
-  color: var(--ink-2);
-  font-family: var(--sans);
-}
-html .anson-source-note {
-  font-family: var(--sans) !important;
-  color: var(--faint) !important;
-}
-html .anson-actions a {
-  border-radius: 999px;
-  border-color: var(--line-strong);
-  color: var(--ink);
-}
-html .anson-actions a.primary {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-}
-html .anson-role-layout aside {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background:
-    radial-gradient(500px 280px at 100% 0%, rgb(0 120 0 / 0.26), transparent 65%),
-    var(--card);
-}
-html .anson-role-layout aside p {
-  color: var(--muted);
-}
-html .anson-aside-label {
-  color: var(--green) !important;
-}
-html .anson-pdf {
-  border-top-color: var(--line-strong);
-}
-html .anson-role-page a:focus-visible {
-  outline-color: var(--green);
 }

@@ -3,11 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import "./job-alerts.css";
 import "./intel-look.css";
-import { Inter } from "next/font/google";
 import { HeaderScroll } from "@/components/header-scroll";
-
-// The same face BSO Intelligence uses, so the two products read as one site.
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.baystreetoracle.ca"),
@@ -36,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en">
       <body className="antialiased">
         {children}
         <HeaderScroll />
