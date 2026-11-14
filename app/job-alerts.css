@@ -39,14 +39,14 @@
 .job-alert-step h2 {
   max-width: 470px;
   margin: 0;
-  font: 400 clamp(2.2rem, 6vw, 3.65rem)/0.98 Georgia, serif;
+  font: 400 clamp(2.2rem, 6vw, 3.65rem)/0.98 var(--font-newsreader),Georgia,"Times New Roman",serif;
   letter-spacing: -0.045em;
 }
 .job-alert-step > p:not(.eyebrow) {
   max-width: 440px;
   margin: 18px 0 24px;
   color: var(--muted);
-  font: 1rem/1.55 Georgia, serif;
+  font: 1rem/1.55 var(--font-newsreader),Georgia,"Times New Roman",serif;
 }
 .job-alert-icon {
   width: 46px;
@@ -75,7 +75,7 @@
   border-radius: 0;
   background: #fff;
   color: var(--ink);
-  font: 1rem Arial, sans-serif;
+  font: 1rem var(--font-inter),"Helvetica Neue",Arial,sans-serif;
 }
 .job-alert-primary {
   width: 100%;
@@ -125,7 +125,7 @@
 .job-alert-error {
   margin: 9px 0 0 !important;
   color: #9b2c20 !important;
-  font: 700 0.78rem/1.4 Arial, sans-serif !important;
+  font: 700 0.78rem/1.4 var(--font-inter),"Helvetica Neue",Arial,sans-serif !important;
 }
 .alert-preference-group { padding: 0; margin: 24px 0 0; border: 0; }
 .alert-preference-group legend {
@@ -173,11 +173,11 @@
   border-left: 4px solid #71ad73;
 }
 .job-alert-inline .eyebrow { margin: 0 0 8px; color: #b9e5b7; }
-.job-alert-inline h3 { margin: 0; font: 400 1.75rem/1.08 Georgia, serif; }
+.job-alert-inline h3 { margin: 0; font: 400 1.75rem/1.08 var(--font-newsreader),Georgia,"Times New Roman",serif; }
 .job-alert-inline > div > p:last-child {
   margin: 10px 0 0;
   color: #bfd1c5;
-  font: 1rem/1.45 Georgia, serif;
+  font: 1rem/1.45 var(--font-newsreader),Georgia,"Times New Roman",serif;
 }
 .job-alert-inline form > label { color: #c7d8cc; }
 .job-alert-inline form > div { display: grid; grid-template-columns: 1fr auto; }
@@ -222,7 +222,7 @@
   background: #fff;
 }
 .job-alert-job-cta .eyebrow { margin: 0 0 7px; }
-.job-alert-job-cta div > p:last-child { margin: 0; color: var(--muted); font: 1rem/1.45 Georgia, serif; }
+.job-alert-job-cta div > p:last-child { margin: 0; color: var(--muted); font: 1rem/1.45 var(--font-newsreader),Georgia,"Times New Roman",serif; }
 .job-alert-job-cta button {
   flex: 0 0 auto;
   min-height: 44px;

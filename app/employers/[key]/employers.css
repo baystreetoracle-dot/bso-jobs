@@ -6,7 +6,7 @@
 .emp-rise{animation:emp-rise .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0ms)}
 
 /* Buttons: square, uppercase, tracked, like the board's section CTAs. */
-.emp-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:16px 20px;border:1px solid transparent;font:800 .72rem Arial,Helvetica,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.emp-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:16px 20px;border:1px solid transparent;font:800 .72rem var(--font-inter),"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
 .emp-button svg{transition:transform .25s cubic-bezier(.2,.7,.2,1)}
 .emp-button.light{background:#fff;color:var(--deep);border-color:#fff}
 .emp-button.ghost{color:#fff;border-color:rgba(255,255,255,.45)}
@@ -23,13 +23,13 @@
 /* Hero: the BSO Jobs green hero, with the audience figures beside the pitch. */
 .emp-hero{position:relative;overflow:hidden;padding:clamp(70px,8vw,120px) 4vw clamp(56px,6vw,84px);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.75fr);gap:6vw;align-items:end;color:#fff;background:linear-gradient(132deg,#007800 0%,#075e24 42%,#114634 100%)}
 .emp-hero-copy,.emp-metrics{position:relative;z-index:2}
-.emp-hero h1{max-width:900px;margin:18px 0 22px;font:400 clamp(2.8rem,5.4vw,5.6rem)/.95 Georgia,"Times New Roman",serif;letter-spacing:-.05em}
-.emp-hero-lede{max-width:560px;margin:0;color:#dce9dc;font:400 clamp(1rem,1.4vw,1.25rem)/1.5 Georgia,serif}
+.emp-hero h1{max-width:900px;margin:18px 0 22px;font:400 clamp(2.8rem,5.4vw,5.6rem)/.95 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.05em}
+.emp-hero-lede{max-width:560px;margin:0;color:#dce9dc;font:400 clamp(1rem,1.4vw,1.25rem)/1.5 var(--font-newsreader),Georgia,"Times New Roman",serif}
 .emp-hero-actions{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px}
 .emp-metrics dl{margin:0}
 .emp-metrics dl>div{padding:16px 0;display:flex;flex-direction:column-reverse;border-top:1px solid rgba(255,255,255,.22)}
 .emp-metrics dl>div:last-child{border-bottom:1px solid rgba(255,255,255,.22)}
-.emp-metrics dd{margin:0;font:400 clamp(2.4rem,3.6vw,3.4rem)/1 Georgia,serif;letter-spacing:-.03em}
+.emp-metrics dd{margin:0;font:400 clamp(2.4rem,3.6vw,3.4rem)/1 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.03em}
 .emp-metrics dt{margin-top:8px;color:#b9e5b7;font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 .emp-metrics-note{margin:12px 0 0;color:rgba(255,255,255,.5);font-size:.6rem;white-space:nowrap}
 
@@ -48,10 +48,10 @@
 .emp-card>header{min-height:24px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .emp-card-name{margin:0;color:var(--green);font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
 .emp-card-tag{padding:5px 8px;border:1px solid rgba(185,229,183,.5);color:#b9e5b7;font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
-.emp-price{margin:26px 0 0;font:400 clamp(2.8rem,3.6vw,3.6rem)/1 Georgia,serif;letter-spacing:-.04em}
+.emp-price{margin:26px 0 0;font:400 clamp(2.8rem,3.6vw,3.6rem)/1 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.04em}
 .emp-currency{position:relative;top:-.95em;margin-right:4px;font-size:.38em;letter-spacing:0}
 .emp-cadence{margin:8px 0 0;color:var(--muted);font-size:.74rem}
-.emp-summary{min-height:3em;margin:20px 0 0;color:#283c35;font:1rem/1.5 Georgia,serif}
+.emp-summary{min-height:3em;margin:20px 0 0;color:#283c35;font:1rem/1.5 var(--font-newsreader),Georgia,"Times New Roman",serif}
 .emp-features{margin:22px 0 28px;padding:22px 0 0;list-style:none;display:grid;gap:11px;border-top:1px solid var(--line);font-size:.86rem;line-height:1.45}
 .emp-features li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:10px}
 .emp-features svg{margin-top:2px;color:var(--green)}
@@ -66,28 +66,28 @@
 .is-emphasized .emp-features svg{color:#5cb96b}
 
 .emp-upgrade{margin-top:22px;padding:22px 26px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;border:1px solid var(--line)}
-.emp-upgrade p{margin:0;color:#283c35;font:1.05rem/1.4 Georgia,serif}
+.emp-upgrade p{margin:0;color:#283c35;font:1.05rem/1.4 var(--font-newsreader),Georgia,"Times New Roman",serif}
 .emp-upgrade strong{color:var(--ink);font-weight:400}
 .emp-text-link{display:inline-flex;align-items:center;gap:6px;padding-bottom:4px;border-bottom:1px solid var(--forest);color:var(--forest);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 
 /* How it works: a green line draws across as the steps arrive. */
 .emp-steps{padding:0 4vw clamp(80px,9vw,110px)}
-.emp-steps-head h2{margin:13px 0 0;font:400 clamp(2.2rem,3.6vw,3.6rem)/1 Georgia,serif;letter-spacing:-.04em}
+.emp-steps-head h2{margin:13px 0 0;font:400 clamp(2.2rem,3.6vw,3.6rem)/1 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.04em}
 .emp-steps-track{margin-top:44px}
 .emp-steps-track ol{position:relative;margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
 .emp-steps-track ol::before{content:"";position:absolute;left:0;top:-1px;width:100%;height:2px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform 1.3s cubic-bezier(.2,.7,.2,1) .15s}
 .emp-steps-track.is-visible ol::before{transform:scaleX(1)}
 .emp-steps-track li{padding:26px 28px 0 0;opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i) * 130ms + 250ms)}
 .emp-steps-track.is-visible li{opacity:1;transform:none}
-.emp-step-num{color:var(--green);font:1rem Georgia,serif}
-.emp-steps-track h3{margin:14px 0 8px;font:400 1.35rem/1.15 Georgia,serif;letter-spacing:-.02em}
+.emp-step-num{color:var(--green);font:1rem var(--font-newsreader),Georgia,"Times New Roman",serif}
+.emp-steps-track h3{margin:14px 0 8px;font:400 1.35rem/1.15 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.02em}
 .emp-steps-track p{margin:0;color:var(--muted);font-size:.88rem;line-height:1.5}
 
 /* Custom campaigns */
 .emp-custom{padding:0 4vw clamp(80px,9vw,110px);scroll-margin-top:76px}
 .emp-custom-inner{padding:clamp(36px,5vw,60px);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:30px;color:#fff;background:linear-gradient(115deg,#007800,#114634)}
-.emp-custom h2{max-width:720px;margin:12px 0;font:400 clamp(2rem,3.4vw,3.4rem)/1 Georgia,serif;letter-spacing:-.04em}
-.emp-custom-inner p:not(.eyebrow){max-width:560px;margin:0;color:#dce9dc;font:1.05rem/1.5 Georgia,serif}
+.emp-custom h2{max-width:720px;margin:12px 0;font:400 clamp(2rem,3.4vw,3.4rem)/1 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.04em}
+.emp-custom-inner p:not(.eyebrow){max-width:560px;margin:0;color:#dce9dc;font:1.05rem/1.5 var(--font-newsreader),Georgia,"Times New Roman",serif}
 
 @media(max-width:1100px){.emp-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){
@@ -121,7 +121,7 @@
 }
 
 /* Request form: a light, square panel in the BSO Jobs style; a bottom sheet on phones. */
-button.emp-text-link{background:none;border-width:0 0 1px;border-style:solid;cursor:pointer;font-family:Arial,Helvetica,sans-serif}
+button.emp-text-link{background:none;border-width:0 0 1px;border-style:solid;cursor:pointer;font-family:var(--font-inter),"Helvetica Neue",Arial,sans-serif}
 .emp-button.solid-green{background:var(--green);color:#fff;border-color:var(--green)}
 @media(hover:hover) and (pointer:fine){.emp-button.solid-green:hover{background:var(--forest);border-color:var(--forest)}}
 .emp-button.wide{width:100%}
@@ -133,14 +133,14 @@ html:has(.emp-dialog[open]){overflow:hidden}
 @keyframes emp-fade{from{opacity:0}to{opacity:1}}
 .emp-dialog-panel{position:relative;padding:38px 36px 30px}
 .emp-dialog-close{position:absolute;top:16px;right:16px;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
-.emp-dialog h2{margin:12px 0 0;padding-right:40px;font:400 clamp(1.8rem,4vw,2.4rem)/1 Georgia,serif;letter-spacing:-.04em}
+.emp-dialog h2{margin:12px 0 0;padding-right:40px;font:400 clamp(1.8rem,4vw,2.4rem)/1 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.04em}
 .emp-dialog-price{margin:10px 0 0;color:var(--muted);font-size:.82rem}
 .emp-form{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .emp-field{display:grid;gap:7px;min-width:0}
 .emp-field.wide{grid-column:1/-1}
 .emp-field>span{color:var(--ink);font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
 .emp-field em{margin-left:4px;color:var(--muted);font-style:normal;font-weight:700;letter-spacing:.04em;text-transform:none}
-.emp-field input,.emp-field textarea{width:100%;min-width:0;padding:13px 14px;border:1px solid var(--line);border-radius:0;background:#fff;color:var(--ink);font:16px Arial,Helvetica,sans-serif;outline:none;transition:border-color .2s}
+.emp-field input,.emp-field textarea{width:100%;min-width:0;padding:13px 14px;border:1px solid var(--line);border-radius:0;background:#fff;color:var(--ink);font:16px var(--font-inter),"Helvetica Neue",Arial,sans-serif;outline:none;transition:border-color .2s}
 .emp-field textarea{resize:vertical}
 .emp-field input:focus,.emp-field textarea:focus{border-color:var(--green)}
 .emp-honeypot{position:absolute;left:-10000px;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -149,7 +149,7 @@ html:has(.emp-dialog[open]){overflow:hidden}
 .emp-form-note{grid-column:1/-1;margin:0;color:var(--muted);font-size:.75rem}
 .emp-dialog-done{padding:16px 0 4px;display:grid;justify-items:start;gap:14px}
 .emp-dialog-done h2{margin:0}
-.emp-dialog-done p{margin:0;color:#283c35;font:1.02rem/1.55 Georgia,serif}
+.emp-dialog-done p{margin:0;color:#283c35;font:1.02rem/1.55 var(--font-newsreader),Georgia,"Times New Roman",serif}
 .emp-done-icon{width:46px;height:46px;display:grid;place-items:center;background:var(--green);color:#fff}
 @media(max-width:720px){
   .emp-dialog{width:100vw;max-height:92svh;margin:auto 0 0;border-width:1px 0 0;animation-name:emp-sheet-in}
@@ -162,7 +162,7 @@ html:has(.emp-dialog[open]){overflow:hidden}
 /* Checkout mode: pay button plus a quiet route to ask first. */
 .emp-card-actions{margin-top:auto;display:grid;gap:12px}
 .emp-card-actions .emp-button{width:100%}
-.emp-card-secondary{padding:0;border:0;background:none;color:var(--muted);font:600 .76rem Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;justify-self:center}
+.emp-card-secondary{padding:0;border:0;background:none;color:var(--muted);font:600 .76rem var(--font-inter),"Helvetica Neue",Arial,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;justify-self:center}
 .is-emphasized .emp-card-secondary{color:rgba(255,255,255,.7)}
 @media(hover:hover) and (pointer:fine){.emp-card-secondary:hover{color:var(--forest)}.is-emphasized .emp-card-secondary:hover{color:#fff}}
 
@@ -170,26 +170,26 @@ html:has(.emp-dialog[open]){overflow:hidden}
 .emp-paid{position:relative;overflow:hidden;min-height:calc(100svh - 76px);padding:clamp(70px,9vw,120px) 4vw;display:grid;align-items:center;color:#fff;background:linear-gradient(132deg,#007800 0%,#075e24 42%,#114634 100%)}
 .emp-paid-inner{position:relative;z-index:2;max-width:760px}
 .emp-paid .emp-done-icon{margin-bottom:26px;width:52px;height:52px;background:#fff;color:var(--green)}
-.emp-paid h1{margin:16px 0 20px;font:400 clamp(2.8rem,6vw,5.4rem)/.95 Georgia,"Times New Roman",serif;letter-spacing:-.05em}
-.emp-paid-inner>p:not(.eyebrow){max-width:600px;margin:0;color:#dce9dc;font:400 clamp(1rem,1.5vw,1.25rem)/1.5 Georgia,serif}
+.emp-paid h1{margin:16px 0 20px;font:400 clamp(2.8rem,6vw,5.4rem)/.95 var(--font-newsreader),Georgia,"Times New Roman",serif;letter-spacing:-.05em}
+.emp-paid-inner>p:not(.eyebrow){max-width:600px;margin:0;color:#dce9dc;font:400 clamp(1rem,1.5vw,1.25rem)/1.5 var(--font-newsreader),Georgia,"Times New Roman",serif}
 @media(max-width:720px){.emp-paid{min-height:calc(100svh - 68px);padding:56px 20px}}
 .emp-secure{margin:-4px 0 0;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.7rem}
 .is-emphasized .emp-secure{color:rgba(255,255,255,.6)}
 
 /* Employer entry gate */
 .emp-gate-form{margin-top:34px;display:grid;justify-items:start;gap:22px}
-.emp-gate-check{display:flex;align-items:flex-start;gap:12px;cursor:pointer;color:#fff;font:400 1.02rem/1.45 Georgia,serif}
+.emp-gate-check{display:flex;align-items:flex-start;gap:12px;cursor:pointer;color:#fff;font:400 1.02rem/1.45 var(--font-newsreader),Georgia,"Times New Roman",serif}
 .emp-gate-check input{flex:none;width:20px;height:20px;margin:3px 0 0;accent-color:#fff;cursor:pointer}
 .emp-gate-form .emp-button:disabled{opacity:.45;cursor:not-allowed}
-.emp-paid-inner>p.emp-gate-alt{margin:38px 0 0;color:rgba(255,255,255,.6);font:400 .82rem/1.5 Arial,Helvetica,sans-serif}
+.emp-paid-inner>p.emp-gate-alt{margin:38px 0 0;color:rgba(255,255,255,.6);font:400 .82rem/1.5 var(--font-inter),"Helvetica Neue",Arial,sans-serif}
 .emp-gate-alt a{color:#fff;border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:2px}
 
 /* Email alternative to the request form */
 .emp-email-alt{margin:16px 0 0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;color:var(--muted);font-size:.82rem}
 .emp-email-alt a{color:var(--forest);font-weight:700;border-bottom:1px solid var(--line)}
-.emp-email-alt button{padding:4px 9px;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;color:var(--ink);font:700 .66rem Arial,Helvetica,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.emp-email-alt button{padding:4px 9px;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;color:var(--ink);font:700 .66rem var(--font-inter),"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
 .emp-custom-actions{display:grid;justify-items:center;gap:4px}
-.emp-custom-actions p.emp-email-alt{margin:12px 0 0;justify-content:center;color:rgba(255,255,255,.7);font:400 .82rem/1.4 Arial,Helvetica,sans-serif}
+.emp-custom-actions p.emp-email-alt{margin:12px 0 0;justify-content:center;color:rgba(255,255,255,.7);font:400 .82rem/1.4 var(--font-inter),"Helvetica Neue",Arial,sans-serif}
 .emp-custom-actions .emp-email-alt a{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
 .emp-custom-actions .emp-email-alt button{background:transparent;border-color:rgba(255,255,255,.4);color:#fff}
 @media(max-width:720px){.emp-custom-actions{justify-items:stretch}.emp-custom-actions .emp-email-alt{justify-content:flex-start}}
