@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { FIRST_STRIKE, NEEDS_PERSON } from "@/lib/jobs/deadline-refresh";
+import { verifyJobSource } from "@/lib/jobs/source-verification";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,10 @@ export const dynamic = "force-dynamic";
  *        owner's instruction; `deadline` (YYYY-MM-DD, or null for none) replaces a deadline that has passed
  *   POST /jobs/agent-api { action: "add", eventId, reason, fields? } → publish a role the collector proposed. The
  *        record comes from the collector's event (employer link, ids, company); `fields` may only tidy what is shown
- *        (title, location, summary, description, deadline…) from the employer's own posting. Refuses duplicates.
+ *        (title, location, summary, description, deadline…) from the employer's own posting. Refuses duplicates,
+ *        and a posting this server finds closed.
+ *   POST /jobs/agent-api { action: "check", jobId | eventId } → this server opens the employer's posting (the agent's
+ *        own network can't reach career sites) and says live, closed or inconclusive, with the evidence
  */
 function authorized(req: NextRequest) {
   const token = process.env.HQ_AGENT_TOKEN;
@@ -100,6 +104,29 @@ const JobChange = z.object({
   deadline: date.nullable().optional(),
   ownerAsked: z.boolean().optional(),
 });
+const Check = z.object({
+  action: z.literal("check"),
+  jobId: z.string().uuid().optional(),
+  eventId: z.string().uuid().optional(),
+}).refine((value) => Boolean(value.jobId) !== Boolean(value.eventId), { message: "Send exactly one of jobId or eventId." });
+
+async function checkPosting(body: z.infer<typeof Check>) {
+  const db = getSupabaseAdminClient();
+  let job: { external_job_id: string; title: string; company_name: string; application_url: string; source_url: string } | null = null;
+  if (body.jobId) {
+    const { data, error } = await db.from("jobs").select("external_job_id,title,company_name,application_url,source_url").eq("id", body.jobId).maybeSingle();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    job = data ? { external_job_id: data.external_job_id ?? "", title: data.title, company_name: data.company_name, application_url: data.application_url ?? "", source_url: data.source_url ?? "" } : null;
+  } else {
+    const { data, error } = await db.from("collector_events").select("details").eq("id", body.eventId!).maybeSingle();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const proposed = (data?.details as { job?: Record<string, string | null> } | null)?.job;
+    job = proposed ? { external_job_id: proposed.external_job_id ?? "", title: proposed.title ?? "", company_name: proposed.company_name ?? "", application_url: proposed.application_url ?? "", source_url: proposed.source_url ?? "" } : null;
+  }
+  if (!job) return NextResponse.json({ error: "Nothing has that id." }, { status: 404 });
+  return NextResponse.json({ ok: true, ...(await verifyJobSource(job)) });
+}
+
 const Add = z.object({
   action: z.literal("add"),
   eventId: z.string().uuid(),
@@ -148,11 +175,14 @@ async function addJob(body: z.infer<typeof Add>) {
     return NextResponse.json({ error: `Already on the board (job ${id}).`, duplicateOf: id }, { status: 409 });
   }
 
+  const check = await verifyJobSource({ external_job_id: externalId, title, company_name: companyName, application_url: applyUrl ?? sourceUrl, source_url: sourceUrl });
+  if (check.state === "closed") return NextResponse.json({ error: `The employer's posting is closed: ${check.reason}`, check }, { status: 409 });
+
   const today = torontoDate();
   const now = new Date().toISOString();
   const pick = <K extends keyof typeof fields>(key: K, fallback: string | null) => (fields[key] !== undefined ? fields[key] : fallback);
   const posted = (fields.date_posted ?? str("date_posted"))?.slice(0, 10) ?? null;
-  const deadline = pick("application_deadline", str("application_deadline")) as string | null;
+  const deadline = (pick("application_deadline", str("application_deadline")) as string | null) ?? check.deadline;
   if (deadline && deadline < today) return NextResponse.json({ error: "The deadline has passed." }, { status: 409 });
   const row = {
     external_job_id: externalId, company_id: companyId, company_name: companyName, title,
@@ -174,12 +204,17 @@ async function addJob(body: z.infer<typeof Add>) {
     : db.from("jobs").insert(row).select("id").single();
   const { data: saved, error: saveError } = await write;
   if (saveError) return NextResponse.json({ error: saveError.message }, { status: 500 });
-  return NextResponse.json({ ok: true, reopenedClosedRecord: Boolean(existing), job: { id: saved.id, company: companyName, title, status: "active", url: sourceUrl } });
+  return NextResponse.json({ ok: true, check: { state: check.state, reason: check.reason }, reopenedClosedRecord: Boolean(existing), job: { id: saved.id, company: companyName, title, status: "active", url: sourceUrl } });
 }
 
 export async function POST(req: NextRequest) {
   if (!authorized(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const raw = await req.json().catch(() => null);
+  if (raw?.action === "check") {
+    const check = Check.safeParse(raw);
+    if (!check.success) return NextResponse.json({ error: check.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`) }, { status: 400 });
+    return checkPosting(check.data);
+  }
   if (raw?.action === "add") {
     const add = Add.safeParse(raw);
     if (!add.success) return NextResponse.json({ error: add.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`) }, { status: 400 });

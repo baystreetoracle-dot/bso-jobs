@@ -50,14 +50,23 @@ JOBS=https://www.baystreetoracle.ca/jobs/agent-api
 curl -s -H "$AUTH" "$JOBS"     # the board, the cleaner's results, the latest collector run
 curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS" \
   -d '{"action":"close","jobId":"<uuid>","reason":"<the evidence in a few words>"}'
-curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS"   -d '{"action":"add","eventId":"<collector proposal id>","reason":"<why it qualifies>","fields":{"summary":"…"}}'
-curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS"   -d '{"action":"reopen","jobId":"<uuid>","reason":"Owner asked in Agent HQ: <why>","deadline":"2026-12-01"}'
+curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS" \
+  -d '{"action":"check","jobId":"<uuid>"}'      # or "eventId" for a collector proposal
+curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS" \
+  -d '{"action":"add","eventId":"<collector proposal id>","reason":"<why it qualifies>","fields":{"summary":"…"}}'
+curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS" \
+  -d '{"action":"reopen","jobId":"<uuid>","reason":"Owner asked in Agent HQ: <why>","deadline":"2026-12-01"}'
 ```
 
 The GET returns `board.activeJobs`; `cleaner.closedLastTwoDays`, `cleaner.awaitingSecondCheck`,
 `cleaner.needsAPerson` (each with job id, company, title, posting URL, the evidence, and `ownerKeepsOpen`); and
 `collector` (the latest run's counts; `proposedAdditions`, each with its `eventId` and the full proposed `job`;
 proposed closures; manual-review items; source errors).
+
+**Your own network can't reach employer career sites** (the cloud sandbox blocks them). Don't curl postings
+yourself: `check` makes the BSO Jobs server open the posting with the same per-site checks the cleaner uses, and
+answers `state` live, closed or inconclusive, with `reason` and any `deadline` it read. `add` runs the same
+check itself and refuses a closed posting.
 
 **Adding a role** publishes the collector's own record: the employer link, requisition id and company come from it
 and can't be changed. `fields` may tidy only what readers see, and only from the employer's posting: `title`,
@@ -86,16 +95,18 @@ close unless you send `"ownerAsked": true`, which you do only when he has told y
    - Metrics (up to four): Active jobs, Closed (last day), Need you, New roles found.
 4. **Act, then report what you did.** No permission needed for:
    - **Closing.** Close every job in `needsAPerson` whose source says the posting is gone, every collector
-     `proposedClosures` item, and every job whose deadline has passed. Before closing a collector proposal, open
-     the posting link once (never LinkedIn): if the page plainly still shows the role open for applications, keep
-     it and say so. Never close a job with `ownerKeepsOpen: true`; raise it as a request instead.
-   - **LinkedIn or missing links.** Look for the role on the employer's own careers site. If it isn't there, close
+     `proposedClosures` item, and every job whose deadline has passed. Before closing a collector proposal, `check`
+     its job id: close on `closed` or `inconclusive` (the collector already found it gone from the employer's
+     listing); keep it on `live` and say so. Never close a job with `ownerKeepsOpen: true`; raise it as a request instead.
+   - **LinkedIn or missing links.** Look for the role on the employer's own careers site (try WebFetch; if you can't
+  reach it, leave the job and say so; never close a job you couldn't look into). If it isn't there, close
      the job ("not on the employer's careers site"). If it is, say so in the report with the URL, so the link
      can be fixed.
    - **Publishing obvious roles.** Publish a proposed addition when all of these hold: the link is the employer's
-     own posting (not LinkedIn, not an email address), the posting loads and is open, the role clearly fits
+     own posting (not LinkedIn, not an email address), `check` on its `eventId` doesn't say `closed`, the role clearly fits
      `docs/agents/jobs-collector-rules.md` (front-office finance in Canada: banking, markets, investing,
-     advisory, credit, PE, restructuring…), and it isn't on the board already. Tidy the fields as above.
+     advisory, credit, PE, restructuring…), and it isn't on the board already. Tidy the fields as above from the collector's own record (`proposedAdditions[].job`, its summary included):
+     fix capitals and labels, write a plain one-sentence summary; leave out anything you can't see in the record.
    - **Asking.** File a request (at most five a run, never repeating one pending or declined) only when it's a
      genuine judgement call: a role at the edge of the rules, conflicting evidence, or an `ownerKeepsOpen` job
      that looks dead. Title `Publish: <Company> — <Role>` or `Close: <Company> — <Role>`, with the link, the
