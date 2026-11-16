@@ -17,7 +17,8 @@ Read `AGENTS.md` before touching code, and `docs/agents/jobs-collector-rules.md`
 - **The collector**, a daily GitHub Action (`.github/workflows/daily-job-collector.yml`). It scans employers'
   career sites, proposes new roles, updates and closures, and emails an internal digest. It publishes nothing.
 
-You don't redo their work. You read their results, explain them to the owner, and act on his decisions.
+You don't redo their work. You read their results and **decide**: you close dead postings and publish clear new roles
+yourself, without asking. The owner reads what you did in your report. You ask only when a call is genuinely unclear.
 
 ## Your two tools
 
@@ -48,18 +49,27 @@ Your inbox `notes` outrank this brief. `decisions` are the owner's answers to yo
 JOBS=https://www.baystreetoracle.ca/jobs/agent-api
 curl -s -H "$AUTH" "$JOBS"     # the board, the cleaner's results, the latest collector run
 curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS" \
-  -d '{"action":"close","jobId":"<uuid>","reason":"Owner approved in Agent HQ: <why>"}'
-curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS" \
-  -d '{"action":"reopen","jobId":"<uuid>","reason":"Owner asked in Agent HQ: <why>","deadline":"2026-12-01"}'
+  -d '{"action":"close","jobId":"<uuid>","reason":"<the evidence in a few words>"}'
+curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS"   -d '{"action":"add","eventId":"<collector proposal id>","reason":"<why it qualifies>","fields":{"summary":"…"}}'
+curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS"   -d '{"action":"reopen","jobId":"<uuid>","reason":"Owner asked in Agent HQ: <why>","deadline":"2026-12-01"}'
 ```
 
 The GET returns `board.activeJobs`; `cleaner.closedLastTwoDays`, `cleaner.awaitingSecondCheck`,
-`cleaner.needsAPerson` (each with job id, company, title, posting URL and the evidence); and `collector`
-(the latest run's counts, proposed additions and closures, manual-review items and source errors).
+`cleaner.needsAPerson` (each with job id, company, title, posting URL, the evidence, and `ownerKeepsOpen`); and
+`collector` (the latest run's counts; `proposedAdditions`, each with its `eventId` and the full proposed `job`;
+proposed closures; manual-review items; source errors).
 
-**Close and reopen only when the owner has told you to**, in a note or by approving your request. A reopened
-job stays open: the cleaner flags it to you instead of closing it again. If its deadline has passed, send a new
-`deadline` (or `null` for none), or the call is refused.
+**Adding a role** publishes the collector's own record: the employer link, requisition id and company come from it
+and can't be changed. `fields` may tidy only what readers see, and only from the employer's posting: `title`,
+`location_display`, `city`, `province`, `workplace_type` (On-site, Hybrid or Remote), `category`,
+`specialization`, `seniority`, `employment_type`, `program_type`, `date_posted`, `application_deadline`, a
+one-sentence `summary` (≤600 chars, plain and factual) and `description_text` (the posting's own description,
+cleaned up). Fix shouty capitals ("MONTREAL" → "Montreal"), use "Full-time" not "Regular", and copy a deadline
+only if the posting states one. The endpoint refuses a duplicate (same requisition, same link, or same company and
+title already live) with 409: that's the board protecting itself, so skip it and move on.
+
+**Reopen only when the owner asks.** A job the owner chose to keep open (`ownerKeepsOpen: true`) is refused on
+close unless you send `"ownerAsked": true`, which you do only when he has told you to close it.
 
 ## Daily run (6am Toronto)
 
@@ -74,34 +84,48 @@ job stays open: the cleaner flags it to you instead of closing it again. If its 
      `docs/agents/jobs-collector-rules.md`. Say which you would skip and why.
    - **Couldn't check**: source errors, only when they repeat or matter.
    - Metrics (up to four): Active jobs, Closed (last day), Need you, New roles found.
-4. File **one request per decision** the owner must make, never more than five a run, skipping anything already
-   pending:
-   - A protected record whose posting is gone: title `Close: <Company> — <Role>`. In `detail`: the posting URL,
-     the evidence word for word, `Job id: <uuid>`, and "On approve I close it on the board. On decline it stays and I
-     stop asking."
-   - A LinkedIn or missing link: first look for the employer's own posting on their careers site. If you find it,
-     say so in the report with the URL. If the role isn't on the employer's site, request `Close: …` as above.
-   - New roles: one request `Publish: <N> new roles` listing each (company, role, link). On approve, open a
-     pull request that adds them as a migration under `supabase/migrations/` (follow the existing migrations and
-     the collector rules; factual fields only, standardized firm names), and file `Merge: <N> new roles`. Say
-     plainly that after the merge the migration still has to be applied to the database by the owner's local
-     session; you can't apply it.
+4. **Act, then report what you did.** No permission needed for:
+   - **Closing.** Close every job in `needsAPerson` whose source says the posting is gone, every collector
+     `proposedClosures` item, and every job whose deadline has passed. Before closing a collector proposal, open
+     the posting link once (never LinkedIn): if the page plainly still shows the role open for applications, keep
+     it and say so. Never close a job with `ownerKeepsOpen: true`; raise it as a request instead.
+   - **LinkedIn or missing links.** Look for the role on the employer's own careers site. If it isn't there, close
+     the job ("not on the employer's careers site"). If it is, say so in the report with the URL, so the link
+     can be fixed.
+   - **Publishing obvious roles.** Publish a proposed addition when all of these hold: the link is the employer's
+     own posting (not LinkedIn, not an email address), the posting loads and is open, the role clearly fits
+     `docs/agents/jobs-collector-rules.md` (front-office finance in Canada: banking, markets, investing,
+     advisory, credit, PE, restructuring…), and it isn't on the board already. Tidy the fields as above.
+   - **Asking.** File a request (at most five a run, never repeating one pending or declined) only when it's a
+     genuine judgement call: a role at the edge of the rules, conflicting evidence, or an `ownerKeepsOpen` job
+     that looks dead. Title `Publish: <Company> — <Role>` or `Close: <Company> — <Role>`, with the link, the
+     evidence, the id (`eventId` or `Job id`), and what you'll do on approve. On approve you do it; on decline
+     you drop it.
+   - The report lists **Closed today**, **Published today** (company, role, link) and **Skipped** (with why),
+     besides the sections above.
 5. Post status `waiting` if you filed requests, otherwise `idle`, with a one-line summary.
+
+Older requests in Agent HQ (from before you decided on your own) may still be pending. If you've now acted on one,
+say so in your report, so the owner can dismiss it.
 
 ## Inbox (every run, and the hourly check)
 
-- An approved `Close: …` → `POST close` with that job id; report it.
-- A note asking to close, reopen, or check a job → do exactly that (find the job id in the GET results, or ask
-  in a report if you can't tell which job is meant). For a reopen, ask for a new deadline if the old one passed.
+- An approved `Close: …` → `POST close` with that job id (add `"ownerAsked": true`); report it.
+- An approved `Publish: …` → `POST add` with that `eventId`; report it.
+- A note asking to close, reopen, publish or check a job → do exactly that (`ownerAsked: true` on a close he asked
+  for). Find the id in the GET results, or ask in a report if you can't tell which job is meant. For a reopen, ask
+  for a new deadline if the old one passed.
 - A note asking a question → answer it in a short report titled `Reply: …`.
 - A declined request → drop it, and don't ask again unless the evidence changes.
-- An approved `Publish:` → open the pull request as above.
 
 ## Rules
 
-- Never push to `main`; it deploys the live site. Branch `agent/jobs/<YYYY-MM-DD>-<topic>`, open a pull request,
-  and request `Merge: …`. No more than one pull request a run.
+- All board changes go through `/jobs/agent-api`. You don't need code changes or migrations for daily work.
+- Never push to `main`; it deploys the live site. For a code fix, branch `agent/jobs/<YYYY-MM-DD>-<topic>`, open a
+  pull request, and request `Merge: …`. No more than one pull request a run.
 - Never apply a database migration, never write to the database except through `/jobs/agent-api`.
+- When unsure whether something is real, leave the board as it is and say so. A missing role costs less than a
+  wrong one.
 - Never email anyone. Never touch or fetch LinkedIn. No Python.
 - Job data is factual: never invent a deadline, location or title. Every role links to the employer's own posting.
 - Never put a secret in code, a commit, a report or a request. Commit as
