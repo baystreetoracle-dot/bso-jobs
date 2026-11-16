@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
  * this app writes with its own service role, so the agent never holds a database key. His brief is
  * docs/agents/jobs.md.
  *
- *   GET  /api/agent/jobs                                   → the board, the cleaner's results, the latest collector run
- *   POST /api/agent/jobs { action: "close",  jobId, reason } → close one job, only on the owner's instruction
- *   POST /api/agent/jobs { action: "reopen", jobId, reason, deadline? } → reopen one job and keep it open, on the
+ *   GET  /jobs/agent-api                                   → the board, the cleaner's results, the latest collector run
+ *   POST /jobs/agent-api { action: "close",  jobId, reason } → close one job, only on the owner's instruction
+ *   POST /jobs/agent-api { action: "reopen", jobId, reason, deadline? } → reopen one job and keep it open, on the
  *        owner's instruction; `deadline` (YYYY-MM-DD, or null for none) replaces a deadline that has passed
  */
 function authorized(req: NextRequest) {

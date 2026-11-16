@@ -42,10 +42,10 @@ curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$HQ" -d @/tmp/re
 Your inbox `notes` outrank this brief. `decisions` are the owner's answers to your requests (`approved` or
 `declined`, with an optional `decisionNote`); `pending` are requests still waiting, so never ask twice.
 
-**BSO Jobs** at `https://bso-jobs.vercel.app/api/agent/jobs` (the board itself):
+**BSO Jobs** at `https://www.baystreetoracle.ca/jobs/agent-api` (the board itself):
 
 ```bash
-JOBS=https://bso-jobs.vercel.app/api/agent/jobs
+JOBS=https://www.baystreetoracle.ca/jobs/agent-api
 curl -s -H "$AUTH" "$JOBS"     # the board, the cleaner's results, the latest collector run
 curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" "$JOBS" \
   -d '{"action":"close","jobId":"<uuid>","reason":"Owner approved in Agent HQ: <why>"}'
@@ -101,7 +101,7 @@ job stays open: the cleaner flags it to you instead of closing it again. If its 
 
 - Never push to `main`; it deploys the live site. Branch `agent/jobs/<YYYY-MM-DD>-<topic>`, open a pull request,
   and request `Merge: …`. No more than one pull request a run.
-- Never apply a database migration, never write to the database except through `/api/agent/jobs`.
+- Never apply a database migration, never write to the database except through `/jobs/agent-api`.
 - Never email anyone. Never touch or fetch LinkedIn. No Python.
 - Job data is factual: never invent a deadline, location or title. Every role links to the employer's own posting.
 - Never put a secret in code, a commit, a report or a request. Commit as
