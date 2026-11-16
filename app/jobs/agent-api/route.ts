@@ -159,19 +159,31 @@ async function addJob(body: z.infer<typeof Add>) {
   const title = fields.title ?? str("title");
   if (!title) return NextResponse.json({ error: "The proposal has no title." }, { status: 422 });
 
-  // Duplicates: the same requisition, the same posting link, or the same company and title already live.
-  const urls = [...new Set([sourceUrl, applyUrl].filter(Boolean))] as string[];
-  const [byRecord, byReq, byUrl, byTitle] = await Promise.all([
+  // Duplicates: the same requisition, or a live job with the same posting link (compared decoded, without query or
+  // trailing slash) or the same firm and title (compared without brackets). The same employer can sit under two
+  // company ids (EY Corporate Finance and EY-Parthenon), so firms are matched by the first word of their name too.
+  const [byRecord, byReq, live] = await Promise.all([
     db.from("jobs").select("id,status").eq("source_record_id", recordId),
     db.from("jobs").select("id,status").eq("company_id", companyId).eq("external_job_id", externalId),
-    db.from("jobs").select("id").eq("status", "active").or(urls.flatMap((url) => [`source_url.eq."${url}"`, `application_url.eq."${url}"`]).join(",")),
-    db.from("jobs").select("id").eq("status", "active").eq("company_id", companyId).ilike("title", title.replace(/[\\%_]/g, "\\$&")),
+    db.from("jobs").select("id,company_id,company_name,title,source_url,application_url").eq("status", "active"),
   ]);
-  const lookupError = byRecord.error ?? byReq.error ?? byUrl.error ?? byTitle.error;
+  const lookupError = byRecord.error ?? byReq.error ?? live.error;
   if (lookupError) return NextResponse.json({ error: lookupError.message }, { status: 500 });
+  const link = (url: string | null) => {
+    if (!url) return null;
+    let value = url;
+    try { value = decodeURIComponent(url); } catch { /* keep as is */ }
+    return value.toLowerCase().replace(/[?#].*$/, "").replace(/\/(?:apply)?\/?$/, "").replace(/^https?:\/\/(?:www\.)?/, "");
+  };
+  const words = (value: string) => value.toLowerCase().replace(/\([^)]*\)/g, " ").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim();
+  const firm = (name: string) => words(name).split(" ")[0];
+  const links = new Set([link(sourceUrl), link(applyUrl)].filter(Boolean));
+  const twin = (live.data ?? []).find((job) =>
+    [link(job.source_url), link(job.application_url)].some((value) => value && links.has(value))
+    || ((job.company_id === companyId || firm(job.company_name) === firm(companyName)) && words(job.title) === words(title)));
   const existing = byRecord.data?.[0] ?? byReq.data?.[0];
-  if (existing?.status === "active" || byUrl.data?.length || byTitle.data?.length) {
-    const id = existing?.status === "active" ? existing.id : byUrl.data?.[0]?.id ?? byTitle.data?.[0]?.id;
+  if (existing?.status === "active" || twin) {
+    const id = existing?.status === "active" ? existing.id : twin!.id;
     return NextResponse.json({ error: `Already on the board (job ${id}).`, duplicateOf: id }, { status: 409 });
   }
 
