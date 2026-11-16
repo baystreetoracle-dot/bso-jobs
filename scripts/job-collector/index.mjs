@@ -30,8 +30,9 @@ function loadEnv(path) {
 loadEnv(resolve(".env.local"));
 
 const sourceArg = [...args].find((arg) => arg.startsWith("--source="))?.split("=", 2)[1] ?? "all";
-const workbookArg = [...args].find((arg) => arg.startsWith("--workbook="))?.slice("--workbook=".length)
-  ?? "C:/Users/thoma/Downloads/BSO NEWS/BSO Job Board Test.xlsx";
+// The legacy workbook reader shells out to Python, which this project no longer runs. It is opt-in only:
+// pass --workbook=<path> explicitly. The Supabase snapshot is the deduplication authority.
+const workbookArg = [...args].find((arg) => arg.startsWith("--workbook="))?.slice("--workbook=".length) ?? null;
 const selected = sourceArg === "all" ? FIRMS
   : sourceArg === "investment-banking" ? INVESTMENT_BANKING_FIRMS
     : sourceArg === "buy-side" ? FIRMS.filter((firm) => firm.universe === "buy-side")
@@ -106,11 +107,11 @@ function markdownReport(context) {
 
 const generatedAt = new Date().toISOString();
 console.log(`BSO unified high-finance dry run started at ${generatedAt}`);
-console.log(`Sources selected: ${selected.length}; workbook: ${workbookArg}`);
+console.log(`Sources selected: ${selected.length}; workbook: ${workbookArg ?? "skipped (opt-in)"}`);
 const [scans, snapshot] = await Promise.all([mapSources(selected, 4, collect), readSupabaseSnapshot()]);
 
 let workbook = { investmentBanking: [], buySide: [], buySideCandidates: [], unknownCompanies: [], investmentBankingDuplicateRows: [] };
-try { workbook = readWorkbook(workbookArg); } catch (error) { console.warn(`Workbook unavailable: ${error.message}`); }
+if (workbookArg) try { workbook = readWorkbook(workbookArg); } catch (error) { console.warn(`Workbook unavailable: ${error.message}`); }
 
 const qualified = [];
 const manualReview = [];

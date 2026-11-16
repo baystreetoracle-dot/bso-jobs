@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "jobs:test": "node --test scripts/job-collector/normalize.test.mjs",
     "jobs:dry": "node scripts/job-collector/index.mjs --source=all --dry-run",
     "jobs:digest": "node scripts/job-collector/daily-digest.mjs",
     "jobs:buyside:dry": "node scripts/job-collector/index.mjs --source=buy-side --dry-run",

@@ -6,7 +6,29 @@ const IB_METADATA = /\b(?:global\s+investment\s+banking|investment\s+banking|IBD
 const IB_DESCRIPTION = /\b(?:role|position|opportunity|candidate|you)\b[^.]{0,120}\b(?:within|join|part of|member of|support(?:ing)?)\b[^.]{0,100}\b(?:global\s+)?investment banking\s+(?:division|team|group|program|department|coverage|product)|\b(?:global\s+)?investment banking\s+(?:division|team|group|program|department|coverage group|product group)\b[^.]{0,180}\b(?:seeking|hiring|role|position|opportunity)|\bas part of\b[^.]{0,80}\b(?:global\s+)?investment banking\b/i;
 const PLAUSIBLE_IB = /\b(?:M&A|mergers?|acquisitions?|capital raising|financial advisory|strategic advisory|underwriting|sponsor coverage|project finance|infrastructure finance|syndicat(?:ed|ion)|leveraged finance|equity capital markets?|debt capital markets?)\b/i;
 
-const BUY_SIDE_TITLE = /\b(?:investment|investing|investments|portfolio|private equity|private credit|public equities?|public credit|credit analyst|research analyst|fundamental analyst|principal|acquisitions?)\b/i;
+// Owner feedback, Nov 16 2026: "M&A" on its own is not Investment Banking evidence when the team or title is
+// technology/operations, integration, strategy, PMO, transformation, change or corporate-development support
+// (e.g. BMO "Senior Manager, T&O M&A, Strategic Initiatives"). Fundraising, capital formation, investor
+// relations and distribution are always excluded (rule 8), judged on the title and team metadata.
+const MA_TERM = /\bm\s*&\s*a\b|\bmergers?\s*(?:&|and)\s*acquisitions?\b/i;
+const IB_EVIDENCE_BEYOND_MA = /\b(?:global\s+)?investment bank(?:ing|er)?\b|\bfinancial sponsors?\b|\bleveraged finance\b|\bequity capital markets?\b|\bdebt capital markets?\b|\b[ED]CM\b|\brestructuring\b|\bproject finance advisory\b|\binfrastructure advisory\b|\bcorporate finance\b|\bdeal advisory\b|\btransaction advisory\b/i;
+const OPERATIONAL_MA_CONTEXT = /\bT\s*&\s*O\b|\btechnology\b|\boperations?\b|\bintegration\b|\bstrategy\b(?!\s*(?:&|and)\s*transactions?)|\bstrategic\s+(?:initiatives?|planning|programs?|projects?)\b|\bPMO\b|\b(?:program(?:me)?|project)\s+management\b|\btransformation\b|\bchange\b|\bcorporate development\b|\bcorp\.?\s*dev\b/i;
+const FUNDRAISING = /\bfund[- ]?rais(?:e|er|ers|ing)\b|\bcapital formation\b|\binvestor relations?\b|\binvestor (?:partnerships?|solutions|services|coverage|engagement)\b|\b(?:LP|limited partners?) (?:relations|coverage|engagement)\b|\bclient capital\b|(?<!syndicat\w*\s*(?:&|and)\s*)\bdistribution\b|\bwholesal(?:e|er|ers|ing)\b|\bplacement agent\b|\bfund placement\b|\bprivate funds? group\b/i;
+const CAPITAL_RAISING_TITLE = /\bcapital[- ]raising\b/i;
+
+export function hardExclusion(title, metadataText) {
+  if (FUNDRAISING.test(title) || FUNDRAISING.test(metadataText) || (CAPITAL_RAISING_TITLE.test(title) && !IB_EVIDENCE_BEYOND_MA.test(title))) {
+    return { bucket: "clientCommercial", reason: "Fundraising, capital-formation, investor-relations or distribution role; always excluded (rule 8)." };
+  }
+  const maInTitle = MA_TERM.test(title) && !IB_EVIDENCE_BEYOND_MA.test(title);
+  const maInMetadataOnly = !MA_TERM.test(title) && MA_TERM.test(metadataText) && !IB_EVIDENCE_BEYOND_MA.test(`${title} ${metadataText}`);
+  if ((maInTitle || maInMetadataOnly) && (OPERATIONAL_MA_CONTEXT.test(title) || OPERATIONAL_MA_CONTEXT.test(metadataText))) {
+    return { bucket: "operationsSupport", reason: "M&A appears in a technology/operations, integration, strategy, PMO, transformation or corporate-development context, which is not Investment Banking evidence." };
+  }
+  return null;
+}
+
+const BUY_SIDE_TITLE =/\b(?:investment|investing|investments|portfolio|private equity|private credit|public equities?|public credit|credit analyst|research analyst|fundamental analyst|principal|acquisitions?)\b/i;
 const BUY_SIDE_STRATEGY = /\b(?:private equity|private capital|private credit|private debt|structured credit|direct lending|growth equity|venture capital|infrastructure(?: investments?)?|renewable resources?|natural resources?(?: investments?)?|public equities?|public credit|fixed income|fundamental equity|absolute return|hedge fund|long\s*\/\s*short|event[- ]driven|special situations|real estate(?: investments?)?|real estate acquisitions?|capital markets\s*(?:and|&)\s*credit investments?|external managers?|manager selection|principal investments?|canada growth fund investment management|hoopp capital partners)\b/i;
 const BUY_SIDE_ROLE_LEVEL = /\b(?:student|co-?op|intern(?:ship)?|analyst|associate|principal|vice[- ]president|VP|director|managing director|portfolio manager)\b/i;
 const INSTITUTIONAL_TITLE_MANDATE = /\b(?:private capital|private credit|private debt|structured credit|infrastructure|renewable resources?|natural resources?|real estate|fixed income|canada growth fund investment management|hoopp capital partners)\b/i;
@@ -240,6 +262,8 @@ export function classifyAndNormalize(candidateInput, verifiedAt) {
   if (/\bCPA\b/i.test(title)) {
     return { accepted: false, bucket: "accountingFinance", reason: "CPA recruiting opportunity rather than a front-office investment role.", review };
   }
+  const excluded = hardExclusion(title, metadataText);
+  if (excluded) return { accepted: false, ...excluded, review, plausible: false };
 
   if (candidate.firm.universe === "buy-side") {
     return classifyBuySide(candidate, verifiedAt, title, description, metadataText, review);
