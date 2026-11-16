@@ -16,6 +16,11 @@ normalization, reconciliation and reporting modules.
 > gates so these are rejected: "M&A" alone in a title is not Investment Banking evidence when the team is
 > T&O, technology, operations, integration, strategy, PMO, transformation or corporate development
 > support; fundraising, capital formation, investor relations and distribution are always excluded.
+>
+> **Owner feedback, Nov 16, 2026 (second):** HOOPP "Investment Data Governance Analyst" should never have been
+> on the board. "Investment" in a title is not evidence of an investing seat: investment data, data governance,
+> data management, investment operations, accounting, reporting and analytics roles inside an investment team
+> are excluded, however the team is named.
 
 ## 1. Safety model
 
@@ -136,7 +141,8 @@ An investment-related employer or title alone is insufficient.
 
 Reject roles dominated by: Corporate Banking; Commercial Banking; Sales and Trading; Equity or Credit Research
 without portfolio responsibility; Wealth Management; Risk; Compliance; Audit; Legal; Technology; Software or
-Engineering; Data Engineering; Operations; middle office or back office; Settlements; administrative support; CRM
+Engineering; Data Engineering; investment data, data governance or data management (including inside an
+investment team); Operations; middle office or back office; Settlements; administrative support; CRM
 or client support; investor relations; fundraising or distribution; Marketing; Human Resources; fund accounting;
 financial reporting; Treasury; performance reporting; portfolio analytics without investment authority; ESG
 without direct investment responsibility; CPA recruitment programs.
@@ -171,7 +177,7 @@ Contract; Unspecified. Do not infer a program type without reasonable evidence.
 When supported, populate specializations such as: Mergers & Acquisitions; Diversified Industries; Financial
 Sponsors; Leveraged Finance; Equity Capital Markets; Debt Capital Markets; Restructuring; Infrastructure /
 Project Finance; Mining & Metals; Real Estate; Private Equity; Private Credit; Public Equities; Public Credit /
-Fixed Income; Infrastructure; Natural Resources; External Managers; Investment Data Governance. Do not fabricate a
+Fixed Income; Infrastructure; Natural Resources; External Managers. Do not fabricate a
 specialization.
 
 ## 12. Job identity and deduplication
