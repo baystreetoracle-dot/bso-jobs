@@ -8,7 +8,7 @@ export type VerifiableJob = {
 
 export type VerificationResult = {
   state: "live" | "closed" | "inconclusive";
-  source: "workday" | "eightfold" | "oracle" | "ukg" | "jibe" | "html" | "pdf";
+  source: "workday" | "eightfold" | "oracle" | "ukg" | "jibe" | "ashby" | "greenhouse" | "bamboohr" | "html" | "pdf" | "none";
   deadline: string | null;
   reason: string;
   checkedUrl: string;
@@ -176,6 +176,57 @@ async function verifyStifel(job: VerifiableJob): Promise<VerificationResult> {
   } catch { return result("inconclusive", "jibe", endpoint, "Employer jobs feed returned malformed JSON."); }
 }
 
+// Ashby, Greenhouse and BambooHR publish each firm's open roles as JSON, which is firmer evidence than page HTML.
+async function verifyAshby(job: VerifiableJob, sourceUrl: string): Promise<VerificationResult> {
+  const [board, postingId] = new URL(sourceUrl).pathname.split("/").filter(Boolean);
+  if (!board || !postingId) return result("inconclusive", "ashby", sourceUrl, "Ashby board or posting identifier could not be derived.");
+  const endpoint = `https://api.ashbyhq.com/posting-api/job-board/${encodeURIComponent(board)}`;
+  const { response, body } = await fetchSource(endpoint, "application/json");
+  const failed = httpFailure(response, "ashby");
+  if (failed) return failed;
+  try {
+    const rows: Array<{ id?: string; title?: string }> = JSON.parse(body)?.jobs ?? [];
+    if (!rows.length) return result("inconclusive", "ashby", endpoint, "Ashby returned an empty job board.");
+    const exact = rows.find((row) => row.id === postingId);
+    if (!exact) return result("closed", "ashby", endpoint, `Posting is absent from the firm's Ashby job board (${rows.length} other roles listed).`);
+    return result("live", "ashby", endpoint, "The firm's Ashby job board lists the posting.");
+  } catch { return result("inconclusive", "ashby", endpoint, "Ashby returned malformed JSON."); }
+}
+
+async function verifyGreenhouse(board: string, postingId: string): Promise<VerificationResult> {
+  const endpoint = `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(board)}/jobs/${encodeURIComponent(postingId)}`;
+  const { response, body } = await fetchSource(endpoint, "application/json");
+  const failed = httpFailure(response, "greenhouse");
+  if (failed) return failed;
+  try {
+    return JSON.parse(body)?.id ? result("live", "greenhouse", endpoint, "Greenhouse public posting is active.") : result("inconclusive", "greenhouse", endpoint, "Greenhouse returned no posting detail.");
+  } catch { return result("inconclusive", "greenhouse", endpoint, "Greenhouse returned malformed JSON."); }
+}
+
+/** A Greenhouse job embedded on the firm's own careers page (?gh_jid=): read the board name from the page. */
+async function verifyEmbeddedGreenhouse(job: VerifiableJob, sourceUrl: string, postingId: string): Promise<VerificationResult> {
+  const { response, body } = await fetchSource(sourceUrl);
+  const board = body.match(/(?:job_board(?:\/js)?\?for=|boards\.greenhouse\.io\/(?!embed\b|v1\b))([a-z0-9_-]+)/i)?.[1];
+  if (board) return verifyGreenhouse(board, postingId);
+  return httpFailure(response, "greenhouse") ?? result("inconclusive", "greenhouse", response.url, "The firm's careers page does not name its Greenhouse board.");
+}
+
+async function verifyBamboo(job: VerifiableJob, sourceUrl: string): Promise<VerificationResult> {
+  const url = new URL(sourceUrl), postingId = url.pathname.match(/\/careers\/(\d+)/)?.[1];
+  if (!postingId) return result("inconclusive", "bamboohr", sourceUrl, "BambooHR posting identifier could not be derived.");
+  const endpoint = `${url.origin}/careers/list`;
+  const { response, body } = await fetchSource(endpoint, "application/json");
+  const failed = httpFailure(response, "bamboohr");
+  if (failed) return failed;
+  try {
+    const rows: Array<{ id?: unknown }> = JSON.parse(body)?.result ?? [];
+    if (!rows.length) return result("inconclusive", "bamboohr", endpoint, "BambooHR returned an empty job list.");
+    return rows.some((row) => String(row.id) === postingId)
+      ? result("live", "bamboohr", endpoint, "The firm's BambooHR job list contains the posting.")
+      : result("closed", "bamboohr", endpoint, `Posting is absent from the firm's BambooHR job list (${rows.length} other roles listed).`);
+  } catch { return result("inconclusive", "bamboohr", endpoint, "BambooHR returned malformed JSON."); }
+}
+
 function jsonLdJobs(html: string): Array<Record<string, unknown>> {
   const records: Array<Record<string, unknown>> = [];
   for (const match of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
@@ -210,7 +261,18 @@ async function verifyHtml(job: VerifiableJob, sourceUrl: string): Promise<Verifi
 
 export async function verifyJobSource(job: VerifiableJob): Promise<VerificationResult> {
   const sourceUrl = job.source_url || job.application_url;
+  // Links that cannot be checked: these go to a person, never to closure.
+  if (!sourceUrl) return result("inconclusive", "none", "", "The job has no posting link.");
+  if (sourceUrl.startsWith("/")) return result("inconclusive", "none", sourceUrl, "The posting is hosted on BSO from employer-supplied material; check with the employer.");
+  if (/^https?:\/\/(?:[\w-]+\.)?linkedin\.com\//i.test(sourceUrl)) return result("inconclusive", "none", sourceUrl, "The link points to LinkedIn, which BSO does not check; replace it with the employer's own posting.");
   try {
+    const host = new URL(sourceUrl).hostname.toLowerCase();
+    if (host === "jobs.ashbyhq.com") return await verifyAshby(job, sourceUrl);
+    const greenhouse = new URL(sourceUrl).pathname.match(/^\/([\w-]+)\/jobs\/(\d+)/);
+    if (/(?:^|\.)greenhouse\.io$/.test(host) && greenhouse) return await verifyGreenhouse(greenhouse[1], greenhouse[2]);
+    const embeddedGreenhouse = new URL(sourceUrl).searchParams.get("gh_jid");
+    if (embeddedGreenhouse) return await verifyEmbeddedGreenhouse(job, sourceUrl, embeddedGreenhouse);
+    if (host.endsWith(".bamboohr.com")) return await verifyBamboo(job, sourceUrl);
     const workday = workdayEndpoint(sourceUrl);
     if (workday) return await verifyWorkday(job, workday);
     if (/\/careers\/job\/\d+/i.test(sourceUrl) && /(?:\.eightfold\.ai|careers\.atb\.com)/i.test(sourceUrl)) return await verifyEightfold(job, sourceUrl);

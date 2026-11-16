@@ -5,9 +5,21 @@ type ActiveJob = VerifiableJob & {
   id: string;
   application_deadline: string | null;
   data_quality_notes: string | null;
+  source_name: string | null;
 };
 
-type Action = "closed" | "deadline-updated" | "verified" | "preserved";
+type Action = "closed" | "pending-close" | "needs-person" | "deadline-updated" | "verified" | "preserved";
+
+/**
+ * A source that says "closed" must say it on two different days before the job closes. The first sighting
+ * is kept in the notes as "[Dead-link check 1 of 2 on <date>: <reason>]". Records BSO curated by hand or got
+ * from an employer are never closed by a source check; they are marked "[Needs a person since <date>: …]"
+ * for Hunter to raise in Agent HQ. A passed application deadline still closes a job the same day.
+ */
+export const FIRST_STRIKE = /\[Dead-link check 1 of 2 on (\d{4}-\d{2}-\d{2}): ([^\]]*)\]/;
+export const NEEDS_PERSON = /\[Needs a person since (\d{4}-\d{2}-\d{2}): ([^\]]*)\]/;
+const PROTECTED = /curated workbook|manual|employer|exclusive|\[Owner keeps open/i;
+const bracketSafe = (value: string) => value.replace(/[[\]]/g, "");
 
 function torontoDate(): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -21,6 +33,7 @@ function replaceVerificationNote(notes: string | null, note: string): string {
   const prior = (notes ?? "")
     .replace(/\s*(?:Deadline|Availability) verified from official [^.]+ source on \d{4}-\d{2}-\d{2}\./gi, "")
     .replace(/\s*Automatically closed on \d{4}-\d{2}-\d{2}[^.]*\./gi, "")
+    .replace(new RegExp(`\\s*(?:${FIRST_STRIKE.source}|${NEEDS_PERSON.source})`, "g"), "")
     .trim();
   return [prior, note].filter(Boolean).join(" ");
 }
@@ -47,7 +60,7 @@ export async function refreshJobDeadlines() {
   });
   const { data, error } = await supabase
     .from("jobs")
-    .select("id,external_job_id,title,company_name,application_deadline,application_url,source_url,data_quality_notes")
+    .select("id,external_job_id,title,company_name,application_deadline,application_url,source_url,data_quality_notes,source_name")
     .eq("status", "active");
   if (error) throw error;
 
@@ -68,10 +81,31 @@ export async function refreshJobDeadlines() {
     if (source.state === "inconclusive") return { job, source, action: "preserved" as Action, reason: source.reason };
 
     if (source.state === "closed") {
-      const note = `Automatically closed on ${today} after official source verification: ${source.reason}`;
+      const notes = job.data_quality_notes ?? "";
+      const reason = bracketSafe(source.reason);
+      if (PROTECTED.test(`${job.source_name ?? ""} ${notes}`)) {
+        if (!NEEDS_PERSON.test(notes)) {
+          const { error: updateError } = await supabase.from("jobs").update({
+            data_quality_notes: replaceVerificationNote(notes, `[Needs a person since ${today}: ${reason}]`), updated_at: verifiedAt,
+          }).eq("id", job.id);
+          if (updateError) throw updateError;
+        }
+        return { job, source, action: "needs-person" as Action, reason: source.reason };
+      }
+      const firstSeen = notes.match(FIRST_STRIKE)?.[1];
+      if (!firstSeen || firstSeen >= today) {
+        if (!firstSeen) {
+          const { error: updateError } = await supabase.from("jobs").update({
+            data_quality_notes: `${notes} [Dead-link check 1 of 2 on ${today}: ${reason}]`.trim(), updated_at: verifiedAt,
+          }).eq("id", job.id);
+          if (updateError) throw updateError;
+        }
+        return { job, source, action: "pending-close" as Action, reason: source.reason };
+      }
+      const note = `Automatically closed on ${today} after two official source checks (first on ${firstSeen}): ${source.reason}`;
       const { error: updateError } = await supabase.from("jobs").update({
         status: "closed", last_verified_at: verifiedAt, updated_at: verifiedAt,
-        data_quality_notes: replaceVerificationNote(job.data_quality_notes, note),
+        data_quality_notes: replaceVerificationNote(notes, note),
       }).eq("id", job.id);
       if (updateError) throw updateError;
       return { job, source, action: "closed" as Action, reason: source.reason };
@@ -96,6 +130,8 @@ export async function refreshJobDeadlines() {
     confirmedLive: sourceResults.filter(({ state }) => state === "live").length,
     deadlinesUpdated: outcomes.filter(({ action }) => action === "deadline-updated").length,
     jobsClosed: outcomes.filter(({ action }) => action === "closed").length,
+    jobsAwaitingSecondCheck: outcomes.filter(({ action }) => action === "pending-close").length,
+    jobsNeedingAPerson: outcomes.filter(({ action }) => action === "needs-person").length,
     jobsVerified: outcomes.filter(({ action }) => action === "verified").length,
     jobsPreservedAfterIncompleteCheck: outcomes.filter(({ action }) => action === "preserved").length,
     closed: outcomes.filter(({ action }) => action === "closed").map(({ job, reason }) => ({
