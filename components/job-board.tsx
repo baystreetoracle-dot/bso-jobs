@@ -181,6 +181,7 @@ const careerPathOrder = ["Investment Banking","Corporate Finance","Private Equit
 const displayCategory = (company:string, storedCategory:string) => corporateFinanceFirms.has(company) ? "Corporate Finance" : careerPathLabels[storedCategory]??storedCategory;
 const rankOrder = ["Intern / Co-op","Analyst","Associate","Vice President","Director","Managing Director"] as const;
 const featuredExternalJobOrder = ["R260028848","R2052799","26997599"];
+const featuredFallbackExcludedCompanies = new Set(["CPP Investments"]);
 const homepageFirmOrder = ["RBC Capital Markets","TD Securities","BMO Capital Markets","CIBC Capital Markets","Barclays","Jefferies"];
 const homepageTrendingOrder = ["CSS-0012600","fort-capital-vancouver-analyst-2026-11","JR101593","7058","210790829","549798030828","R7181"];
 const marqueeLogos = [
@@ -318,7 +319,7 @@ export default function JobBoard({mode="home",initialCompany=null,initialRows,la
   // eslint-disable-next-line react-hooks/set-state-in-effect -- one read of the address on load
   useEffect(()=>{if(mode!=="jobs"||initialCompany)return;const company=new URLSearchParams(window.location.search).get("company");if(company)setCompanyFilter(company);},[mode,initialCompany]);
   const jobs=useMemo(()=>loadedJobs.map(({job})=>job),[loadedJobs]);
-  const featuredJobs=useMemo(()=>{const preferred=featuredExternalJobOrder.flatMap(externalJobId=>{const match=loadedJobs.find(item=>item.externalJobId===externalJobId);return match?[match.job]:[]});const preferredIds=new Set(preferred.map(job=>job.id));const editorial=loadedJobs.filter(({featured,job})=>featured&&!preferredIds.has(job.id)).map(({job})=>job);const selectedIds=new Set([...preferredIds,...editorial.map(job=>job.id)]);return [...preferred,...editorial,...jobs.filter(job=>!selectedIds.has(job.id))].slice(0,3)},[jobs,loadedJobs]);
+  const featuredJobs=useMemo(()=>{const preferred=featuredExternalJobOrder.flatMap(externalJobId=>{const match=loadedJobs.find(item=>item.externalJobId===externalJobId);return match?[match.job]:[]});const preferredIds=new Set(preferred.map(job=>job.id));const editorial=loadedJobs.filter(({featured,job})=>featured&&!preferredIds.has(job.id)).map(({job})=>job);const selectedIds=new Set([...preferredIds,...editorial.map(job=>job.id)]);const fallback=jobs.filter(job=>!selectedIds.has(job.id)&&!featuredFallbackExcludedCompanies.has(job.company));return [...preferred,...editorial,...fallback].slice(0,3)},[jobs,loadedJobs]);
   const trendingJobs=useMemo(()=>{const excludedIds=new Set(featuredJobs.map(job=>job.id));const preferred=homepageTrendingOrder.flatMap(externalJobId=>{const match=loadedJobs.find(item=>item.externalJobId===externalJobId);return match&&!excludedIds.has(match.job.id)?[match.job]:[]});const selectedIds=new Set([...excludedIds,...preferred.map(job=>job.id)]);return [...preferred,...jobs.filter(job=>!selectedIds.has(job.id))].slice(0,6)},[featuredJobs,jobs,loadedJobs]);
   const companies=useMemo(()=>Array.from(new Set(jobs.map(job=>job.company))).map(name=>({name,type:companyTypes[name]??"Investment Firm",count:jobs.filter(job=>job.company===name).length})),[jobs]);
   const availableCategories=Array.from(new Set(jobs.map(job=>job.category)));
